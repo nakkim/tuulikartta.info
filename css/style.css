@@ -1,7 +1,7 @@
 html, body {
     height: 100%;
     width: 100%;
-	margin: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
 }
 
 #map {
@@ -10,63 +10,115 @@ html, body {
 }
 
 #header {
-    position: fixed;
+    width: 100%;
     top: 0;
-    margin: auto;
-    height: 17px;
-    width: 50px;
+    height: 50px;
+    background-color: #22333B;
+}
+
+#graph-header {
+    width: 100%;
+    top: 0;
+    height: 50px;
+}
+
+footer {
+    width: calc(100% - 10px);
+    bottom: 0;
+    left: 0;
+    /*margin-top: 50px;*/
+    padding: 20px 0px 20px 10px;
+    height: 8%;
+    max-height: 400px;
+    min-height: 120px;
+    overflow: hidden;
+}
+
+footer p {
+    font-family: 'Roboto', sans-serif;
+    margin: 0.575em 0 0.575em 0;
+    font-size: 1.00em;
+}
+
+footer a {
+    color: #000080;
+    text-decoration: none;
 }
 
 #content-select {
     position: fixed;
-    height: 18%;
+    height: 1px;
     max-height: 110px;
     width: 100%;
-    bottom: 0;
+    margin: auto;
+    bottom: 100px;
 }
 
-/*
-#content-select-box {
-    margin: auto;
-    height: 95%;
-    max-height: 150px;
-    width: 350px;
-    border: 1px solid black;
-    
-    background: rgba(255,255,255,0.8);
-    background: -moz-linear-gradient(left, rgba(255,255,255,0.8) 0%, rgba(246,246,246,0.88) 38%, rgba(237,237,237,1) 100%);
-    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,0.8)), color-stop(38%, rgba(246,246,246,0.88)), color-stop(100%, rgba(237,237,237,1)));
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0.8) 0%, rgba(246,246,246,0.88) 38%, rgba(237,237,237,1) 100%);
-    background: -o-linear-gradient(left, rgba(255,255,255,0.8) 0%, rgba(246,246,246,0.88) 38%, rgba(237,237,237,1) 100%);
-    background: -ms-linear-gradient(left, rgba(255,255,255,0.8) 0%, rgba(246,246,246,0.88) 38%, rgba(237,237,237,1) 100%);
-    background: linear-gradient(to right, rgba(255,255,255,0.8) 0%, rgba(246,246,246,0.88) 38%, rgba(237,237,237,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=1 );
-}
-*/
 
 #content-select-box {
     margin: auto;
     height: 95%;
     /*max-height: 150px;*/
     max-height: 70px;
-    width: 350px;
+    width: 275px;
 }
 
-#content-select-box h4,p{
+#content-select-box h4,
+#content-select-box p{
     margin: 2px 0px 2px 0px;
 }
 
 #content-select-box-buttons{
-    width: 400px;
+    width: 275px;
     margin: auto;
 }
-
 
 .symbol {
     height: 50px;
     width: 50px;
 }
 
+#main-text-area {
+    display:inline-block;
+    height: 53%;
+    min-height: 300px;
+    font-family: 'Lato', sans-serif;
+    padding: 20px 30px 20px 10px;
+    font-size: 1.15em;
+    background-color: #22333B;
+}
+
+#main-text-area h4 {
+    margin: 0px 0px 0px 0px;
+    color: #d8d8d8;  
+}
+#main-text-area p {
+    /*text-align: justify;*/
+    margin: 10px 0px 10px 0px;
+    color: #d8d8d8;
+}
+
+/* infobox controll */
+#info-content {
+    width: 100%;
+    overflow: hidden;
+    display: inline-block;
+}
+
+#info-content-image {
+    width: 100%;
+    overflow: hidden;
+}
+
+#info-content img {
+    margin-right: 10px;
+    float: left;
+}
+
+#info-content p {
+    margin: 0.575em 0 0.575em 0; 
+    float: left;
+}
 
 
 .btn:focus {
@@ -102,29 +154,166 @@ html, body {
   background-image: linear-gradient(to bottom, #ffffff, #ebebeb);
   border: solid #379se5 10px;
   text-decoration: none;
+  cursor: pointer;
+  cursor: hand;
+}
+
+#graph-container.expanded {
+    z-index: 9;
+    height: 100%;
+    width: 730px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: white;
+    overflow: hidden;
+}
+
+#graph-container.collapsed {
+    height: 100%;
+    width: 0px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+#weather-chart {
+    min-height: 350px;
+	max-height: 350px;
+}
+
+#graph-box {
+    margin: auto;
+    width: 85%;
+    height: 900px;
+}
+
+#info-container.expanded {
+    z-index: 9;
+    height: 100%;
+    width: 350px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    
+    overflow: hidden;
+    background-color: #F2F4F3;
+    /* transparent? */
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d4e4ef+14,86aecc+100 */
+}
+
+#info-container.collapsed {
+    height: 100%;
+    width: 0px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+#close-if.reset-button{
+    position: absolute;
+    right: 0px;
+    width:30px; 
+    height:30px;
+    margin: 10px 10px 10px 10px;
+	cursor: pointer;
+    cursor: hand;
+}
+
+#close-gr.reset-button  {
+    position: absolute;
+    left: 0px;
+    width:30px; 
+    height:30px;
+    margin: 10px 10px 10px 10px;
+    cursor: pointer;
+    cursor: hand;
+	
+    /* flip image */
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+
+/* mobile devices and smaller screens */
+
+@media screen and (max-width: 1190px) {
+    #graph-container.expanded {
+        z-index: 9;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: white;
+        overflow: hidden;
+    }
+
+@media screen and (max-width: 765px) {
+    #info-container.expanded {
+	z-index: 9;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: blue;
+        overflow: hidden;
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d4e4ef+14,86aecc+100 */
+        background-color: #F2F4F3;
+       /* transparent? */
+       /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d4e4ef+14,86aecc+100 */
+
+    }
+	
+    #graph-container.expanded {
+        z-index: 9;
+	height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: white;
+        overflow: hidden;
+    }
 }
 
 
 @media screen and (max-device-width: 780px) {
-  #content-select-box {
-    margin: auto;
-    height: 95%;
-    max-height: 87px;
-    width: 450px;
-  }
+    #content-select {
+        position: fixed;
+        height: 1px;
+        max-height: 110px;
+        width: 100%;
+        margin: auto;
+        bottom: 100px;
+    }
+    
+    #content-select-box {
+        margin: auto;
+        height: 100%;
+        max-height: 60px;
+        width: 210px;
+    }
 
-
-  #content-select-box-buttons{
-    width: 450px;
-    margin: auto;
-  }
-
-  .symbol {
-    height: 70px;
-    width: 70px; 
-  }
+    #content-select-box-buttons{
+        width: 210px;
+        margin: auto;
+    }
+  
+    .symbol {
+        height: 30px;
+        width: 30px; 
+    }
+  
+    #info-container.expanded {
+        height: 100%;
+        width: 100%;
+    }
 
 }
-
-
-
