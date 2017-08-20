@@ -227,30 +227,31 @@ function drawWind(map,data,param){
 
         if(data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
             valid++;
-			if(param == 'ws_10min') {
-				//var text = data[i]['ws_10min'];
-				var color = severity[Math.floor(data[i]['ws_10min'])];
-			}
-			if(param == 'wg_10min') {
-				//var text = data[i]['wg_10min'];
-				var color = severity[Math.floor(data[i]['wg_10min'])];
-			}
+            if(param == 'ws_10min') {
+                var text = data[i]['ws_10min'];
+                var color = severity[Math.floor(data[i]['ws_10min'])];
+            }
+            if(param == 'wg_10min') {
+                var text = data[i]['wg_10min'];
+                var color = severity[Math.floor(data[i]['wg_10min'])];
+            }
             var marker = new google.maps.Marker({
                 clickable: true,
-                /*label: {
+                label: {
                     text: text,
                     color: 'black',
-                    fontSize: '20px'
-                },*/
+                    fontSize: '17px'
+                },
                 icon: {
-                    animation: google.maps.Animation.DROP,
-                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                    scale: 6,
+                    //animation: google.maps.Animation.DROP,
+                    //path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    path: 'm -33.990361,-1.1968618 c 0,-18.4590402 35.3952361,-47.3967002 35.0092561,-47.1095602 0,0 35.5166199,28.65052 35.5166199,47.1095602 0,18.4590298 -15.78065,33.4108498 -35.2629399,33.4108498 -19.4822861,0 -35.2629361,-14.95182 -35.2629361,-33.4108498 z',
+                    scale: .5,
                     fillColor: color,
-                    fillOpacity: 0.4,
+                    fillOpacity: 0.7,
                     strokeColor: 'black',
                     strokeWeight: 1.5,
-                    rotation: ((parseFloat(data[i]['wd_10min']) + 180) % 360 )
+                    rotation: ((parseFloat(data[i]['wd_10min']) + 180) % 360 ),
                 },
                 position: location,
                 map: map
