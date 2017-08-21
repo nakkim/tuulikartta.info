@@ -4,7 +4,15 @@ var debugvalue = true;
 var emptydata;
 var emptymap;
 var emptymarker = [];
-var selectedparameter = "ws_10min";
+
+var geoLocation;
+
+// remember parameters from previous state
+var latitude          = localStorage.getItem("latitude")           ? localStorage.getItem("latitude")    : 60.630556;
+var longtitude        = localStorage.getItem("longtitude")         ? localStorage.getItem("longtitude")  : 24.859726;
+var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")  : 6;
+
+var selectedparameter = localStorage.getItem("selectedparameter")  ? localStorage.getItem("longtitude")  : "ws_10min";
 
 function debug(par){
     if(debugvalue === true){
@@ -99,29 +107,24 @@ function callData(){
 $(function(){
 	// select parameter 
     $('#wg').on('click', function(){
-       getSelectedParameter('wg_10min');
+       //getSelectedParameter('wg_10min');
+       draw('wg_10min',emptymap,emptydata);
     });
     $('#ws').on('click', function(){
-       getSelectedParameter('ws_10min');
+        //getSelectedParameter('ws_10min');
+        draw('ws_10min',emptymap,emptydata);
     });
-
-	// open and close info and graph boxes
-	$('#if').on('click', function(){
-       openinfobox();
-    });
-    $('#close-if').on('click', function(){
-       openinfobox();
-    });
-	$('#close-gr').on('click', function(){
+    $('#close-gr').on('click', function(){
        opengraphbox();
     });
 });
 
+/*
 function getSelectedParameter(value) {
     var value = value;
     draw(value,emptymap,emptydata)
 }
-
+*/
 
 /*
 * function draw(value,emptymap,emptydata)
@@ -145,13 +148,14 @@ function draw(value,emptymap,emptydata){
 *       initialize map
 */
 
- function initMap() {
+function initMap() {
     debug('Initializing map... ');
-	var lat = 60.630556,
-	    lon = 24.859722;
+    var lat  = parseFloat(latitude),
+        lon  = parseFloat(longtitude),
+        zoom = parseInt(zoomlevel);
     var centerpoint = {lat: lat, lng: lon};
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
+        zoom: zoom,
         minZoom: 6,
         maxZoom: 10,
         styles: mapstyle,
@@ -159,14 +163,14 @@ function draw(value,emptymap,emptydata){
         streetViewControl: false,
         mapTypeControl: false
     });
-	// Try HTML5 geolocation.
-	if (navigator.geolocation) {
-	    navigator.geolocation.getCurrentPosition(function(position) {
-		    var pos = {
-		        lat: position.coords.latitude,
-		        lng: position.coords.longitude
-		    };
-		    map.setCenter(pos);
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            map.setCenter(pos);
             // add pin to use location
             // https://sites.google.com/site/gmapsdevelopment/
             var base = 'https://maps.gstatic.com/mapfiles/ridefinder-images/';
@@ -175,21 +179,35 @@ function draw(value,emptymap,emptydata){
                 map: map,
                 icon: 'symbols/blue-pushpin.png'
             });
-	    }, function() {
-		    handleLocationError(true, map.getCenter());
+            }, function() {
+                handleLocationError(true, map.getCenter());
 	    });
-    } else {
-        // Browser doesn't support Geolocation
-	    handleLocationError(false, map.getCenter());
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, map.getCenter());
 	}
 
     debug('Done');
     emptymap = map;
+    updateLocation(map);
     return map;
 }
 
 function handleLocationError(browserHasGeolocation, pos) {
+    geoLocation = 'false';
     console.log('Error: The Geolocation service failed.');
+}
+
+function updateLocation(map) {
+    google.maps.event.addListener(map, "bounds_changed", function(){
+        var lat  = map.getCenter().lat();
+        var lon  = map.getCenter().lng();
+        var zoom = map.getZoom();
+        localStorage.setItem("latitude",lat);
+        localStorage.setItem("longitude",lon);
+        localStorage.setItem("zoomlevel",zoom);
+        //debug(lat+','+lon+','+zoom);
+    });
 }
 
 function getbbox(map) {
@@ -284,7 +302,7 @@ function drawWind(map,data,param){
     debug("parameters drawn "+valid+"/"+parseInt(Object.keys(data).length));
 }
 
-
+/*
 function openinfobox(){
     // check the div class and reverse it
     if(document.getElementById("info-container").className === "collapsed") {
@@ -293,6 +311,7 @@ function openinfobox(){
         document.getElementById("info-container").className = "collapsed";
     }
 }
+*/
 
 function opengraphbox(){
     // check the div class and reverse it
@@ -312,21 +331,21 @@ function expandGraph(param,fmisid,lat,lon,type){
 }
 
 function getObservationGraph(latlon,fmisid,type){
-	debug('Gettting data for graph... ');
+    debug('Gettting data for graph... ');
     $.ajax({
-		dataType: "json",
-		url: 'php/graph.php',
-		data: {
-			latlon: latlon,
+        dataType: "json",
+        url: 'php/graph.php',
+        data: {
+            latlon: latlon,
             fmisid: fmisid,
             type: type
-		},
-		error: function() {
-			debug('An error has occurred');
-		},
-		success: function(data) {
-			drawGraph(data);
-		}
+        },
+        error: function() {
+            debug('An error has occurred');
+        },
+        success: function(data) {
+            drawGraph(data);
+        }
     });
 }
 
