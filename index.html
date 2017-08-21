@@ -24,27 +24,21 @@
     <script src="https://use.fontawesome.com/fdf452f08e.js"></script>    
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     
-    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"  data-require="leaflet@0.7.3" data-semver="0.7.3" />
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js" data-require="leaflet@0.7.3" data-semver="0.7.3"></script>-->
+    <script src="js/jquery.modal.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="css/jquery.modal.min.css" type="text/css" media="screen" />    
         
   </head>
   <body onload="callData()">
     <div id="map"></div>
-    <div id="info-container" class="collapsed">
-        <div id="header">
-          <!--<img src="symbols/FMIODATAtransparent.png"></img>-->
-          <!--<img id="close-if" class="reset-button" src="symbols/reply-arrow.png"></img>-->
-          <div id="close-if" class="reset-button"><i class="fa fa-times fa-3x" style="color: #d8d8d8;"></i></div>
-
-        </div>
-        
+    
+    <div id="ifbox" style="display:none;">
         <div id="main-text-area" role="main">
             <section>
                 <h4>tuulikartta.info</h4>
-                <p>on oman lennokkiharrastuksen kylkeen syntynyt nettisivuprojekti, joka ajatuksena on tarjota k&auml;ytt&auml;jille tuulihavaintoja (lähes) reaaliajassa.</p>
+                <p>on oman lennokkiharrastuksen kylkeen syntynyt nettisivuprojekti, joka ajatuksena on tarjota k&auml;ytt&auml;jille tuulihavaintoja (lähes reaaliajassa.</p>
                 <p>Havaintoaineisto on Ilmatieteen laitoksen tarjoamaa avointa dataa.</p>
                 </br>
-                <p>Kartalla havaintosuureet on jaoteltu siten, että: 
+                <p>Kartalla havaintosuureet on jaoteltu siten, että:
                 <div id="info-content">
                     <img src="symbols/wind.svg" style="width:30px; height:30px;">
                     <p>Havaintoaseman keskituuli</p>
@@ -54,7 +48,7 @@
                     <p>Havaintoaseman maksimipuuska</p>
                 </div>
                 <div id="info-content-image">
-                    <p>Havaintoaseman nimen, viimeisimmät havinnot sekä kuvaajan saa näkyviin klikkaamalla tuulinuolta</p>
+                    <p>Havaintoaseman nimen, viimeisimmät havinnot sekä kuvaajan saa näkyviin klikkaamalla tuulinuolta.</p>
                  </div>
             </section>
         </div>
@@ -62,11 +56,12 @@
             <p>Ville Ilkka 2017</p>
             <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
             <p><a href=#>nakkim.org</a> projektisivu<p>
-            </br>
             <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
             <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </br>
         </footer>
-                
+    </div>
+
     </div>
     <div id="graph-container" class="collapsed">
         <div id="graph-header">
@@ -83,7 +78,7 @@
         
       <div id="content-select-box">
         <div id="content-select-box-buttons">
-            <button class="btn" id="if"><image class="symbol" src="symbols/Infobox_info_icon.svg"/></button>
+            <button class="btn" id="if"><a href="#ifbox" rel="modal:open"><image class="symbol" src="symbols/Infobox_info_icon.svg"/></a></button>
             <button class="btn" id="ws"><image class="symbol" src="symbols/wind.svg"/></button>
             <button class="btn" id="wg"><image class="symbol" src="symbols/gust.svg"/></button>
         </div>
