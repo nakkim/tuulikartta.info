@@ -10,7 +10,7 @@ var geoLocation;
 // remember parameters from previous state
 var latitude          = localStorage.getItem("latitude")           ? localStorage.getItem("latitude")    : 60.630556;
 var longtitude        = localStorage.getItem("longtitude")         ? localStorage.getItem("longtitude")  : 24.859726;
-var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")  : 6;
+var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")   : 8;
 
 var selectedparameter = localStorage.getItem("selectedparameter")  ? localStorage.getItem("longtitude")  : "ws_10min";
 
@@ -275,17 +275,21 @@ function drawWind(map,data,param){
                 map: map
             });
             emptymarker.push(marker);
-
-            var stationInfo       = '<b>Havaintoasema: </b> '+ data[i]['station'] + '<br>';
+            if(data[i]['type'] === 'synop') {
+                var stationType = '<b>Aseman tyyppi:</b> Synop-asema <br>';
+            } else {
+                var stationType = '<b>Aseman tyyppi:</b> Tiesääasema <br>';
+            }
+            var stationInfo       = '<b>Havaintoasema: </b>'+ data[i]['station'] + '<br>';
             var latestObservation = '<b>Viimeisin havainto: </b>' +  time  + '<br>';
-            var meanWind          = '<b>Keskituuli: </b> ' + data[i]['ws_10min'] + ' m/s <br>';
-            var gustWind          = '<b>Puuska: </b> ' + data[i]['wg_10min'] + ' m/s <br>'; 
-            var degWind           = '<b>tuulen suunta</b> ' + data[i]['wd_10min'] + '&deg; <br>';
+            var meanWind          = '<b>Keskituuli: </b>' + data[i]['ws_10min'] + ' m/s <br>';
+            var gustWind          = '<b>Puuska: </b>' + data[i]['wg_10min'] + ' m/s <br>'; 
+            var degWind           = '<b>Tuulen suunta: </b>' + data[i]['wd_10min'] + '&deg; <br>';
             var dataGraph         = 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"'+data[i]["type"]+'\" fmisid=\"' + data[i]["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph(ws,'+data[i]["fmisid"]+','+latlon+',\''+data[i]["type"]+'\')">täällä</a>';
 
             marker.info = new google.maps.InfoWindow({
                 //content: '<b>Havaintoasema: </b> '+ data[i]['station'] + ' <br> <b>Viimeisin havainto: </b>' +  time  + '<br> <b>keskituuli:</b> ' + data[i]['ws_10min'] + ' m/s <br> <b>puuska:</b> ' + data[i]['wg_10min'] + ' m/s <br> <b>tuulen suunta</b> ' + data[i]['wd_10min'] + '&deg; <br> Data nähtävissä kuvaajana <a id="wslink" type="'+data[i]["type"]+'" fmisid="' + data[i]["fmisid"] + '" latlon="' + latlon + '" href="#" onclick="expandGraph(ws,'+data[i]["fmisid"]+','+latlon+',\''+data[i]["type"]+'\')">täällä</a>'
-                content: stationInfo + latestObservation + meanWind + gustWind + degWind + dataGraph
+                content: stationInfo + stationType + latestObservation + meanWind + gustWind + degWind + dataGraph
             });
             google.maps.event.addListener(marker, 'click', function() {
                 // this = marker
