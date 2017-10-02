@@ -22,8 +22,41 @@ function debug(par){
 
 
 // http://ilmatieteenlaitos.fi/tuulet
-var severity = ['white',   // 0       tyyntä
-                '#e6f7ff', // 1-2     heikkoa
+var severity = [/*'white',
+                '#e6f7ff',
+                '#E0F9F2',
+                '#D6FCE0',
+                '#ccffcc',
+                '#b3ffb3',
+                '#99ff99',
+                '#C2FF99',
+                '#D6FF99',
+                '#E6FF99',
+                '#F0FF99',
+                '#F5FF99',
+                '#ffff99',
+                '#ffff99',
+                '#FFF273',
+                '#FFE854',
+                '#FFE03D',
+                '#FFD926',
+                '#FFD417',
+                '#FFCF08',
+                '#ffcc00',
+                '#FFC205',
+                '#FF8F1F',
+                '#FF523D',
+                '#ff3300',
+                '#ff0066',
+                '#ff0066',
+                '#ff0066',
+                '#cc0099',
+                '#cc0099',
+                '#cc0099',
+                '#cc0099',
+                '#800060'
+                */
+
                 '#e6f7ff', // 2-3
                 '#e6f7ff', // 3-4
                 '#ccffcc', // 4-5     kohtalaista
@@ -57,6 +90,8 @@ var severity = ['white',   // 0       tyyntä
                 '#cc0099', // 31-32
                 '#6600cc', // 32-     hirmumyrskyä
            ];
+
+
 
 function timeTotime(epoctime){
     // convert epoc time to time stamp
