@@ -135,6 +135,7 @@ function callData(){
     });
 }
 
+
 /*
 *  trigger buttons
 */
@@ -154,12 +155,6 @@ $(function(){
     });
 });
 
-/*
-function getSelectedParameter(value) {
-    var value = value;
-    draw(value,emptymap,emptydata)
-}
-*/
 
 /*
 * function draw(value,emptymap,emptydata)
@@ -323,34 +318,21 @@ function drawWind(map,data,param){
             var dataGraph         = 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"'+data[i]["type"]+'\" fmisid=\"' + data[i]["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph(ws,'+data[i]["fmisid"]+','+latlon+',\''+data[i]["type"]+'\')">täällä</a>';
 
             marker.info = new google.maps.InfoWindow({
-                //content: '<b>Havaintoasema: </b> '+ data[i]['station'] + ' <br> <b>Viimeisin havainto: </b>' +  time  + '<br> <b>keskituuli:</b> ' + data[i]['ws_10min'] + ' m/s <br> <b>puuska:</b> ' + data[i]['wg_10min'] + ' m/s <br> <b>tuulen suunta</b> ' + data[i]['wd_10min'] + '&deg; <br> Data nähtävissä kuvaajana <a id="wslink" type="'+data[i]["type"]+'" fmisid="' + data[i]["fmisid"] + '" latlon="' + latlon + '" href="#" onclick="expandGraph(ws,'+data[i]["fmisid"]+','+latlon+',\''+data[i]["type"]+'\')">täällä</a>'
                 content: stationInfo + stationType + latestObservation + meanWind + gustWind + degWind + dataGraph
             });
             google.maps.event.addListener(marker, 'click', function() {
                 // this = marker
                 var marker_map = this.getMap();
                 this.info.open(marker_map,this);
-                // this.info.open(marker_map, this);
                 // Note: If you call open() without passing a marker, the InfoWindow will use the position specified upon construction through the InfoWindowOptions object literal.
             });
-			google.maps.event.addListener(marker, 'click', function() {
-			    // getObservationGraph(latlon,data[i]["fmisid"],data[i]["type"]);
-			});
+            google.maps.event.addListener(marker, 'click', function() {
+            // getObservationGraph(latlon,data[i]["fmisid"],data[i]["type"]);
+            });
         }
     }
     debug("parameters drawn "+valid+"/"+parseInt(Object.keys(data).length));
 }
-
-/*
-function openinfobox(){
-    // check the div class and reverse it
-    if(document.getElementById("info-container").className === "collapsed") {
-        document.getElementById("info-container").className = "expanded";
-    } else {
-        document.getElementById("info-container").className = "collapsed";
-    }
-}
-*/
 
 function opengraphbox(){
     // check the div class and reverse it
@@ -361,6 +343,7 @@ function opengraphbox(){
     }
 }
 
+
 function expandGraph(param,fmisid,lat,lon,type){
 	document.getElementById('graph-container').className = "expanded";
 	var latlon = lat + ',' + lon;
@@ -368,6 +351,7 @@ function expandGraph(param,fmisid,lat,lon,type){
 
 	getObservationGraph(latlon,fmisid,type);
 }
+
 
 function getObservationGraph(latlon,fmisid,type){
     debug('Gettting data for graph... ');
@@ -388,6 +372,7 @@ function getObservationGraph(latlon,fmisid,type){
     });
 }
 
+
 function drawGraph(data) {
     var forecastArray = new Array(),
         observationArray = new Array;
@@ -406,7 +391,8 @@ function drawGraph(data) {
         var m = ('0'+d.getMinutes()).slice(-2);
         labelArray.push(h+":"+m);
     }
-	/* remove old div */
+
+    /* remove old div */
     /* http://stackoverflow.com/questions/24815851/how-do-clear-a-chart-from-a-canvas-so-that-hover-events-cannot-be-triggered */
     var content = document.getElementById('graph-box');
     content.innerHTML = '&nbsp;';
