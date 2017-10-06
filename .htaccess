@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://tuulikartta.info [R=301,L]
