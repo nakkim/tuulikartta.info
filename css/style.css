@@ -179,15 +179,27 @@ footer a {
     overflow: hidden;
 }
 
+/*.graph-container-text-wrapper{
+    margin: 20px 10% 20px 10%;
+}*/
+
+#graph-container.expanded p {
+    font-family: 'Roboto', sans-serif;
+    /*margin: 0.575em 0 0.575em 0;*/
+    margin: auto;
+    font-size: 1.00em;
+    text-align: center;
+} 
+
 #weather-chart {
     min-height: 350px;
-	max-height: 350px;
+    max-height: 350px;
 }
 
 #graph-box {
     margin: auto;
     width: 85%;
-    height: 900px;
+    /*height: 900px;*/
 }
 
 #info-container.expanded {
@@ -219,15 +231,15 @@ footer a {
     width:30px; 
     height:30px;
     margin: 10px 10px 10px 10px;
-	cursor: pointer;
+    cursor: pointer;
     cursor: hand;
 }
 
 #close-gr.reset-button  {
     position: absolute;
-    left: 0px;
+    /*left: 0px;
     width:30px; 
-    height:30px;
+    height:30px;*/
     margin: 10px 10px 10px 10px;
     cursor: pointer;
     cursor: hand;
@@ -310,7 +322,7 @@ footer a {
         max-height: 110px;
         width: 100%;
         margin: auto;
-        bottom: 100px;
+        bottom: 60px;
     }
     
     #content-select-box {

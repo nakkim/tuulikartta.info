@@ -92,6 +92,9 @@ var severity = [/*'white',
            ];
 
 
+/*
+* TODO: add function description
+*/
 
 function timeTotime(epoctime){
     // convert epoc time to time stamp
@@ -110,10 +113,8 @@ function timeTotime(epoctime){
 }
 
 
-
 /*
-* function callData()
-*       get observation data from getdata.php
+* get observation data from getdata.php
 */
 
 function callData(){
@@ -137,7 +138,7 @@ function callData(){
 
 
 /*
-*  trigger buttons
+*  Trigger buttons
 */
 
 $(function(){
@@ -157,8 +158,7 @@ $(function(){
 
 
 /*
-* function draw(value,emptymap,emptydata)
-*       draw selected parameter
+* Trigger selected parameter and draw values to map
 */
 
 function draw(value,emptymap,emptydata){
@@ -174,8 +174,7 @@ function draw(value,emptymap,emptydata){
 
 
 /*
-* function initMap()
-*       initialize map
+* initialize Google Map and set geolocation 
 */
 
 function initMap() {
@@ -212,10 +211,10 @@ function initMap() {
             }, function() {
                 handleLocationError(true, map.getCenter());
 	    });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, map.getCenter());
-	}
+    } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, map.getCenter());
+    }
 
     debug('Done');
     emptymap = map;
@@ -223,10 +222,20 @@ function initMap() {
     return map;
 }
 
+
+/*
+*  catch location error message
+*/
+
 function handleLocationError(browserHasGeolocation, pos) {
     geoLocation = 'false';
     console.log('Error: The Geolocation service failed.');
 }
+
+
+/*
+* Get and set user location to local storage
+*/
 
 function updateLocation(map) {
     google.maps.event.addListener(map, "bounds_changed", function(){
@@ -240,6 +249,8 @@ function updateLocation(map) {
     });
 }
 
+
+/*
 function getbbox(map) {
     google.maps.event.addListener(map, "bounds_changed", function() {
         // send the new bounds back
@@ -251,16 +262,16 @@ function getbbox(map) {
         debug(minlat);
     });
 }
+*/
 
 
 /*
-* function drawWind(map,data)
 * draw wind data
 */
 
 function drawWind(map,data,param){
 
-    // remove old markers
+    // remove all old markers
     for (var i = 0; i < emptymarker.length; i++ ) {
         emptymarker[i].setMap(null);
     }
@@ -271,8 +282,7 @@ function drawWind(map,data,param){
     for(i=0; i<sizeofdata; i++){
         var location = {lat: parseFloat(data[i]['lat']), lng: parseFloat(data[i]['lon'])};
         var time = timeTotime(data[i]['epoctime']);
-		var latlon = data[i]["lat"] + ',' + data[i]["lon"];
-
+        var latlon = data[i]["lat"] + ',' + data[i]["lon"];
         if(data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
             valid++;
             if(param == 'ws_10min') {
@@ -334,6 +344,11 @@ function drawWind(map,data,param){
     debug("parameters drawn "+valid+"/"+parseInt(Object.keys(data).length));
 }
 
+
+/*
+* Expand div that contains graphs
+*/
+
 function opengraphbox(){
     // check the div class and reverse it
     if(document.getElementById("graph-container").className === "collapsed") {
@@ -344,6 +359,10 @@ function opengraphbox(){
 }
 
 
+/*
+* Expand div that contains graphs
+*/
+
 function expandGraph(param,fmisid,lat,lon,type){
 	document.getElementById('graph-container').className = "expanded";
 	var latlon = lat + ',' + lon;
@@ -351,6 +370,11 @@ function expandGraph(param,fmisid,lat,lon,type){
 
 	getObservationGraph(latlon,fmisid,type);
 }
+
+
+/*
+* Get data for graph
+*/
 
 
 function getObservationGraph(latlon,fmisid,type){
@@ -372,6 +396,10 @@ function getObservationGraph(latlon,fmisid,type){
     });
 }
 
+
+/*
+* Draw graph
+*/
 
 function drawGraph(data) {
     var forecastArray = new Array(),
@@ -407,7 +435,7 @@ function drawGraph(data) {
         data: {
             labels: labelArray,
             datasets: [
-			{
+            {
                 label: "synop-havainnot",
                 backgroundColor: 'rgba(0, 0, 0, 0)',
                 borderColor: 'rgb(0, 102, 204)',
@@ -415,7 +443,7 @@ function drawGraph(data) {
                 pointStyle: 'rectRot',
                 borderWidth: '1'
             },
-			{
+            {
                 label: "Harmonie-ennustemalli",
                 backgroundColor: 'rgba(0, 0, 0, 0)',
                 borderColor: 'rgb(255, 99, 132)',
@@ -427,12 +455,12 @@ function drawGraph(data) {
 
         // Configuration options go here
         options: {
-			responsive: true,
-	        maintainAspectRatio: false,
-			title: {
-				display: true,
-				text: 'Keskituuli, synop-havainnot ja Hirlam-malli'
-			},
+            responsive: true,
+	    maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Keskituuli, synop-havainnot ja Hirlam-malli'
+            },
             responsive: true,
             legend: {
                 labels: {
@@ -467,6 +495,11 @@ function drawGraph(data) {
         }
     });
 }
+
+
+/*
+* Update map icons and data
+*/
 
 setInterval(function(){
     debug('............................');
