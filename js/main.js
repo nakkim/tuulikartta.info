@@ -219,6 +219,7 @@ function initMap() {
     debug('Done');
     emptymap = map;
     updateLocation(map);
+    addRadarData(map)
     return map;
 }
 
@@ -248,21 +249,6 @@ function updateLocation(map) {
         //debug(lat+','+lon+','+zoom);
     });
 }
-
-
-/*
-function getbbox(map) {
-    google.maps.event.addListener(map, "bounds_changed", function() {
-        // send the new bounds back
-        var bbox = map.getBounds();
-        var minlat = bbox['b']['b'],
-        maxlat = bbox['b']['f'],
-        minlon = bbox['f']['b'],
-        maxlon = bbox['f']['f'];
-        debug(minlat);
-    });
-}
-*/
 
 
 /*
@@ -334,7 +320,8 @@ function drawWind(map,data,param){
                 // this = marker
                 var marker_map = this.getMap();
                 this.info.open(marker_map,this);
-                // Note: If you call open() without passing a marker, the InfoWindow will use the position specified upon construction through the InfoWindowOptions object literal.
+                // Note: If you call open() without passing a marker, the InfoWindow will use
+		// the position specified upon construction through the InfoWindowOptions object literal.
             });
             google.maps.event.addListener(marker, 'click', function() {
             // getObservationGraph(latlon,data[i]["fmisid"],data[i]["type"]);
@@ -498,6 +485,36 @@ function drawGraph(data) {
 
 
 /*
+* Draw radar data on map
+*/
+
+function addRadarData(map) {
+    debug("Update radar data")
+    var latlng = new google.maps.LatLng(60, 25);
+    var options = {
+	zoom: 4,
+	center: latlng,
+	mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+
+    var customParams = [
+
+	"service=WMS",
+	"version=1.3.0",
+	"request=GetMap",
+	"format=image/png",
+	"width=991",
+	"height=991",
+	"FORMAT=image/png8",
+	"layers=Radar:suomi_dbz_eureffin",
+	"style=raster",
+    ];
+
+    loadWMS(map, "http://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams)
+}
+
+
+/*
 * Update map icons and data
 */
 
@@ -506,6 +523,8 @@ setInterval(function(){
     debug('Update data and draw markers');
     debug('Time now: ' + (new Date()).toUTCString());
     callData();
+    //debug(map)
+    addRadarData(emptymap) 
     //draw(selectedparameter,emptymap,emptydata);
 
 }, 1*60000);
