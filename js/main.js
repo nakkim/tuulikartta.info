@@ -489,6 +489,7 @@ function drawGraph(data) {
 */
 
 function addRadarData(map) {
+    map.overlayMapTypes.clear();
     debug("Update radar data")
     var latlng = new google.maps.LatLng(60, 25);
     var options = {
@@ -510,7 +511,7 @@ function addRadarData(map) {
 	"style=raster",
     ];
 
-    loadWMS(map, "http://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams)
+    loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams)
 }
 
 
