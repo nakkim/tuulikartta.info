@@ -1,3 +1,17 @@
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule (.*) https://tuulikartta.info [R=301,L]
+
+#Create filter to match files  cache
+
+<Files *.js>
+Header add "Cache-Control" "max-age=604800"
+</Files>
+
+<Files *.css>
+Header add "Cache-Control" "max-age=604800"
+</Files>
+
+<Files *.svg>
+Header add "Cache-Control" "max-age=604800"
+</Files>
