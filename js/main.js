@@ -22,42 +22,7 @@ function debug(par){
 
 
 // http://ilmatieteenlaitos.fi/tuulet
-var severity = [/*'white',
-                '#e6f7ff',
-                '#E0F9F2',
-                '#D6FCE0',
-                '#ccffcc',
-                '#b3ffb3',
-                '#99ff99',
-                '#C2FF99',
-                '#D6FF99',
-                '#E6FF99',
-                '#F0FF99',
-                '#F5FF99',
-                '#ffff99',
-                '#ffff99',
-                '#FFF273',
-                '#FFE854',
-                '#FFE03D',
-                '#FFD926',
-                '#FFD417',
-                '#FFCF08',
-                '#ffcc00',
-                '#FFC205',
-                '#FF8F1F',
-                '#FF523D',
-                '#ff3300',
-                '#ff0066',
-                '#ff0066',
-                '#ff0066',
-                '#cc0099',
-                '#cc0099',
-                '#cc0099',
-                '#cc0099',
-                '#800060'
-                */
-
-                '#e6f7ff', // 2-3
+var severity = ['#e6f7ff', // 2-3
                 '#e6f7ff', // 3-4
                 '#ccffcc', // 4-5     kohtalaista
                 '#ccffcc', // 5-6
@@ -118,7 +83,7 @@ function timeTotime(epoctime){
 */
 
 function callData(){
-    debug('Gettting data... ');
+    debug('Getting data... ');
     $.ajax({
 	    dataType: "json",
 	    //url: 'data.json',
@@ -219,7 +184,7 @@ function initMap() {
     debug('Done');
     emptymap = map;
     updateLocation(map);
-    addRadarData(map)
+    //addRadarData(map)
     return map;
 }
 
@@ -328,6 +293,10 @@ function drawWind(map,data,param){
             });
         }
     }
+    document.getElementById("available-observations").innerHTML = valid+"/"+parseInt(Object.keys(data).length);
+    var time = data[0]['time'].split('T')
+    var timestamp = time[1]
+    document.getElementById("available-observation-time").innerHTML = timestamp
     debug("parameters drawn "+valid+"/"+parseInt(Object.keys(data).length));
 }
 
@@ -492,20 +461,14 @@ function addRadarData(map) {
     map.overlayMapTypes.clear();
     debug("Update radar data")
     var latlng = new google.maps.LatLng(60, 25);
-    var options = {
-	zoom: 4,
-	center: latlng,
-	mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-
     var customParams = [
 
 	"service=WMS",
 	"version=1.3.0",
 	"request=GetMap",
 	"format=image/png",
-	"width=991",
-	"height=991",
+	"width=1024",
+	"height=2048",
 	"FORMAT=image/png8",
 	"layers=Radar:suomi_dbz_eureffin",
 	"style=raster",
@@ -519,16 +482,42 @@ function addRadarData(map) {
 * Update map icons and data
 */
 
-setInterval(function(){
-    debug('............................');
-    debug('Update data and draw markers');
-    debug('Time now: ' + (new Date()).toUTCString());
-    callData();
-    //debug(map)
-    addRadarData(emptymap) 
-    //draw(selectedparameter,emptymap,emptydata);
+var count = 0;
+var now = new Date().getTime();
+var countDownDate = now + 60*1000;
+var timer = setInterval(function(){
 
-}, 1*60000);
+    count = count + 1000;
+    var now = new Date().getTime();
+    // Find the distance between now an the count down date
+    var distance = countDownDate - now;
+    // Time calculation for seconds
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // Display the result in the element with id="demo"
+    document.getElementById("available-update").innerHTML = "00:" + seconds;
+    // If the count down is finished, write some text
+    if(distance > 0 && distance < 10000) {
+        document.getElementById("available-update").innerHTML = "00:0" + seconds;
+    }
+    if(distance < 0) {
+        document.getElementById("available-update").innerHTML = "00:00";
+    }
+    if(count == 60000) {
+        debug('............................');
+        debug('Update data and draw markers');
+        debug('Time now: ' + (new Date()).toUTCString());
+        now = new Date().getTime();
+        countDownDate = now + 60*1000;
+	//clearInterval(timer);
+	//setInterval(timer);
+	callData();    
+        //addRadarData(emptymap) 
+	count = 0;
+	
+    }
+
+    
+}, 1000);
 
 // https://snazzymaps.com/style/77/clean-cut
 var mapstyle = [{featureType:"road",elementType:"geometry",stylers:[{lightness:100},{visibility:"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF",}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}];

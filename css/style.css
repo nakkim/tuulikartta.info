@@ -46,6 +46,39 @@ footer a {
     text-decoration: none;
 }
 
+#data-info {
+    position: fixed;
+    top: 0;
+    margin: 20px 10px 20px 10px;
+    width: 230px;
+    height: 89px;
+    background-color: #026AA7;
+}
+
+#data-info p {
+    font-family: 'Roboto', sans-serif;
+    margin: 5px 5px 5px 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#data-info-left {
+    float: left;
+    height: 100%;
+    width: 65%;
+    background-color: white;
+    opacity: 0.65;
+    text-align: right;
+}
+
+#data-info-right {
+    float: right;
+    height: 100%;
+    width: 35%;
+    color: white;
+    text-align: left;
+}
+
 #content-select {
     position: fixed;
     height: 1px;
