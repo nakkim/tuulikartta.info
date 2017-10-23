@@ -33,14 +33,9 @@ function roaddata() {
     $settings['storedQueryId']  = 'livi::observations::road::default::timevaluepair';
     $settings['bbox']           = '17.91,58.71,32.61,70.59';
 
-    $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-12*60);
-    $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-2*60);
-/*
-    $tz = new DateTimeZone("Europe/Helsinki");
+    $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-14*60);
+    $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-4*60);
 
-    $endtime = (new DateTime("2 minutes ago",$tz))->format("Y-m-d\TH:i:s");
-    $starttime = (new DateTime("12 minutes ago",$tz))->format("Y-m-d\TH:i:s");
-*/
     $url = "http://data.fmi.fi/fmi-apikey/{$settings['apikey']}/wfs?request=getFeature&storedquery_id={$settings['storedQueryId']}&timestep={$settings['timestep']}&parameters={$settings['parameter']}&endtime={$endtime}&starttime={$starttime}&bbox={$settings['bbox']},epsg::4326&";
 
     //$url = "http://data.fmi.fi/fmi-apikey/fd2a6bd5-0236-4524-bc08-2af7cbb803e2/wfs?request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&timestep=10&parameters=ws_10min,wg_10min,wd_10min&endtime=2017-05-19T08:38:49&starttime=2017-05-19T08:28:49&bbox=17.91,58.71,32.61,70.59,epsg::4326&";
@@ -114,8 +109,8 @@ function synopdata() {
     $settings['storedQueryId']  = 'fmi::observations::weather::timevaluepair';
     $settings['bbox']           = '17.91,58.71,32.61,70.59';
 
-    $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-12*60);
-    $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-2*60);
+    $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-14*60);
+    $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-4*60);
 /*
     $tz = new DateTimeZone("Europe/London");
 
@@ -131,7 +126,7 @@ function synopdata() {
 
     $valuesArray = array();
     $dataArray = array();
-    $x = 0; 
+    $x = 0;
     if(!$resultString){
         print "Something went wrong, no data to return";
     } else {
@@ -158,7 +153,7 @@ function synopdata() {
                 $valuesArray["station"] = (string)$parameterValue     -> children('omso', true) ->
                                            PointTimeSeriesObservation -> children('om', true)   ->
                                            featureOfInterest          -> children('sams', true) ->
-                                           SF_SpatialSamplingFeature  -> children('sams', true) -> 
+                                           SF_SpatialSamplingFeature  -> children('sams', true) ->
                                            shape                      -> children('gml', true)  ->
                                            Point                      -> children('gml', true)  -> name;
 
