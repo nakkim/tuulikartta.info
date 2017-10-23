@@ -46,18 +46,24 @@ footer a {
     text-decoration: none;
 }
 
-#data-info {
+
+#content-select {
     position: fixed;
     top: 0;
     margin: 20px 10px 20px 10px;
-    width: 230px;
-    height: 89px;
+    width: 310px;
+}
+
+
+#data-info {
+    /*height: 89px;*/
+    overflow: auto; 
     background-color: #026AA7;
 }
 
 #data-info p {
     font-family: 'Roboto', sans-serif;
-    margin: 5px 5px 5px 5px;
+    margin: 5px 15px 5px 15px;
     font-size: 14px;
     font-weight: bold;
 }
@@ -65,7 +71,7 @@ footer a {
 #data-info-left {
     float: left;
     height: 100%;
-    width: 65%;
+    width: 50%;
     background-color: white;
     opacity: 0.65;
     text-align: right;
@@ -74,11 +80,19 @@ footer a {
 #data-info-right {
     float: right;
     height: 100%;
-    width: 35%;
+    width: 50%;
     color: white;
     text-align: left;
 }
 
+#data-content-select {
+    margin-top: 15px;
+    /*background-color: white;*/
+    width: 100%;
+    overflow: auto;
+}
+
+/*
 #content-select {
     position: fixed;
     height: 1px;
@@ -88,12 +102,11 @@ footer a {
     bottom: 100px;
 }
 
-
 #content-select-box {
     margin: auto;
     height: 95%;
     /*max-height: 150px;*/
-    max-height: 70px;
+/*    max-height: 70px;
     width: 275px;
 }
 
@@ -106,7 +119,7 @@ footer a {
     width: 275px;
     margin: auto;
 }
-
+*/
 .symbol {
     height: 50px;
     width: 50px;

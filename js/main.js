@@ -85,17 +85,17 @@ function timeTotime(epoctime){
 function callData(){
     debug('Getting data... ');
     $.ajax({
-	    dataType: "json",
-	    //url: 'data.json',
-	    url: 'php/getdata.php',
-	    data: {},
-	    error: function() {
+        dataType: "json",
+        //url: 'data.json',
+	url: 'php/getdata.php',
+	data: {},
+        error: function() {
             debug('An error has occurred');
         },
-	    success: function(data) {
-	        debug('Done');
-	        // store the Map-instance in map variable
-	        emptydata = data;
+        success: function(data) {
+            debug('Done');
+	    // store the Map-instance in map variable
+            emptydata = data;
             draw(selectedparameter,emptymap,emptydata);
         }
     });
@@ -107,7 +107,23 @@ function callData(){
 */
 
 $(function(){
-	// select parameter 
+
+    $("#select-wind-parameter").change(function() {
+	if($(this).val() == "meanwind"){
+	    draw('ws_10min',emptymap,emptydata);
+	}
+	if($(this).val() == "gustwind"){
+	    draw('wg_10min',emptymap,emptydata);
+	}
+    });
+    
+    $('#close-gr').on('click', function(){
+       opengraphbox();
+    });
+    
+    /*
+    //#select-wind-parameter
+    // select parameter 
     $('#wg').on('click', function(){
        //getSelectedParameter('wg_10min');
        draw('wg_10min',emptymap,emptydata);
@@ -116,9 +132,8 @@ $(function(){
         //getSelectedParameter('ws_10min');
         draw('ws_10min',emptymap,emptydata);
     });
-    $('#close-gr').on('click', function(){
-       opengraphbox();
-    });
+    
+    */
 });
 
 
@@ -276,7 +291,7 @@ function drawWind(map,data,param){
             var meanWind          = '<b>Keskituuli: </b>' + data[i]['ws_10min'] + ' m/s <br>';
             var gustWind          = '<b>Puuska: </b>' + data[i]['wg_10min'] + ' m/s <br>'; 
             var degWind           = '<b>Tuulen suunta: </b>' + data[i]['wd_10min'] + '&deg; <br>';
-            var dataGraph         = 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"'+data[i]["type"]+'\" fmisid=\"' + data[i]["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph(ws,'+data[i]["fmisid"]+','+latlon+',\''+data[i]["type"]+'\')">täällä</a>';
+            var dataGraph         = 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"'+data[i]["type"]+'\" fmisid=\"' + data[i]["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph('+data[i]["fmisid"]+','+latlon+',\''+data[i]["type"]+'\')">täällä</a>';
 
             marker.info = new google.maps.InfoWindow({
                 content: stationInfo + stationType + latestObservation + meanWind + gustWind + degWind + dataGraph
@@ -293,7 +308,7 @@ function drawWind(map,data,param){
             });
         }
     }
-    document.getElementById("available-observations").innerHTML = valid+"/"+parseInt(Object.keys(data).length);
+    // document.getElementById("available-observations").innerHTML = valid+"/"+parseInt(Object.keys(data).length);
     var time = data[0]['time'].split('T')
     var timestamp = time[1]
     document.getElementById("available-observation-time").innerHTML = timestamp
@@ -319,7 +334,7 @@ function opengraphbox(){
 * Expand div that contains graphs
 */
 
-function expandGraph(param,fmisid,lat,lon,type){
+function expandGraph(fmisid,lat,lon,type){
 	document.getElementById('graph-container').className = "expanded";
 	var latlon = lat + ',' + lon;
 	// var type = document.getElementById('wslink').getAttribute("type");
@@ -494,13 +509,13 @@ var timer = setInterval(function(){
     // Time calculation for seconds
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     // Display the result in the element with id="demo"
-    document.getElementById("available-update").innerHTML = "00:" + seconds;
+    // document.getElementById("available-update").innerHTML = "00:" + seconds;
     // If the count down is finished, write some text
     if(distance > 0 && distance < 10000) {
-        document.getElementById("available-update").innerHTML = "00:0" + seconds;
+        // document.getElementById("available-update").innerHTML = "00:0" + seconds;
     }
     if(distance < 0) {
-        document.getElementById("available-update").innerHTML = "00:00";
+        // document.getElementById("available-update").innerHTML = "00:00";
     }
     if(count == 60000) {
         debug('............................');

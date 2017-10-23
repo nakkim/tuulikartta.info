@@ -32,20 +32,31 @@
   </head>
   <body onload="callData()">
     <div id="map"></div>
+      <div id="content-select"> 
 
-    <div id="data-info">
-      <div id="data-info-left">
-        <p>Päivitys:</p>
-	<p>Uusin tutkakuva:</p>
-	<p>Uusin havainto:</p>
-	<p>Havaintojen lkm.:</p>
-      </div>
-      <div id="data-info-right">
-        <p id="available-update">-</p>
-	<p id="available-radar">12:00:00Z</p>
-	<p id="available-observation-time">-</p>
-	<p id="available-observations">-</p>
-      </div>
+	<div id="data-info">
+          <div id="data-info-left">
+            <!--<p>Havaintoaineiston päivitys:</p>-->
+	    <p>Uusin tutkakuva:</p>
+	    <p>Uusin havainto:</p>
+	    <!--<p>Havaintoja saatavilla:</p>-->
+          </div>
+          <div id="data-info-right">
+            <!--<p id="available-update">-</p>-->
+	    <p id="available-radar">12:00:00Z</p>
+	    <p id="available-observation-time">-</p>
+	    <!--<p id="available-observations">-</p>-->
+          </div>
+	</div>
+
+	
+	<div id="data-content-select">
+          <select id="select-wind-parameter">
+	    <option value="meanwind">Keskituuli [m/s]</option>
+	    <option value="gustwind">Maksimipuuska [m/s]</option>
+	  y</select> 
+	</div>
+	
     </div>
     
     <div id="ifbox" style="display:none;">
@@ -90,22 +101,12 @@
 	    <canvas id="weather-gust"></canvas>
         </div>
 	<div class="graph-container-text-wrapper">
-	  <p>Kuvaajista voi usein helposti nähdä erot havaintojen ja mallin alkutilanteen välillä</p>
+	  
 	</div>
 	
     </div>
     
-    <div id="content-select">
         
-      <div id="content-select-box">
-        <div id="content-select-box-buttons">
-            <a href="#ifbox" rel="modal:open"><button class="btn" id="if"><image class="symbol" src="symbols/Infobox_info_icon.svg"/></button></a>
-            <button class="btn" id="ws"><image class="symbol" src="symbols/wind.svg"/></button>
-            <button class="btn" id="wg"><image class="symbol" src="symbols/gust.svg"/></button>
-        </div>
-      </div>
-    </div>
-    
   </body >
   
     
