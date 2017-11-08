@@ -1,3 +1,5 @@
+
+
 'use strict';
 
 var debugvalue = true;
@@ -13,6 +15,22 @@ var longtitude        = localStorage.getItem("longtitude")         ? localStorag
 var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")   : 8;
 
 var selectedparameter = localStorage.getItem("selectedparameter")  ? localStorage.getItem("longtitude")  : "ws_10min";
+var toggleDataSelect  = localStorage.getItem("toggleDataSelect")   ? localStorage.getItem("toggleDataSelect")  : "closed";
+
+
+console.log(toggleDataSelect);
+
+// check data-content-select box status and close it if needed
+/*
+function closeDataSelect(){
+    if(toggleDataSelect == "closed"){
+        var content = '<i class="fa fa-arrow-circle-up" aria-hidden="true"></i>   Havaintovalikko';
+        document.getElementById("toggle-data-content-select").innerHTML = content;
+        $("#data-content-select").hide();
+        localStorage.setItem("toggleDataSelect","closed");
+    }
+}
+*/
 
 function debug(par){
     if(debugvalue === true){
@@ -110,9 +128,14 @@ $(function(){
 
     $("#select-wind-parameter").change(function() {
 	if($(this).val() == "meanwind"){
+	    var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
+	        text += "10 minuutin mittaisen havaintojakson keskituulta.";
+	    document.getElementById("param-text").innerHTML = text;
 	    draw('ws_10min',emptymap,emptydata);
 	}
 	if($(this).val() == "gustwind"){
+	    var text = "Puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.";
+	    document.getElementById("param-text").innerHTML = text;
 	    draw('wg_10min',emptymap,emptydata);
 	}
     });
@@ -120,20 +143,24 @@ $(function(){
     $('#close-gr').on('click', function(){
        opengraphbox();
     });
-    
-    /*
-    //#select-wind-parameter
-    // select parameter 
-    $('#wg').on('click', function(){
-       //getSelectedParameter('wg_10min');
-       draw('wg_10min',emptymap,emptydata);
+
+    // toggle data-content-select box
+    $("#toggle-data-content-select").click(function(){
+        $("#data-content-select").slideToggle(200);
+        if(toggleDataSelect == "open"){
+            var content = '<i class="fa fa-arrow-circle-up" aria-hidden="true"></i>   Havaintovalikko';
+            document.getElementById("toggle-data-content-select").innerHTML = content;
+            toggleDataSelect = "closed";
+            localStorage.setItem("toggleDataSelect","closed");   
+        } else {
+            var content = '<i class="fa fa-arrow-circle-down" aria-hidden="true"></i>   Havaintovalikko';
+            document.getElementById("toggle-data-content-select").innerHTML = content;
+            localStorage.setItem("toggleDataSelect","open");   
+        }
     });
-    $('#ws').on('click', function(){
-        //getSelectedParameter('ws_10min');
-        draw('ws_10min',emptymap,emptydata);
-    });
-    
-    */
+
+    $("#data-content-select").accordion({heightStyle: 'content'});
+
 });
 
 
@@ -310,8 +337,11 @@ function drawWind(map,data,param){
     }
     // document.getElementById("available-observations").innerHTML = valid+"/"+parseInt(Object.keys(data).length);
     var time = data[0]['time'].split('T')
-    var timestamp = time[1]
-    document.getElementById("available-observation-time").innerHTML = timestamp
+    var timestring = data[0]['time'];
+    var timeobj = new Date(timestring).getTime();
+    var timestring = timeTotime(timeobj/1000);
+    //var timestring = timeobj.getDate()+'.'+timeobj.getMonth()+'.'+timeobj.getFullYear()+' '+timeobj.getHours()+':'+timeobj.getMinutes()+':'+timeobj.getSeconds();
+    document.getElementById("available-observation-time").innerHTML = timestring
     debug("parameters drawn "+valid+"/"+parseInt(Object.keys(data).length));
 }
 
@@ -335,11 +365,10 @@ function opengraphbox(){
 */
 
 function expandGraph(fmisid,lat,lon,type){
-	document.getElementById('graph-container').className = "expanded";
-	var latlon = lat + ',' + lon;
-	// var type = document.getElementById('wslink').getAttribute("type");
-
-	getObservationGraph(latlon,fmisid,type);
+    document.getElementById('graph-container').className = "expanded";
+    var latlon = lat + ',' + lon;
+    // var type = document.getElementById('wslink').getAttribute("type");
+    getObservationGraph(latlon,fmisid,type);
 }
 
 
@@ -500,39 +529,21 @@ function addRadarData(map) {
 var count = 0;
 var now = new Date().getTime();
 var countDownDate = now + 60*1000;
+
 var timer = setInterval(function(){
 
-    count = count + 1000;
-    var now = new Date().getTime();
-    // Find the distance between now an the count down date
-    var distance = countDownDate - now;
-    // Time calculation for seconds
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    // Display the result in the element with id="demo"
-    // document.getElementById("available-update").innerHTML = "00:" + seconds;
-    // If the count down is finished, write some text
-    if(distance > 0 && distance < 10000) {
-        // document.getElementById("available-update").innerHTML = "00:0" + seconds;
-    }
-    if(distance < 0) {
-        // document.getElementById("available-update").innerHTML = "00:00";
-    }
-    if(count == 60000) {
-        debug('............................');
-        debug('Update data and draw markers');
-        debug('Time now: ' + (new Date()).toUTCString());
-        now = new Date().getTime();
-        countDownDate = now + 60*1000;
-	//clearInterval(timer);
-	//setInterval(timer);
-	callData();    
-        //addRadarData(emptymap) 
-	count = 0;
+    debug('............................');
+    debug('Update data and draw markers');
+    debug('Time now: ' + (new Date()).toUTCString());
+    //clearInterval(timer);
+    //setInterval(timer);
+    callData();    
+    //addRadarData(emptymap) 
+    count = 0;
 	
-    }
 
     
-}, 1000);
+}, 60000);
 
 // https://snazzymaps.com/style/77/clean-cut
 var mapstyle = [{featureType:"road",elementType:"geometry",stylers:[{lightness:100},{visibility:"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF",}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}];

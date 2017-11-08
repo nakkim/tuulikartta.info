@@ -27,12 +27,13 @@ footer {
     bottom: 0;
     left: 0;
     /*margin-top: 50px;*/
-    margin: 20px 0px 20px 10px;
+    margin: 20px 0px 0px 0px;
     height: 8%;
     max-height: 400px;
     min-height: 120px;
     overflow: hidden;
-    border-top : 1px solid #DDD;;
+    border-top : 1px solid #DDD;
+    font-size: 12px;
 }
 
 footer p {
@@ -42,8 +43,8 @@ footer p {
 }
 
 footer a {
-    color: #000080;
     text-decoration: none;
+    color: #0066ff;
 }
 
 
@@ -85,41 +86,44 @@ footer a {
     text-align: left;
 }
 
+#toggle-data-content-select {
+    width: 100%;
+    margin: 10px 0 3px 0;
+}
+
 #data-content-select {
-    margin-top: 15px;
-    /*background-color: white;*/
+    margin-top: 0px;
+    background-color: white;
     width: 100%;
     overflow: auto;
+    font-family: 'Roboto', sans-serif;
 }
 
-/*
-#content-select {
-    position: fixed;
-    height: 1px;
-    max-height: 110px;
-    width: 100%;
-    margin: auto;
-    bottom: 100px;
+#select-wind-parameter {
+    width: 200px;
 }
 
-#content-select-box {
-    margin: auto;
-    height: 95%;
-    /*max-height: 150px;*/
-/*    max-height: 70px;
-    width: 275px;
+
+/* edit the default accordion div style */
+
+.ui-accordion .ui-accordion-content {
+    padding: 15px 5px 15px 5px;
+    font-size: 0.875em;
 }
 
-#content-select-box h4,
-#content-select-box p{
-    margin: 2px 0px 2px 0px;
+.ui-accordion .ui-accordion-header {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
-#content-select-box-buttons{
-    width: 275px;
-    margin: auto;
+.ui-state-active {
+    background-color: #026AA7;
 }
-*/
+
+.ui-widget-content a {
+    color: #0066ff;
+}
+
 .symbol {
     height: 50px;
     width: 50px;
@@ -355,42 +359,25 @@ footer a {
         font-size: 11px;
     }
     
-    #ifbox {
-        padding: 10px 20px;
-    }
 }
 
-
-@media screen and (max-device-width: 780px) {
-    #content-select {
-        position: fixed;
-        height: 1px;
-        max-height: 110px;
-        width: 100%;
-        margin: auto;
-        bottom: 60px;
+@media screen and (max-device-width: 320px) {
+    #data-info p {
+        font-family: 'Roboto', sans-serif;
+        margin: 5px 15px 5px 15px;
+        font-size: 12px;
+        font-weight: bold;
     }
     
-    #content-select-box {
-        margin: auto;
-        height: 100%;
-        max-height: 60px;
-        width: 210px;
-    }
-
-    #content-select-box-buttons{
-        width: 210px;
-        margin: auto;
-    }
-  
-    .symbol {
-        height: 30px;
-        width: 30px; 
-    }
-  
-    #info-container.expanded {
-        height: 100%;
+    #content-select {
+        position: fixed;
+        top: 0;
+        margin: 10px 10px 20px 10px;
         width: 100%;
-    }
+        max-width: 250px;
+    }  
+}
+
+@media screen and (max-device-width: 780px) {
 
 }
