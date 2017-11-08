@@ -33,8 +33,8 @@ function roaddata() {
     $settings['storedQueryId']  = 'livi::observations::road::default::timevaluepair';
     $settings['bbox']           = '17.91,58.71,32.61,70.59';
 
-    $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-14*60);
-    $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-4*60);
+    $starttime = date("Y-m-d\TH:i:s", time()-2*60*60-14*60);
+    $endtime = date("Y-m-d\TH:i:s", time()-2*60*60-4*60);
 
     $url = "http://data.fmi.fi/fmi-apikey/{$settings['apikey']}/wfs?request=getFeature&storedquery_id={$settings['storedQueryId']}&timestep={$settings['timestep']}&parameters={$settings['parameter']}&endtime={$endtime}&starttime={$starttime}&bbox={$settings['bbox']},epsg::4326&";
 
@@ -109,8 +109,8 @@ function synopdata() {
     $settings['storedQueryId']  = 'fmi::observations::weather::timevaluepair';
     $settings['bbox']           = '17.91,58.71,32.61,70.59';
 
-    $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-14*60);
-    $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-4*60);
+    $starttime = date("Y-m-d\TH:i:s", time()-2*60*60-14*60);
+    $endtime = date("Y-m-d\TH:i:s", time()-2*60*60-4*60);
 /*
     $tz = new DateTimeZone("Europe/London");
 
