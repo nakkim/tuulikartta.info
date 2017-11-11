@@ -2,7 +2,7 @@
 
 'use strict';
 
-var debugvalue = true;
+var debugvalue = false;
 var emptydata;
 var emptymap;
 var emptymarker = [];
@@ -15,22 +15,9 @@ var longtitude        = localStorage.getItem("longtitude")         ? localStorag
 var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")   : 8;
 
 var selectedparameter = localStorage.getItem("selectedparameter")  ? localStorage.getItem("longtitude")  : "ws_10min";
-var toggleDataSelect  = localStorage.getItem("toggleDataSelect")   ? localStorage.getItem("toggleDataSelect")  : "closed";
+//var toggleDataSelect  = localStorage.getItem("toggleDataSelect")   ? localStorage.getItem("toggleDataSelect")  : "closed";
+var toggleDataSelect  = "closed";
 
-
-console.log(toggleDataSelect);
-
-// check data-content-select box status and close it if needed
-/*
-function closeDataSelect(){
-    if(toggleDataSelect == "closed"){
-        var content = '<i class="fa fa-arrow-circle-up" aria-hidden="true"></i>   Havaintovalikko';
-        document.getElementById("toggle-data-content-select").innerHTML = content;
-        $("#data-content-select").hide();
-        localStorage.setItem("toggleDataSelect","closed");
-    }
-}
-*/
 
 function debug(par){
     if(debugvalue === true){
@@ -151,11 +138,13 @@ $(function(){
             var content = '<i class="fa fa-arrow-circle-up" aria-hidden="true"></i>   Havaintovalikko';
             document.getElementById("toggle-data-content-select").innerHTML = content;
             toggleDataSelect = "closed";
-            localStorage.setItem("toggleDataSelect","closed");   
+            //localStorage.setItem("toggleDataSelect","closed");
+            toggleDataSelect = 'closed';
         } else {
             var content = '<i class="fa fa-arrow-circle-down" aria-hidden="true"></i>   Havaintovalikko';
             document.getElementById("toggle-data-content-select").innerHTML = content;
-            localStorage.setItem("toggleDataSelect","open");   
+            //localStorage.setItem("toggleDataSelect","open");
+            toggleDataSelect = 'open';
         }
     });
 
