@@ -361,11 +361,11 @@ footer a {
     
 }
 
-@media screen and (max-device-width: 320px) {
+@media screen and (max-device-width: 412px) {
     #data-info p {
         font-family: 'Roboto', sans-serif;
         margin: 5px 15px 5px 15px;
-        font-size: 12px;
+        font-size: 10px;
         font-weight: bold;
     }
     
@@ -374,7 +374,8 @@ footer a {
         top: 0;
         margin: 10px 10px 20px 10px;
         width: 100%;
-        max-width: 250px;
+        max-width: 260px;
+        font-size: 11px;
     }  
 }
 
