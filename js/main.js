@@ -27,7 +27,7 @@ function debug(par){
 
 
 // http://ilmatieteenlaitos.fi/tuulet
-var severity = ['#e6f7ff', // 2-3
+var severity = ['white', // 2-3
                 '#e6f7ff', // 3-4
                 '#ccffcc', // 4-5     kohtalaista
                 '#ccffcc', // 5-6
