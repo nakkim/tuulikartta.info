@@ -39,11 +39,7 @@ foreach($dataArrayForecast as $key => $array){
     array_push($finalValues,$array);
 }
 
-//print '<pre>';
-//print_r($finalValues);
-//print '</pre>';
 print json_encode($finalValues);
-
 
 
 
@@ -57,7 +53,7 @@ function getData($settings){
     $dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
     $dt->setTimestamp($timestamp); //adjust the object to correct timestamp
 
-    if($settings["datatype"] == forecast) {
+    if($settings["datatype"] == "forecast") {
        $starttime = $dt->format('Y-m-d\TH:i:s');
        $endtime = $dt->add(new DateInterval('PT10H30S'));
        $endtime = $endtime->format('Y-m-d\TH:i:s');
@@ -119,9 +115,9 @@ function getData($settings){
 
                 $valuesArray["epoctime"] = $epoctime;
                 $valuesArray["time"] = $time;
-                if($settings["datatype"] == forecast) {
+                if($settings["datatype"] == "forecast") {
                     $valuesArray["type"] = "for";
-                } else if($settings["datatype"] === observation) {
+                } else if($settings["datatype"] === "observation") {
                     $valuesArray["type"] = "obs";
                 }
                 $dt = new DateTime($time);  // convert timestamp to PHP DateTime

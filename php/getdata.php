@@ -7,10 +7,10 @@ $roaddata = roaddata();
 foreach($roaddata as &$val){
     $val['ws_10min'] = $val['windspeedms'];
     $val['wd_10min'] = $val['winddirection'];
-    $val['wg_10min'] = $val['WS'];
+    $val['wg_10min'] = $val['WG'];
     unset($val['windspeedms']);
     unset($val['winddirection']);
-    unset($val['WS']);
+    unset($val['WG']);
 }
 
 foreach($roaddata as $key => $data) {
@@ -27,7 +27,7 @@ print json_encode($synopdata);
 
 function roaddata() {
     $settings = array();
-    $settings['parameter']      = 'windspeedms,winddirection,WS';
+    $settings['parameter']      = 'windspeedms,winddirection,WG';
     $settings['timestep']       = '10';
     $settings['apikey']         = 'd6985c41-bfc2-4afa-95a7-72cd2acb604c';
     $settings['storedQueryId']  = 'livi::observations::road::default::timevaluepair';

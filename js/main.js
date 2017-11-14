@@ -370,7 +370,7 @@ function getObservationGraph(latlon,fmisid,type){
     debug('Gettting data for graph... ');
     $.ajax({
         dataType: "json",
-        url: 'php/graph.php',
+        url: 'php/parser-graph.php',
         data: {
             latlon: latlon,
             fmisid: fmisid,
@@ -391,97 +391,116 @@ function getObservationGraph(latlon,fmisid,type){
 */
 
 function drawGraph(data) {
-    var forecastArray = new Array(),
-        observationArray = new Array;
-    var labelArray = new Array();
-    for (var i = 0; i < Object.keys(data).length; i++ ) {
-        if(data[i]['type'] == 'for'){
-            observationArray.push('nan');
-            forecastArray.push(parseFloat(data[i]['windspeedms']));
+
+    var i,k;
+    var obsArray = [];
+    var forArray = [];
+    var bobsArray = [];
+    var bforArray = [];
+    for (i = 0; i < Object.keys(data).length; i++) {
+        var tmp1 = [];
+        var tmp2 = [];
+        var tmpb1 = [];
+        var tmpb2 = [];
+        
+        if(data[i]['datatype'] == 'observation') {
+            if(data[i]['station'] == 'synop') {
+                tmp1.push(data[i]['epoch']);
+                tmp1.push(data[i]['ws_10min']);
+                tmp1.push(data[i]['wg_10min']);
+                
+                tmpb1.push(data[i]['ws_10min']);
+                tmpb1.push(data[i]['wd_10min']);
+            } else {
+                tmp1.push(data[i]['epoch']);
+                tmp1.push(data[i]['ws']);
+                tmp1.push(data[i]['wg']);
+                
+                tmpb1.push(data[i]['ws']);
+                tmpb1.push(data[i]['wd']);
+            }
         } else {
-            //observationArray.push(parseFloat(data[i]['ws_10min']));
-            observationArray.push(parseFloat(data[i]['windspeedms']));
-            forecastArray.push('nan');
+            tmp2.push(data[i]['epoch']);
+            tmp2.push(data[i]['WindSpeedMS']);
+            tmp2.push(data[i]['WindGust']);
+            
+            tmpb2.push(data[i]['WindSpeedMS']);
+            tmpb2.push(data[i]['WindDirection']);
         }
-        var d = new Date(data[i]['time']);
-        var h = ('0'+d.getHours()).slice(-2)
-        var m = ('0'+d.getMinutes()).slice(-2);
-        labelArray.push(h+":"+m);
+        if(tmp1.length>0){obsArray.push(tmp1)}
+        if(tmp2.length>0){forArray.push(tmp2)}
+        if(tmpb1.length>0){bobsArray.push(tmpb1)}
+        if(tmpb2.length>0){bforArray.push(tmpb2)}
+        
     }
+    
+    Highcharts.chart('weather-chart', {
 
-    /* remove old div */
-    /* http://stackoverflow.com/questions/24815851/how-do-clear-a-chart-from-a-canvas-so-that-hover-events-cannot-be-triggered */
-    var content = document.getElementById('graph-box');
-    content.innerHTML = '&nbsp;';
-    $('#graph-box').append('<canvas id="weather-chart"><canvas>');
-	// draw graph
-	var ctx = document.getElementById('weather-chart').getContext('2d');
-    var chart = new Chart(ctx, {
-        // The type of chart we want to create
-        type: 'line',
-
-        // The data for our dataset
-        data: {
-            labels: labelArray,
-            datasets: [
-            {
-                label: "synop-havainnot",
-                backgroundColor: 'rgba(0, 0, 0, 0)',
-                borderColor: 'rgb(0, 102, 204)',
-                data: observationArray,
-                pointStyle: 'rectRot',
-                borderWidth: '1'
-            },
-            {
-                label: "Harmonie-ennustemalli",
-                backgroundColor: 'rgba(0, 0, 0, 0)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: forecastArray,
-                pointStyle: 'rectRot',
-                borderWidth: '1'
-            }],
+        chart: {
+            type: 'columnrange',
+            zoomType: 'x'
         },
 
-        // Configuration options go here
-        options: {
-            responsive: true,
-	    maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'Keskituuli, synop-havainnot ja Hirlam-malli'
-            },
-            responsive: true,
-            legend: {
-                labels: {
-                    usePointStyle: true
+        title: {
+            text: 'Keskituuli ja maksimipuuska'
+        },
+
+        xAxis: {
+            type: 'datetime',
+            labels: {
+                style: {
+                    color: 'black',
+                    font: '12px Roboto, sans-serif'
                 }
+            } 
+        },
+
+        yAxis: {
+            title: {
+                text: 'Tuulen nopeus [m/s]'
             },
-            scales: {
-                xAxes: [{
-                    labelString: 'Kellonaika',
-                    afterTickToLabelConversion: function(data){
-                        var xLabels = data.ticks;
-                        xLabels.forEach(function (labels, i) {
-                            if (i % 2 == 1){
-                                xLabels[i] = '';
-                            }
-                        });
-                    },
-                    ticks: {
-                        autoSkip: true,
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: ' '
-                    }
-                }]
+            min: 0,
+            labels: {
+                style: {
+                    color: 'black',
+                    font: '12px Roboto, sans-serif'
+                }
             }
-        }
+        },
+
+        tooltip: {
+            crosshairs: true,
+            shared: true,
+            valueSuffix: ' m/s',
+            labels: {
+                style: {
+                    color: 'black',
+                    font: '12px Roboto, sans-serif'
+                }
+            }
+        },
+
+        exporting: {
+            enabled: false
+        },
+
+        legend: {
+            enabled: false
+        },
+        
+        credits: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Havaittu: keskituuli - maksimipuuska',
+            data: obsArray
+        },
+        {
+            name: 'Ennustettu: keskituuli - maksimipuuska',
+            data: forArray
+        }]
+
     });
 }
 

@@ -246,6 +246,11 @@ footer a {
     max-height: 350px;
 }
 
+.highcharts-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.00em;
+}
+
 #graph-box {
     margin: auto;
     width: 85%;

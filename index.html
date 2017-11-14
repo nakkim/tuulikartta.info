@@ -26,11 +26,13 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="js/main.js"></script>
     <script src="js/wms.js"></script>
-    <script src="js/mapstyle.js"></script>
-    <script src="js/chart.min.js"></script>
+    <!--<script src="js/mapstyle.js"></script>-->
     <script src="https://use.fontawesome.com/fdf452f08e.js"></script>    
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
     <script src="js/jquery.modal.min.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="css/jquery.modal.min.css" type="text/css" media="screen" />    
     
@@ -102,8 +104,8 @@
             <div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #22333B;"></i></div>
         </div>
         <div id="graph-box">
-            <canvas id="weather-chart"></canvas>
-	    <canvas id="weather-gust"></canvas>
+            <div id="weather-chart"></div>
+	    <div id="weather-gust"></div>
         </div>
 	<div class="graph-container-text-wrapper">
 	  
