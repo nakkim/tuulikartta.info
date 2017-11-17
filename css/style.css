@@ -243,8 +243,7 @@ footer a {
 
 #weather-chart {
     width: 100%;
-    min-height: 350px;
-    max-height: 350px;
+    height: 400px;
 }
 
 .highcharts-title {
@@ -363,6 +362,11 @@ footer a {
         margin-left: 0;
         margin-right: 0;
         font-size: 11px;
+    }
+
+    #weather-chart {
+        width: 100%;
+        height: 250px;
     }
     
 }
