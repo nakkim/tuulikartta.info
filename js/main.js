@@ -5,6 +5,7 @@
 var debugvalue = false;
 var emptydata;
 var emptymap;
+var emptyradar;
 var emptymarker = [];
 
 var geoLocation;
@@ -13,6 +14,8 @@ var geoLocation;
 var latitude          = localStorage.getItem("latitude")           ? localStorage.getItem("latitude")    : 60.630556;
 var longtitude        = localStorage.getItem("longtitude")         ? localStorage.getItem("longtitude")  : 24.859726;
 var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")   : 8;
+
+var selectedRadarLayer = "suomi_dbz_eureffin";
 
 var selectedparameter = localStorage.getItem("selectedparameter")  ? localStorage.getItem("longtitude")  : "ws_10min";
 //var toggleDataSelect  = localStorage.getItem("toggleDataSelect")   ? localStorage.getItem("toggleDataSelect")  : "closed";
@@ -215,7 +218,7 @@ function initMap() {
     debug('Done');
     emptymap = map;
     updateLocation(map);
-    //addRadarData(map)
+    //addRadarData(map, selectedRadarLayer);
     return map;
 }
 
@@ -356,7 +359,6 @@ function opengraphbox(){
 function expandGraph(fmisid,lat,lon,type){
     document.getElementById('graph-container').className = "expanded";
     var latlon = lat + ',' + lon;
-    // var type = document.getElementById('wslink').getAttribute("type");
     getObservationGraph(latlon,fmisid,type);
 }
 
@@ -370,7 +372,7 @@ function getObservationGraph(latlon,fmisid,type){
     debug('Gettting data for graph... ');
     $.ajax({
         dataType: "json",
-        url: 'php/parser-graph.php',
+        url: 'php/wind-graph.php',
         data: {
             latlon: latlon,
             fmisid: fmisid,
@@ -409,6 +411,7 @@ function drawGraph(data) {
                 tmp1.push(data[i]['ws_10min']);
                 tmp1.push(data[i]['wg_10min']);
                 
+                tmpb1.push(data[i]['epoch']);
                 tmpb1.push(data[i]['ws_10min']);
                 tmpb1.push(data[i]['wd_10min']);
             } else {
@@ -416,6 +419,7 @@ function drawGraph(data) {
                 tmp1.push(data[i]['ws']);
                 tmp1.push(data[i]['wg']);
                 
+                tmpb1.push(data[i]['epoch']);
                 tmpb1.push(data[i]['ws']);
                 tmpb1.push(data[i]['wd']);
             }
@@ -424,7 +428,8 @@ function drawGraph(data) {
             tmp2.push(data[i]['WindSpeedMS']);
             tmp2.push(data[i]['WindGust']);
             
-            tmpb2.push(data[i]['WindSpeedMS']);
+            tmpb2.push(data[i]['epoch']);
+            tmpb2.push(data[i]['WindSmeedMS']);
             tmpb2.push(data[i]['WindDirection']);
         }
         if(tmp1.length>0){obsArray.push(tmp1)}
@@ -442,7 +447,11 @@ function drawGraph(data) {
         },
 
         title: {
-            text: 'Keskituuli ja maksimipuuska'
+            text: null
+        },
+        
+        subtitle: {
+            text: 'Keskituulen ja maksimipuuskan vaihteluväliy'
         },
 
         xAxis: {
@@ -485,7 +494,7 @@ function drawGraph(data) {
         },
 
         legend: {
-            enabled: false
+            enabled: true
         },
         
         credits: {
@@ -499,9 +508,23 @@ function drawGraph(data) {
         {
             name: 'Ennustettu: keskituuli - maksimipuuska',
             data: forArray
-        }]
+        }],
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxHeight: 150
+                },
+                chartOptions: {
+                    legend: {
+                        enabled: true
+                    }
+                }
+            }]
+        }
 
     });
+
 }
 
 
@@ -509,7 +532,11 @@ function drawGraph(data) {
 * Draw radar data on map
 */
 
-function addRadarData(map) {
+function addRadarData(map, layer) {
+
+    // get timestamp
+
+    // draw radar layer
     map.overlayMapTypes.clear();
     debug("Update radar data")
     var latlng = new google.maps.LatLng(60, 25);
@@ -519,14 +546,20 @@ function addRadarData(map) {
 	"version=1.3.0",
 	"request=GetMap",
 	"format=image/png",
-	"width=1024",
-	"height=2048",
-	"FORMAT=image/png8",
 	"layers=Radar:suomi_dbz_eureffin",
 	"style=raster",
     ];
 
-    loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams)
+    emptyradar = loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);
+    $.getJSON("php/radartime.php?layer="+layer, function(result){
+        var starttime = result['starttime'];
+        var endtime   = result['endtime'];
+
+        var time = new Date(endtime).getTime() / 1000;
+        var time = timeTotime(time);
+        
+        document.getElementById('available-radar').innerHTML = time;
+    });
 }
 
 
@@ -546,7 +579,7 @@ var timer = setInterval(function(){
     //clearInterval(timer);
     //setInterval(timer);
     callData();    
-    //addRadarData(emptymap) 
+    //addRadarData(emptyradar, selectedRadarLayer) 
     count = 0;
 	
 
