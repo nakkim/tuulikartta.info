@@ -42,6 +42,11 @@ footer p {
     font-size: 1.00em;
 }
 
+a {
+    text-decoration: none;
+    color: #0066ff;
+} 
+
 footer a {
     text-decoration: none;
     color: #0066ff;
