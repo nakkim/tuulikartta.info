@@ -8,18 +8,23 @@ var emptymap;
 var emptyradar;
 var emptymarker = [];
 
+// update interval in ms
+var interval = 60000;
+
+// selected radar layer
+var selectedRadarLayer = "suomi_dbz_eureffin";
+
 var geoLocation;
 
-// remember parameters from previous state
+// Set parameters to localstorage to remember previous state
 var latitude          = localStorage.getItem("latitude")           ? localStorage.getItem("latitude")    : 60.630556;
 var longtitude        = localStorage.getItem("longtitude")         ? localStorage.getItem("longtitude")  : 24.859726;
 var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")   : 8;
 
-var selectedRadarLayer = "suomi_dbz_eureffin";
-
 var selectedparameter = localStorage.getItem("selectedparameter")  ? localStorage.getItem("longtitude")  : "ws_10min";
-//var toggleDataSelect  = localStorage.getItem("toggleDataSelect")   ? localStorage.getItem("toggleDataSelect")  : "closed";
 var toggleDataSelect  = "closed";
+
+
 
 
 function debug(par){
@@ -29,7 +34,13 @@ function debug(par){
 }
 
 
+
+
+// ---------------------------------------------------------
+// Wind classes
 // http://ilmatieteenlaitos.fi/tuulet
+// ---------------------------------------------------------
+
 var severity = ['white', // 2-3
                 '#e6f7ff', // 3-4
                 '#ccffcc', // 4-5     kohtalaista
@@ -65,9 +76,11 @@ var severity = ['white', // 2-3
            ];
 
 
-/*
-* TODO: add function description
-*/
+
+
+// ---------------------------------------------------------
+// TODO: add function description
+// ---------------------------------------------------------
 
 function timeTotime(epoctime){
     // convert epoc time to time stamp
@@ -86,15 +99,16 @@ function timeTotime(epoctime){
 }
 
 
-/*
-* get observation data from getdata.php
-*/
+
+
+// ---------------------------------------------------------
+// get observation data from getdata.php
+// ---------------------------------------------------------
 
 function callData(){
     debug('Getting data... ');
     $.ajax({
         dataType: "json",
-        //url: 'data.json',
 	url: 'php/getdata.php',
 	data: {},
         error: function() {
@@ -110,9 +124,11 @@ function callData(){
 }
 
 
-/*
-*  Trigger buttons
-*/
+
+
+// ---------------------------------------------------------
+//  Trigger buttons
+// ---------------------------------------------------------
 
 $(function(){
 
@@ -156,9 +172,11 @@ $(function(){
 });
 
 
-/*
-* Trigger selected parameter and draw values to map
-*/
+
+
+// ---------------------------------------------------------
+// Trigger selected parameter and draw values to map
+// ---------------------------------------------------------
 
 function draw(value,emptymap,emptydata){
     if(value === 'ws_10min'){
@@ -172,9 +190,11 @@ function draw(value,emptymap,emptydata){
 }
 
 
-/*
-* initialize Google Map and set geolocation 
-*/
+
+
+// ---------------------------------------------------------
+// initialize Google Map and set geolocation 
+// ---------------------------------------------------------
 
 function initMap() {
     debug('Initializing map... ');
@@ -218,14 +238,17 @@ function initMap() {
     debug('Done');
     emptymap = map;
     updateLocation(map);
-    //addRadarData(map, selectedRadarLayer);
+    addRadarData(map, selectedRadarLayer);
+
     return map;
 }
 
 
-/*
-*  catch location error message
-*/
+
+
+// ---------------------------------------------------------
+//  catch location error message
+// ---------------------------------------------------------
 
 function handleLocationError(browserHasGeolocation, pos) {
     geoLocation = 'false';
@@ -233,9 +256,11 @@ function handleLocationError(browserHasGeolocation, pos) {
 }
 
 
-/*
-* Get and set user location to local storage
-*/
+
+
+// ---------------------------------------------------------
+// Get and save user location to localstorage
+// ---------------------------------------------------------
 
 function updateLocation(map) {
     google.maps.event.addListener(map, "bounds_changed", function(){
@@ -245,14 +270,15 @@ function updateLocation(map) {
         localStorage.setItem("latitude",lat);
         localStorage.setItem("longitude",lon);
         localStorage.setItem("zoomlevel",zoom);
-        //debug(lat+','+lon+','+zoom);
     });
 }
 
 
-/*
-* draw wind data
-*/
+
+
+// ---------------------------------------------------------
+// draw wind data
+// ---------------------------------------------------------
 
 function drawWind(map,data,param){
 
@@ -300,20 +326,11 @@ function drawWind(map,data,param){
                 map: map
             });
             emptymarker.push(marker);
-            if(data[i]['type'] === 'synop') {
-                var stationType = '<b>Aseman tyyppi:</b> Synop-asema <br>';
-            } else {
-                var stationType = '<b>Aseman tyyppi:</b> Tiesääasema <br>';
-            }
-            var stationInfo       = '<b>Havaintoasema: </b>'+ data[i]['station'] + '<br>';
-            var latestObservation = '<b>Viimeisin havainto: </b>' +  time  + '<br>';
-            var meanWind          = '<b>Keskituuli: </b>' + data[i]['ws_10min'] + ' m/s <br>';
-            var gustWind          = '<b>Puuska: </b>' + data[i]['wg_10min'] + ' m/s <br>'; 
-            var degWind           = '<b>Tuulen suunta: </b>' + data[i]['wd_10min'] + '&deg; <br>';
-            var dataGraph         = 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"'+data[i]["type"]+'\" fmisid=\"' + data[i]["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph('+data[i]["fmisid"]+','+latlon+',\''+data[i]["type"]+'\')">täällä</a>';
+
+            var output = populateInfoWindow(data[i]);
 
             marker.info = new google.maps.InfoWindow({
-                content: stationInfo + stationType + latestObservation + meanWind + gustWind + degWind + dataGraph
+                content: output //stationInfo + stationType + latestObservation + meanWind + gustWind + degWind + dataGraph
             });
             google.maps.event.addListener(marker, 'click', function() {
                 // this = marker
@@ -327,20 +344,49 @@ function drawWind(map,data,param){
             });
         }
     }
-    // document.getElementById("available-observations").innerHTML = valid+"/"+parseInt(Object.keys(data).length);
     var time = data[0]['time'].split('T')
     var timestring = data[0]['time'];
     var timeobj = new Date(timestring).getTime();
     var timestring = timeTotime(timeobj/1000);
-    //var timestring = timeobj.getDate()+'.'+timeobj.getMonth()+'.'+timeobj.getFullYear()+' '+timeobj.getHours()+':'+timeobj.getMinutes()+':'+timeobj.getSeconds();
     document.getElementById("available-observation-time").innerHTML = timestring
     debug("parameters drawn "+valid+"/"+parseInt(Object.keys(data).length));
 }
 
 
-/*
-* Expand div that contains graphs
-*/
+
+
+// ---------------------------------------------------------
+// populate infowindow with observations
+// ---------------------------------------------------------
+
+function populateInfoWindow(data) {
+
+    var location = {lat: parseFloat(data['lat']), lng: parseFloat(data['lon'])};
+    var time = timeTotime(data['epoctime']);
+    var latlon = data["lat"] + ',' + data["lon"];
+    
+    var output = "";
+    if(data['type'] === 'synop') {
+        var stationType = '<b>Aseman tyyppi:</b> Synop-asema <br>';
+    } else {
+        var stationType = '<b>Aseman tyyppi:</b> Tiesääasema <br>';
+    }
+    
+    output += '<b>Havaintoasema: </b>'+ data['station'] + '<br>';
+    output += '<b>Viimeisin havainto: </b>' +  time  + '<br>';
+    output += '<b>Keskituuli: </b>' + data['ws_10min'] + ' m/s <br>';
+    output += '<b>Puuska: </b>' + data['wg_10min'] + ' m/s <br>'; 
+    output += '<b>Tuulen suunta: </b>' + data['wd_10min'] + '&deg; <br>';
+    output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"'+data["type"]+'\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph('+data["fmisid"]+','+latlon+',\''+data["type"]+'\')">täällä</a>';
+
+    return output;
+
+}
+
+
+// ---------------------------------------------------------
+// Expand div that contains graphs
+// ---------------------------------------------------------
 
 function opengraphbox(){
     // check the div class and reverse it
@@ -352,9 +398,11 @@ function opengraphbox(){
 }
 
 
-/*
-* Expand div that contains graphs
-*/
+
+
+// ---------------------------------------------------------
+// Expand div that contains graphs
+// ---------------------------------------------------------
 
 function expandGraph(fmisid,lat,lon,type){
     document.getElementById('graph-container').className = "expanded";
@@ -363,10 +411,11 @@ function expandGraph(fmisid,lat,lon,type){
 }
 
 
-/*
-* Get data for graph
-*/
 
+
+// ---------------------------------------------------------
+// Get data for wind graph
+// ---------------------------------------------------------
 
 function getObservationGraph(latlon,fmisid,type){
     debug('Gettting data for graph... ');
@@ -388,9 +437,11 @@ function getObservationGraph(latlon,fmisid,type){
 }
 
 
-/*
-* Draw graph
-*/
+
+
+// ---------------------------------------------------------
+// Draw graph
+// ---------------------------------------------------------
 
 function drawGraph(data) {
 
@@ -528,29 +579,17 @@ function drawGraph(data) {
 }
 
 
-/*
-* Draw radar data on map
-*/
+
+
+// ---------------------------------------------------------
+// Draw radar data on map
+// ---------------------------------------------------------
 
 function addRadarData(map, layer) {
 
     // get timestamp
+    debug("Update radar data");
 
-    // draw radar layer
-    map.overlayMapTypes.clear();
-    debug("Update radar data")
-    var latlng = new google.maps.LatLng(60, 25);
-    var customParams = [
-
-	"service=WMS",
-	"version=1.3.0",
-	"request=GetMap",
-	"format=image/png",
-	"layers=Radar:suomi_dbz_eureffin",
-	"style=raster",
-    ];
-
-    emptyradar = loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);
     $.getJSON("php/radartime.php?layer="+layer, function(result){
         var starttime = result['starttime'];
         var endtime   = result['endtime'];
@@ -559,32 +598,44 @@ function addRadarData(map, layer) {
         var time = timeTotime(time);
         
         document.getElementById('available-radar').innerHTML = time;
+
+        var customParams = [
+
+            "service=WMS",
+            "version=1.3.0",
+            "request=GetMap",
+            "format=image/png",
+            "layers=Radar:suomi_dbz_eureffin",
+            //"layers=Radar:vantaa_hclass",
+            "style=raster",
+            "starttime="+endtime
+        ];
+
+        // draw radar layer
+        map.overlayMapTypes.clear();
+        loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);
+        
     });
+    console.log(map.overlayMapTypes);
 }
 
 
-/*
-* Update map icons and data
-*/
 
-var count = 0;
-var now = new Date().getTime();
-var countDownDate = now + 60*1000;
 
-var timer = setInterval(function(){
+// ---------------------------------------------------------
+// Update map icons and data with set interval
+// ---------------------------------------------------------
+
+setInterval(function(){
 
     debug('............................');
     debug('Update data and draw markers');
     debug('Time now: ' + (new Date()).toUTCString());
-    //clearInterval(timer);
-    //setInterval(timer);
     callData();    
-    //addRadarData(emptyradar, selectedRadarLayer) 
-    count = 0;
-	
+    addRadarData(emptymap, selectedRadarLayer);
 
     
-}, 60000);
+}, interval);
 
 // https://snazzymaps.com/style/77/clean-cut
 var mapstyle = [{featureType:"road",elementType:"geometry",stylers:[{lightness:100},{visibility:"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF",}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}];

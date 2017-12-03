@@ -67,9 +67,9 @@ MercatorProjection.prototype.fromDivPixelToSphericalMercator = function(pixel, z
 };
 
 function loadWMS(map, baseURL, customParams){
-    var tileHeight = 256;
-    var tileWidth = 256;
-    var opacityLevel = 0.65;
+    var tileHeight = 512;
+    var tileWidth = 512;
+    var opacityLevel = 0.50;
     var isPng = true;
     var minZoomLevel = 2;
     var maxZoomLevel = 28;
@@ -93,8 +93,8 @@ function loadWMS(map, baseURL, customParams){
 	{
 	    getTileUrl: function(coord, zoom)
 	    {
-		var lULP = new google.maps.Point(coord.x*256,(coord.y+1)*256);
-		var lLRP = new google.maps.Point((coord.x+1)*256,coord.y*256);
+		var lULP = new google.maps.Point(coord.x*512,(coord.y+1)*512);
+		var lLRP = new google.maps.Point((coord.x+1)*512,coord.y*512);
 
 		var projectionMap = new MercatorProjection();
 
