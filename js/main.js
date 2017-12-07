@@ -394,6 +394,9 @@ function opengraphbox(){
         document.getElementById("graph-container").className = "expanded";
     } else {
         document.getElementById("graph-container").className = "collapsed";
+        // ajax loader animation
+        document.getElementById("weather-chart").innerHTML = '';
+        document.getElementById("weather-chart").innerHTML = '<div class="ajax-loader"></div>';
     }
 }
 
@@ -405,6 +408,8 @@ function opengraphbox(){
 // ---------------------------------------------------------
 
 function expandGraph(fmisid,lat,lon,type){
+    document.getElementById("weather-chart").innerHTML = '';
+    document.getElementById("weather-chart").innerHTML = '<div class="ajax-loader"></div>';
     document.getElementById('graph-container').className = "expanded";
     var latlon = lat + ',' + lon;
     getObservationGraph(latlon,fmisid,type);
