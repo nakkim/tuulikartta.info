@@ -39,22 +39,30 @@
    
   <body onload="callData()">
     <div id="map"></div>
-      <div id="content-select">
 
-	<div id="data-info">
-          <div id="data-info-left">
-	    <p>Uusin tutkakuva:</p>
-	    <p>Uusin havainto:</p>
-          </div>
-          <div id="data-info-right">
-	    <p id="available-radar">-</p>
-	    <p id="available-observation-time">-</p>
-          </div>
-	</div>
+        <div id="data-info">
+          <div class="buttons-coll">
+            <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
+	  </div>
+        </div>      
 
-        <button id="toggle-data-content-select"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i>   Havaintovalikko</button>
-	<div id="data-content-select">
-          <h3>Havainnot</h3>
+	<div id="data-content-select" title="tuulikartta.info">
+          
+          <table style="margin: 5px 0 10px 0;">
+            <tbody>
+              <tr>
+                <td><b>Uusin havainto </b></td>
+                <td><b>:</b></td>
+                <td id="available-observation-time"></td>
+              </tr>
+              <tr>
+                <td><b>Uusin tutkakuva </b></td>
+                <td><b>:</b></td>
+	        <td id="available-radar"></td>
+              </tr>
+            </tbody>
+          </table>
+          
 	  <div>
             <select id="select-wind-parameter" class="dropdown">
 	      <option value="meanwind">Keskituuli [m/s]</option>
@@ -67,6 +75,7 @@
 	      tuulinuolta.
 	    </p>
           </div>
+          <!--
 	  <h3>Tutkakuva</h3>
           <div>
             <select id="select-radar-parameter" class="dropdown">
@@ -75,10 +84,10 @@
 	    </select>
 	    <p>Tutkakuvat eivät ole vielä saatavilla</p>
 	  </div>
-	  <h3>Lisätietoja</h3>
+          -->
 	  <div>
-	    <p style="font-weight:bold">tuulikartta.info</p>
-	    <p>on oman lennokkiharrastuksen kylkeen syntynyt nettisivuprojekti, joka ajatuksena on tarjota
+	    
+	    <p><span style="font-weight:bold">tuulikartta.info</span> on oman lennokkiharrastuksen kylkeen syntynyt nettisivuprojekti, joka ajatuksena on tarjota
 	      k&auml;ytt&auml;jille tuulihavaintoja (lähes) reaaliajassa.</p>
 	    <p>Havaintoaineisto on Ilmatieteen laitoksen tarjoamaa avointa dataa.</p>
             <p>Seuraa sivuston kehitystä <a href="https://github.com/nakkim/tuulikartta.info">Githubissa</a>.</p>
@@ -90,7 +99,6 @@
               <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
             </footer>
 	  </div>
-	</div>
     </div>
 
     </div>
@@ -108,19 +116,19 @@
     </div>
   </body >
 
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-105001415-1', 'auto');
-        ga('send', 'pageview');
+      ga('create', 'UA-105001415-1', 'auto');
+      ga('send', 'pageview');
 
-    </script>
+  </script>
      
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_VJw8I20HAhmlmrCEDs9qrY2cCY1cq9k&callback=initMap">
-    </script>
+  <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_VJw8I20HAhmlmrCEDs9qrY2cCY1cq9k&callback=initMap">
+  </script>
 
 </html>

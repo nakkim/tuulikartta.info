@@ -167,7 +167,18 @@ $(function(){
         }
     });
 
-    $("#data-content-select").accordion({heightStyle: 'content'});
+    $("#data-content-select").dialog({
+        position: { my: 'bottom+195', at: 'left+160' }
+    });
+
+    $("#dialog-opener").click(function() {
+        if(!$("#data-content-select").dialog("isOpen")) {
+            console.log('auki on');
+            $("#data-content-select").dialog("open");
+        } else {
+            $("#data-content-select").dialog("close");
+        }
+    });
 
 });
 
@@ -238,7 +249,7 @@ function initMap() {
     debug('Done');
     emptymap = map;
     updateLocation(map);
-    addRadarData(map, selectedRadarLayer);
+    //addRadarData(map, selectedRadarLayer);
 
     return map;
 }
@@ -637,7 +648,7 @@ setInterval(function(){
     debug('Update data and draw markers');
     debug('Time now: ' + (new Date()).toUTCString());
     callData();    
-    addRadarData(emptymap, selectedRadarLayer);
+    //addRadarData(emptymap, selectedRadarLayer);
 
     
 }, interval);
