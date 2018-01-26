@@ -130,8 +130,9 @@ function callData(){
 //  Trigger buttons
 // ---------------------------------------------------------
 
-$(function(){
+$(function bunttonFunctionalities(){
 
+    // select wind parameter and display a short info text
     $("#select-wind-parameter").change(function() {
 	if($(this).val() == "meanwind"){
 	    var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
@@ -145,7 +146,8 @@ $(function(){
 	    draw('wg_10min',emptymap,emptydata);
 	}
     });
-    
+
+    // close graph box
     $('#close-gr').on('click', function(){
        opengraphbox();
     });
@@ -167,8 +169,14 @@ $(function(){
         }
     });
 
+    // select observations dialog 
+    var obsValues = !!readCookie('observation_values_hidden');
     $("#data-content-select").dialog({
-        position: { my: 'bottom+195', at: 'left+160' }
+        position: { my: 'bottom+195', at: 'left+160' },
+        autoOpen: !obsValues,
+        close: function() {
+            createCookie('observation_values_hidden', 'true', 7);
+        }
     });
 
     $("#dialog-opener").click(function() {
@@ -437,7 +445,7 @@ function getObservationGraph(latlon,fmisid,type){
     debug('Gettting data for graph... ');
     $.ajax({
         dataType: "json",
-        url: 'php/wind-graph.php',
+        url: 'php/weather-graph-ts.php',
         data: {
             latlon: latlon,
             fmisid: fmisid,
@@ -466,43 +474,22 @@ function drawGraph(data) {
     var forArray = [];
     var bobsArray = [];
     var bforArray = [];
+    
     for (i = 0; i < Object.keys(data).length; i++) {
         var tmp1 = [];
         var tmp2 = [];
-        var tmpb1 = [];
-        var tmpb2 = [];
         
-        if(data[i]['datatype'] == 'observation') {
-            if(data[i]['station'] == 'synop') {
-                tmp1.push(data[i]['epoch']);
-                tmp1.push(data[i]['ws_10min']);
-                tmp1.push(data[i]['wg_10min']);
-                
-                tmpb1.push(data[i]['epoch']);
-                tmpb1.push(data[i]['ws_10min']);
-                tmpb1.push(data[i]['wd_10min']);
-            } else {
-                tmp1.push(data[i]['epoch']);
-                tmp1.push(data[i]['ws']);
-                tmp1.push(data[i]['wg']);
-                
-                tmpb1.push(data[i]['epoch']);
-                tmpb1.push(data[i]['ws']);
-                tmpb1.push(data[i]['wd']);
-            }
+        if(data[i]['datatype'] == 'observation') { 
+            tmp1.push(data[i]['epoch']);
+            tmp1.push(data[i]['ws']);
+            tmp1.push(data[i]['wg']);
         } else {
             tmp2.push(data[i]['epoch']);
-            tmp2.push(data[i]['WindSpeedMS']);
-            tmp2.push(data[i]['WindGust']);
-            
-            tmpb2.push(data[i]['epoch']);
-            tmpb2.push(data[i]['WindSmeedMS']);
-            tmpb2.push(data[i]['WindDirection']);
+            tmp2.push(data[i]['ws']);
+            tmp2.push(data[i]['wg']);
         }
         if(tmp1.length>0){obsArray.push(tmp1)}
         if(tmp2.length>0){forArray.push(tmp2)}
-        if(tmpb1.length>0){bobsArray.push(tmpb1)}
-        if(tmpb2.length>0){bforArray.push(tmpb2)}
         
     }
     
@@ -635,6 +622,36 @@ function addRadarData(map, layer) {
     console.log(map.overlayMapTypes);
 }
 
+
+// ---------------------------------------------------------
+// Cookie functions
+// https://quirksmode.org/js/cookies.html
+// ---------------------------------------------------------
+
+function createCookie(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    createCookie(name,"",-1);
+}
 
 
 
