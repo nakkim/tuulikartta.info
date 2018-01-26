@@ -12,6 +12,6 @@ Header add "Cache-Control" "max-age=604800"
 Header add "Cache-Control" "max-age=604800"
 </Files>
 
-<Files *.svg>
+<Files *.png>
 Header add "Cache-Control" "max-age=604800"
 </Files>

@@ -1,0 +1,161 @@
+html, body {
+    height: 100%;
+    width: 100%;
+
+    overflow: auto;
+
+    font-family: 'Roboto', sans-serif;
+}
+
+body:before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+
+    display: block;
+    background-image: url('background.png');
+    background-size:cover;
+    width: 100%;
+    height: 100%;
+
+    -webkit-filter: blur(20px);
+    -moz-filter: blur(20px);
+    -o-filter: blur(20px);
+    -ms-filter: blur(20px);
+    filter: blur(20px);
+}
+
+body {
+    overflow: auto;
+    position: relative;
+}
+
+.wrap {
+    padding: 10px 20px 10px 20px;
+
+}
+
+
+/* https://stackoverflow.com/questions/202557/what-is-the-best-absolute-width-for-a-webpage 
+   https://stackoverflow.com/questions/20039765/how-to-apply-a-css-3-blur-filter-to-a-background-image */
+
+#main-navigation-wrapper {
+    overflow: auto;
+
+    z-index: 10;
+
+    /*height: 70px;*/
+    width: 90%;
+    max-width: 960px;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+
+    border: 1px solid grey;
+    border-radius: 5px 5px 0 0;
+
+    background-color: white;
+
+    -webkit-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
+    -moz-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
+    box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
+
+}                                       
+
+#main-content-wrapper {
+    overflow: auto;
+
+    position: relative;
+        
+    z-index: 10;
+    
+    height: 100%;
+    width: 90%;
+    max-width: 960px;
+    
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 50px;
+
+    border: 1px solid grey;
+    border-radius: 0 0 5px 5px;
+
+    background-color: white;
+
+    -webkit-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
+    -moz-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
+    box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
+    
+}
+
+
+
+/* navigation bar */
+/* http://css-snippets.com/simple-horizontal-navigation/ */
+
+.nav ul {
+    list-style: none;
+    background-color: #1b95e0;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+.nav li {
+    font-size: 1.2em;
+    line-height: 40px;
+    height: 100%;
+    border-bottom: 1px solid #888;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    transition: .3s background-color;
+}
+
+.nav a:hover {
+    background-color: #fff;
+    color: black;
+}
+
+.nav a.active {
+    background-color: #fff;
+    color: #444;
+    cursor: default;
+}
+
+@media screen and (min-width: 600px) {
+    .nav li {
+        width: 160px;
+        border-bottom: none;
+        height: 100%;
+        line-height: 50px;
+        font-size: 1.2em;
+    }
+
+    .nav li {
+        display: inline-block;
+        margin-right: -4px;
+    }
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+
+    margin-bottom: 30px;
+
+    width: 95%;
+
+    text-align: center;
+
+    border-top : 1px solid #DDD;
+
+}
