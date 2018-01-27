@@ -8,6 +8,11 @@
     <link href="css/normalize.css" rel="stylesheet" media="all">
     <link href="css/info.css" rel="stylesheet" media="all">
 
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 <body>
 
@@ -23,8 +28,7 @@
       </div>
     </nav>
   </div>
-
-
+  
   <div id="main-content-wrapper">
 
     <div class="wrap">
@@ -40,15 +44,15 @@
         <p>Havaintojakson keskituulella tarkoitetaan tyypillisesti 10 minuutin mittaisen havaintojakson keskiarvoa, puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.</p>
         <p>Havaintoaineisto on Ilmatieteen laitoksen tarjoamaa avointa dataa.</p>
         <p>Tulevia ominaisuuksia ovat mm. tutkatuotteet, sekä jatkossa mahdollisesti myös lähialueiden (Ruotsi, Norja yms.) tuulihavainnot.</p>
+        <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu</p>
+        <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
       </main>
-      <footer>
-          <p>Ville Ilkka 2017</p>
-          <p>Sivuston käyttöehdot ja evästeet</p>
-          <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu</p>
-            <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-            <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-        </footer> 
     </div> 
+    <footer>
+      <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
+      <p>Ville Ilkka, 2017-<span id="footer-year"></span></p>
+    </footer> 
   </div>
 
   <script>
@@ -60,6 +64,11 @@
       ga('create', 'UA-105001415-1', 'auto');
       ga('send', 'pageview');
 
+  </script>
+  <script>
+    var d = new Date();
+    var n = d.getFullYear();
+    document.getElementById("footer-year").innerHTML = n;
   </script>
 
 </body>

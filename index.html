@@ -20,7 +20,6 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="css/style.css" rel="stylesheet">
-    <link href="css/dropdown.css" rel="stylesheet">
     
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -40,31 +39,30 @@
   <body onload="callData()">
     <div id="map"></div>
 
-        <div id="data-info">
-          <div class="buttons-coll">
-            <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
-	  </div>
-        </div>      
+    <div id="data-info">
+      <div class="buttons-coll">
+        <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
+	    </div>
+    </div>      
 
-	<div id="data-content-select" title="tuulikartta.info">
+	  <div id="data-content-select" title="tuulikartta.info">
           
-          <table style="margin: 5px 0 10px 0;">
-            <tbody>
-              <tr>
-                <td><b>Uusin havainto </b></td>
-                <td><b>:</b></td>
-                <td id="available-observation-time"></td>
-              </tr>
-              <tr>
-                <td><b>Uusin tutkakuva </b></td>
-                <td><b>:</b></td>
-	        <td id="available-radar"></td>
-              </tr>
-            </tbody>
-          </table>
+      <table style="margin: 5px 0 10px 0;">
+        <tbody>
+          <tr>
+            <td><b>Uusin havainto </b></td>
+            <td><b>:</b></td>
+            <td id="available-observation-time"></td>
+          </tr>
+          <tr>
+            <td><b>Uusin tutkakuva </b></td>
+            <td><b>:</b></td>
+      <td id="available-radar"></td>
+          </tr>
+        </tbody>
+      </table>
           
-	  <div>
-            <select id="select-wind-parameter" class="dropdown">
+      <select id="select-wind-parameter" class="dropdown">
 	      <option value="meanwind">Keskituuli [m/s]</option>
 	      <option value="gustwind">Maksimipuuska [m/s]</option>
 	    </select>
@@ -74,45 +72,38 @@
 	    <p>Havaintoaseman nimen, viimeisimmät havinnot sekä kuvaajan saa näkyviin klikkaamalla
 	      tuulinuolta.
 	    </p>
-          </div>
-          <!--
-	  <h3>Tutkakuva</h3>
-          <div>
-            <select id="select-radar-parameter" class="dropdown">
-	      <option value=""></option>
-	      <option value=""></option>
-	    </select>
-	    <p>Tutkakuvat eivät ole vielä saatavilla</p>
-	  </div>
+      <!--
+      <h3>Tutkakuva</h3>
+      <div>
+      <select id="select-radar-parameter" class="dropdown">
+        <option value=""></option>
+        <option value=""></option>
+      </select>
+        <p>Tutkakuvat eivät ole vielä saatavilla</p>
+      </div>
           -->
-	  <div>
-	    
-	    <p><span style="font-weight:bold">tuulikartta.info</span> on oman lennokkiharrastuksen kylkeen syntynyt nettisivuprojekti, joka ajatuksena on tarjota
-	      k&auml;ytt&auml;jille tuulihavaintoja (lähes) reaaliajassa.</p>
-	    <p>Havaintoaineisto on Ilmatieteen laitoksen tarjoamaa avointa dataa.</p>
-            <p>Seuraa sivuston kehitystä <a href="https://github.com/nakkim/tuulikartta.info">Githubissa</a>.</p>
 	    <footer>
-	      <p>Ville Ilkka 2017</p>
-              <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
-              <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu<p>
-              <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-              <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </footer>
-	  </div>
+        <p>Ville Ilkka, 2017-<span id="footer-year"></span></p>
+        <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
+        <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu<p>
+        <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </footer>
+
     </div>
 
     </div>
     <div id="graph-container" class="collapsed">
-        <div id="graph-header">
-            <div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>
+      <div id="graph-header">
+          <div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>
+      </div>
+      <div id="graph-box">
+        <div id="weather-chart">
+          <div class="ajax-loader"></div>  
         </div>
-        <div id="graph-box">
-          <div id="weather-chart">
-            <div class="ajax-loader"></div>  
-          </div>
-	  <div id="weather-gust"></div>
-        </div>
-	<div class="graph-container-text-wrapper"></div>
+	      <div id="weather-gust"></div>
+      </div>
+	    <div class="graph-container-text-wrapper"></div>
     </div>
   </body >
 
@@ -125,6 +116,11 @@
       ga('create', 'UA-105001415-1', 'auto');
       ga('send', 'pageview');
 
+  </script>
+  <script>
+    var d = new Date();
+    var n = d.getFullYear();
+    document.getElementById("footer-year").innerHTML = n;
   </script>
      
   <script async defer
