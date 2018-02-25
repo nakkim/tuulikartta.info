@@ -11,9 +11,7 @@ var emptymarker = [];
 // update interval in ms
 var interval = 60000;
 
-// selected radar layer
-var selectedRadarLayer = "suomi_dbz_eureffin";
-
+// geolocation
 var geoLocation;
 
 // Set parameters to localstorage to remember previous state
@@ -188,6 +186,11 @@ $(function bunttonFunctionalities(){
         }
     });
 
+    // draw radar layer again when selected radar changes
+    $("#select-radar-parameter").change(function() {
+        updateRadarData(emptymap);
+    });
+
 });
 
 
@@ -257,7 +260,7 @@ function initMap() {
     debug('Done');
     emptymap = map;
     updateLocation(map);
-    //addRadarData(map, selectedRadarLayer);
+    updateRadarData(map);
 
     return map;
 }
@@ -588,38 +591,46 @@ function drawGraph(data) {
 // Draw radar data on map
 // ---------------------------------------------------------
 
-function addRadarData(map, layer) {
+function updateRadarData(map) {
 
-    // get timestamp
-    debug("Update radar data");
+    map.overlayMapTypes.clear();
+    var layer = document.getElementById("select-radar-parameter").value;
 
-    $.getJSON("php/radartime.php?layer="+layer, function(result){
-        var starttime = result['starttime'];
-        var endtime   = result['endtime'];
+    if(layer) {
 
-        var time = new Date(endtime).getTime() / 1000;
-        var time = timeTotime(time);
+        // get timestamp
+        debug("Update radar data");
+
+        $.getJSON("php/radartime.php?layer="+layer, function(result){
+            var starttime = result['starttime'];
+            var endtime   = result['endtime'];
+
+            var time = new Date(endtime).getTime() / 1000;
+            var time = timeTotime(time);
+            
+            document.getElementById('available-radar').innerHTML = time;
+
+            var customParams = [
+
+                "service=WMS",
+                "version=1.3.0",
+                "request=GetMap",
+                "format=image/png",
+                "layers=Radar:" + layer,
+                //"layers=Radar:vantaa_hclass",
+                "style=raster",
+                "starttime=" + endtime
+            ];
+
+            // draw radar layer
+            map.overlayMapTypes.clear();
+            loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);
+            
+        });
         
-        document.getElementById('available-radar').innerHTML = time;
-
-        var customParams = [
-
-            "service=WMS",
-            "version=1.3.0",
-            "request=GetMap",
-            "format=image/png",
-            "layers=Radar:suomi_dbz_eureffin",
-            //"layers=Radar:vantaa_hclass",
-            "style=raster",
-            "starttime="+endtime
-        ];
-
-        // draw radar layer
+    } else {
         map.overlayMapTypes.clear();
-        loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);
-        
-    });
-    console.log(map.overlayMapTypes);
+    }
 }
 
 
@@ -665,10 +676,11 @@ setInterval(function(){
     debug('Update data and draw markers');
     debug('Time now: ' + (new Date()).toUTCString());
     callData();    
-    //addRadarData(emptymap, selectedRadarLayer);
+    updateRadarData(emptymap);
 
     
 }, interval);
 
+// https://snazzymaps.com/style/58914/new-road-base-2016
 // https://snazzymaps.com/style/77/clean-cut
 var mapstyle = [{featureType:"road",elementType:"geometry",stylers:[{lightness:100},{visibility:"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF",}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}];

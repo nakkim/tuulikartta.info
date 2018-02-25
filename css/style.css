@@ -106,7 +106,7 @@ footer a {
     font-size: 0.875em;
 }
 
-#select-wind-parameter {
+#select-wind-parameter, #select-radar-parameter  {
     width: 200px;
 }
 

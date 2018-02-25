@@ -41,8 +41,8 @@
         <div id="map"></div>
 
         <div id="data-info">
-        <div class="buttons-coll">
-            <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
+            <div class="buttons-coll">
+                <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
             </div>
         </div>      
 
@@ -74,11 +74,13 @@
             tuulinuolta.
             </p>
 
-            <h3>Tutkakuva</h3>
+            <p style="font-weight: bold;">Tutkakuva</p>
             <div>
                 <select id="select-radar-parameter" class="dropdown">
                     <option value=""></option>
-                    <option value=""></option>
+                    <option value="suomi_dbz_eureffin">Suomi dBZ</option>
+                    <option value="vantaa_hclass">Vantaa hydroclass</option>
+                    <option value="kuopio_hclass">Kuopio hydroclass</option>
                 </select>
                 <p>Tutkakuvat eivät ole vielä saatavilla</p>
             </div>
@@ -86,14 +88,13 @@
             <footer>
                 <p>Ville Ilkka, 2017-<span id="footer-year"></span></p>
                 <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
-                <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu<p>
+                <!-- <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu<p> -->
                 <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </footer>
+             </footer>
 
         </div>
 
-        <!-- </div> -->
         <div id="graph-container" class="collapsed">
             <div id="graph-header">
                 <div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>
