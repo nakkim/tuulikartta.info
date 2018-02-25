@@ -1,130 +1,131 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="IE=edge">
-    <!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pintatuulihavainnot kartalla - tuulikartta.info</title>
-    <meta name="description" content="Pintatuulihavainnot Ilmatieteen laitoksen avoimen datan avulla."/>
-    <meta name="rating" content="Safe For Kids"/>
-    <meta name="author" content="Ville Ilkka"/>
-    <meta name="robots" content="index,follow"/>
-    <meta name="robots" content="noodp"/>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="IE=edge">
+        <!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pintatuulihavainnot kartalla - tuulikartta.info</title>
+        <meta name="description" content="Pintatuulihavainnot Ilmatieteen laitoksen avoimen datan avulla."/>
+        <meta name="rating" content="Safe For Kids"/>
+        <meta name="author" content="Ville Ilkka"/>
+        <meta name="robots" content="index,follow"/>
+        <meta name="robots" content="noodp"/>
+        
+        <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
+
+        <title>tuulikartta.info</title>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link href="css/style.css" rel="stylesheet">
+        
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/wms.js"></script>
+        
+        <script src="https://use.fontawesome.com/fdf452f08e.js"></script>    
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <script src="https://code.highcharts.com/stock/highstock.js"></script>
+        <script src="https://code.highcharts.com/stock/highcharts-more.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/windbarb.js"></script>
+        <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+        
+    </head>
     
-    <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
+    <body onload="callData()">
+        
+        <div id="map"></div>
 
-    <title>tuulikartta.info</title>
+        <div id="data-info">
+        <div class="buttons-coll">
+            <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
+            </div>
+        </div>      
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link href="css/style.css" rel="stylesheet">
-    
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/wms.js"></script>
-    
-    <script src="https://use.fontawesome.com/fdf452f08e.js"></script>    
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <script src="https://code.highcharts.com/stock/highstock.js"></script>
-    <script src="https://code.highcharts.com/stock/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/data.js"></script>
-    <script src="https://code.highcharts.com/modules/windbarb.js"></script>
-    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-    
-  </head>
-   
-  <body onload="callData()">
-    <div id="map"></div>
+        <div id="data-content-select" title="tuulikartta.info">
+            
+            <table style="margin: 5px 0 10px 0;">
+                <tbody>
+                    <tr>
+                        <td><b>Uusin havainto </b></td>
+                        <td><b>:</b></td>
+                        <td id="available-observation-time"></td>
+                    </tr>
+                    <tr>
+                        <td><b>Uusin tutkakuva </b></td>
+                        <td><b>:</b></td>
+                    <td id="available-radar"></td>
+                    </tr>
+                </tbody>
+            </table>
+                
+            <select id="select-wind-parameter" class="dropdown">
+                <option value="meanwind">Keskituuli [m/s]</option>
+                <option value="gustwind">Maksimipuuska [m/s]</option>
+            </select>
+            <p id="param-text">Havaintoaseman keskituulella tarkoitetaan tyypillisesti 10 minuutin mittaisen
+            havaintojakson keskituulta.
+            </p>
+            <p>Havaintoaseman nimen, viimeisimmät havinnot sekä kuvaajan saa näkyviin klikkaamalla
+            tuulinuolta.
+            </p>
 
-    <div id="data-info">
-      <div class="buttons-coll">
-        <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
-	    </div>
-    </div>      
+            <h3>Tutkakuva</h3>
+            <div>
+                <select id="select-radar-parameter" class="dropdown">
+                    <option value=""></option>
+                    <option value=""></option>
+                </select>
+                <p>Tutkakuvat eivät ole vielä saatavilla</p>
+            </div>
 
-	  <div id="data-content-select" title="tuulikartta.info">
-          
-      <table style="margin: 5px 0 10px 0;">
-        <tbody>
-          <tr>
-            <td><b>Uusin havainto </b></td>
-            <td><b>:</b></td>
-            <td id="available-observation-time"></td>
-          </tr>
-          <tr>
-            <td><b>Uusin tutkakuva </b></td>
-            <td><b>:</b></td>
-      <td id="available-radar"></td>
-          </tr>
-        </tbody>
-      </table>
-          
-      <select id="select-wind-parameter" class="dropdown">
-	      <option value="meanwind">Keskituuli [m/s]</option>
-	      <option value="gustwind">Maksimipuuska [m/s]</option>
-	    </select>
-	    <p id="param-text">Havaintoaseman keskituulella tarkoitetaan tyypillisesti 10 minuutin mittaisen
-	      havaintojakson keskituulta.
-	    </p>
-	    <p>Havaintoaseman nimen, viimeisimmät havinnot sekä kuvaajan saa näkyviin klikkaamalla
-	      tuulinuolta.
-	    </p>
-      <!--
-      <h3>Tutkakuva</h3>
-      <div>
-      <select id="select-radar-parameter" class="dropdown">
-        <option value=""></option>
-        <option value=""></option>
-      </select>
-        <p>Tutkakuvat eivät ole vielä saatavilla</p>
-      </div>
-          -->
-	    <footer>
-        <p>Ville Ilkka, 2017-<span id="footer-year"></span></p>
-        <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
-        <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu<p>
-        <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-        <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-      </footer>
+            <footer>
+                <p>Ville Ilkka, 2017-<span id="footer-year"></span></p>
+                <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
+                <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu<p>
+                <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </footer>
 
-    </div>
-
-    </div>
-    <div id="graph-container" class="collapsed">
-      <div id="graph-header">
-          <div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>
-      </div>
-      <div id="graph-box">
-        <div id="weather-chart">
-          <div class="ajax-loader"></div>  
         </div>
-	      <div id="weather-gust"></div>
-      </div>
-	    <div class="graph-container-text-wrapper"></div>
-    </div>
-  </body >
 
-  <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        <!-- </div> -->
+        <div id="graph-container" class="collapsed">
+            <div id="graph-header">
+                <div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>
+            </div>
+            <div id="graph-box">
+                <div id="weather-chart">
+                    <div class="ajax-loader"></div>  
+                </div>
+                <div id="weather-gust"></div>
+            </div>
+            <div class="graph-container-text-wrapper"></div>
+        </div>
+    </body >
 
-      ga('create', 'UA-105001415-1', 'auto');
-      ga('send', 'pageview');
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-  </script>
-  <script>
-    var d = new Date();
-    var n = d.getFullYear();
-    document.getElementById("footer-year").innerHTML = n;
-  </script>
-     
-  <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_VJw8I20HAhmlmrCEDs9qrY2cCY1cq9k&callback=initMap">
-  </script>
+        ga('create', 'UA-105001415-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    <script>
+        var d = new Date();
+        var n = d.getFullYear();
+        document.getElementById("footer-year").innerHTML = n;
+    </script>
+        
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_VJw8I20HAhmlmrCEDs9qrY2cCY1cq9k&callback=initMap">
+    </script>
 
 </html>
