@@ -170,7 +170,7 @@ $(function bunttonFunctionalities(){
     // select observations dialog 
     var obsValues = !!readCookie('observation_values_hidden');
     $("#data-content-select").dialog({
-        position: { my: 'bottom+195', at: 'left+160' },
+        position: { my: 'bottom+90', at: 'left+182' },
         autoOpen: !obsValues,
         close: function() {
             createCookie('observation_values_hidden', 'true', 7);
@@ -231,7 +231,8 @@ function initMap() {
         styles: mapstyle,
         center: centerpoint,
         streetViewControl: false,
-        mapTypeControl: false
+        mapTypeControl: false,
+        fullscreenControl: false
     });
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
@@ -624,8 +625,7 @@ function updateRadarData(map) {
 
             // draw radar layer
             map.overlayMapTypes.clear();
-            loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);
-            
+            loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);            
         });
         
     } else {
