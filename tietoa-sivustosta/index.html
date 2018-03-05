@@ -5,8 +5,8 @@
     <title>tuulikartta.info - tieota palvelusta</title>
     <meta name="description" content="tuulikaetta.info - tietoa palvelusta, tietosuoja sekä evästeet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link href="css/normalize.css" rel="stylesheet" media="all">
-    <link href="css/info.css" rel="stylesheet" media="all">
+    <link href="../css/normalize.css" rel="stylesheet" media="all">
+    <link href="../css/info.css" rel="stylesheet" media="all">
 
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -20,10 +20,10 @@
     <nav role="navigation">
       <div class="nav">
         <ul>
-          <li><a href="#">Tuulikartta</a></li>
-          <li><a href="#">Tietoa palvelusta</a></li>
+          <li><a href="https://www.tuulikartta.info/">Tuulikartta</a></li>
+          <li><a class="active" href="#">Tietoa palvelusta</a></li>
           <li><a href="#">Seuraa kehitystä</a></li>
-          <li><a class="active" href="#">Ota yhteyttä</a></li>
+          <li><a href="#">Ota yhteyttä</a></li>
         </ul>
       </div>
     </nav>
@@ -42,9 +42,31 @@
           sekä maksimipuuskan 10 minuutin välein päivittyviä havaintoja.
         </p>
         <p>Havaintojakson keskituulella tarkoitetaan tyypillisesti 10 minuutin mittaisen havaintojakson keskiarvoa, puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.</p>
+        <p><span style="font-weight:bold">Tuuliluokat</span></p>
+        <div id="legend-wrapper" style="overflow:auto; margin-bottom:20px;">
+            <img src="../symbols/legend.png" style="float:left;"></img>
+            <p>Tuulen nopeudet on jaoteltu yhdeksään eri osaan ja ne piirrtään oheisen taulukon mukaisin värein.</p>
+            <p>Kovia tuulia sekä myrskytuulia esiintyy Suomessa tyypillisesti vain ajoittain merialueilla sekä tuntureilla,
+              puuskittainen tuuli voi sen sijaan ajoittain yltää maa-alueillakin myrskylukemiin.
+            </p>
+            <p>
+              Esimerkiksi kesäiset ukkosmyräkät eivät siis varsinaisesti ole myrskyjä, vaan enemmänkin rajuilmoja tai myräköitä.
+            </p>
+        </div>
+        <p>Vahinkoja aiheuttavat tuulet ovat usein hyvin puuskittaisia. Hetkelliset, lyhytaikaiset 5–10 sekunnin puuskat ylittävät
+          10 minuutin keskituulen nopeuden säätilanteesta riippuen noin 1,5-kertaisina, enimmillään noin 2-kertaisina.
+        </p>
+        <p>Tuulen nopeudenylittäessä 16-17 m/s alkavat puiden oksat katkeilla, yli 20 m/s nopeudet alkavat katkoa
+          ja kaataa jo puita ja tehdä pientä vahinkoa kattorakenteille.
+        </p>
+        <p>Lisätietoja voi lukea Ilmatieteen laitoksen <a href="http://ilmatieteenlaitos.fi/tuulet">teemasivuilta</a>.</p>
+
+              
+
+        <p><span style="font-weight:bold">Käytetty aineisto</span></p>
         <p>Havaintoaineisto on Ilmatieteen laitoksen tarjoamaa avointa dataa.</p>
-        <p>Tulevia ominaisuuksia ovat mm. tutkatuotteet, sekä jatkossa mahdollisesti myös lähialueiden (Ruotsi, Norja yms.) tuulihavainnot.</p>
-        <p><a href="https://www.nakkim.org">nakkim.org</a> projektisivu</p>
+        <p>Tulevia ominaisuuksia ovat mm. kattavammat tutkatuotteet, sekä jatkossa mahdollisesti myös lähialueiden (Ruotsi, Norja yms.) tuulihavainnot.</p>
+        <p>Seuraa sivuston kehitystä sekä kehittäjän edesottamuksia:</p>
         <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
         <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
       </main>
