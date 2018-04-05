@@ -25,6 +25,21 @@ print json_encode($synopdata);
 
 // functions
 
+function getTimezoneDifference() {
+
+    $dateTimeZoneHelsinki = new DateTimeZone("Europe/Helsinki");
+    $dateTimeZoneLondon = new DateTimeZone("Europe/London");
+
+    $dateTimeHelsinki = new DateTime("now", $dateTimeZoneHelsinki);
+    $dateTimeLondon = new DateTime("now", $dateTimeZoneJapan);
+    
+    $timeOffset = $dateTimeZoneHelsinki->getOffset($dateTimeLondon);
+
+    $timeOffset = $timeOffset/3600;
+    return $timeOffset;
+    
+}
+
 function roaddata() {
     $settings = array();
     $settings['parameter']      = 'windspeedms,winddirection,WG';
@@ -33,11 +48,12 @@ function roaddata() {
     $settings['storedQueryId']  = 'livi::observations::road::default::timevaluepair';
     $settings['bbox']           = '17.91,58.71,32.61,70.59';
 
-    $starttime = date("Y-m-d\TH:i:s", time()-2*60*60-14*60);
-    $endtime = date("Y-m-d\TH:i:s", time()-2*60*60-4*60);
+    $timeOffset = getTimezoneDifference();
+    
+    $starttime = date("Y-m-d\TH:i:s", time()-$timeOffset*60*60-14*60);
+    $endtime = date("Y-m-d\TH:i:s", time()-$timeOffset*60*60-4*60);
 
     $url = "http://data.fmi.fi/fmi-apikey/{$settings['apikey']}/wfs?request=getFeature&storedquery_id={$settings['storedQueryId']}&timestep={$settings['timestep']}&parameters={$settings['parameter']}&endtime={$endtime}&starttime={$starttime}&bbox={$settings['bbox']},epsg::4326&";
-
     //$url = "http://data.fmi.fi/fmi-apikey/fd2a6bd5-0236-4524-bc08-2af7cbb803e2/wfs?request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&timestep=10&parameters=ws_10min,wg_10min,wd_10min&endtime=2017-05-19T08:38:49&starttime=2017-05-19T08:28:49&bbox=17.91,58.71,32.61,70.59,epsg::4326&";
 
     $xmlData = file_get_contents($url);
@@ -109,8 +125,8 @@ function synopdata() {
     $settings['storedQueryId']  = 'fmi::observations::weather::timevaluepair';
     $settings['bbox']           = '17.91,58.71,32.61,70.59';
 
-    $starttime = date("Y-m-d\TH:i:s", time()-2*60*60-14*60);
-    $endtime = date("Y-m-d\TH:i:s", time()-2*60*60-4*60);
+    $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-14*60);
+    $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-4*60);
 /*
     $tz = new DateTimeZone("Europe/London");
 
