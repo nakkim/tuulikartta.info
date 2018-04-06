@@ -31,7 +31,7 @@ function getTimezoneDifference() {
     $dateTimeZoneLondon = new DateTimeZone("Europe/London");
 
     $dateTimeHelsinki = new DateTime("now", $dateTimeZoneHelsinki);
-    $dateTimeLondon = new DateTime("now", $dateTimeZoneJapan);
+    $dateTimeLondon = new DateTime("now", $dateTimeZoneLondon);
     
     $timeOffset = $dateTimeZoneHelsinki->getOffset($dateTimeLondon);
 
