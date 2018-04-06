@@ -612,20 +612,14 @@ function updateRadarData(map) {
             document.getElementById('available-radar').innerHTML = time;
 
             var customParams = [
-
-                "service=WMS",
-                "version=1.3.0",
-                "request=GetMap",
                 "format=image/png",
-                "layers=Radar:" + layer,
-                //"layers=Radar:vantaa_hclass",
-                "style=raster",
-                "starttime=" + endtime
+                "layers=fmi:observation:radar:PrecipitationRate5min",
+                "styles="
             ];
 
             // draw radar layer
             map.overlayMapTypes.clear();
-            loadWMS(map, "https://wms.fmi.fi/fmi-apikey/d6985c41-bfc2-4afa-95a7-72cd2acb604c/geoserver/Radar/wms?", customParams);            
+            loadWMS(map, "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms?", customParams);            
         });
         
     } else {

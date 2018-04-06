@@ -69,7 +69,7 @@ MercatorProjection.prototype.fromDivPixelToSphericalMercator = function(pixel, z
 function loadWMS(map, baseURL, customParams){
     var tileHeight = 512;
     var tileWidth = 512;
-    var opacityLevel = 0.50;
+    var opacityLevel = 0.65;
     var isPng = true;
     var minZoomLevel = 2;
     var maxZoomLevel = 28;
@@ -78,10 +78,9 @@ function loadWMS(map, baseURL, customParams){
     var wmsParams = [
 	"REQUEST=GetMap",
 	"SERVICE=WMS",
-	"VERSION=1.1.1",
-	"BGCOLOR=0xFFFFFF",
+	"VERSION=1.3.0",
 	"TRANSPARENT=TRUE",
-	"SRS=EPSG:900913", // 3395?
+	"CRS=EPSG:3857", // Google Web Mercator
 	"WIDTH="+ tileWidth,
 	"HEIGHT="+ tileHeight
     ];
