@@ -431,9 +431,9 @@ function opengraphbox(){
 // ---------------------------------------------------------
 
 function expandGraph(fmisid,lat,lon,type){
-    document.getElementById("weather-chart").innerHTML = '';
-    document.getElementById("weather-chart").innerHTML = '<div class="ajax-loader"></div>';
-    document.getElementById('graph-container').className = "expanded";
+    //document.getElementById("weather-chart").innerHTML = '';
+    document.getElementById("graph-container").className = "expanded";
+    constructWeatherGraph("graph-container");
     var latlon = lat + ',' + lon;
     getObservationGraph(latlon,fmisid,type);
 }
@@ -466,12 +466,41 @@ function getObservationGraph(latlon,fmisid,type){
 
 
 
+// ---------------------------------------------------------
+// Get data for wind graph
+// ---------------------------------------------------------
+
+function constructWeatherGraph(container){
+
+    // remove old content
+    document.getElementById("graph-container").innerHTML = "";
+
+    var html = ""; 
+    html = html + '<div id="graph-header">';
+    html = html + '<div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>;'
+    html = html + '</div>';
+    html = html + '<div id="graph-box">';
+    html = html + '<div id="weather-chart">';
+    html = html + '<div class="ajax-loader"></div>';
+    html = html + '</div>';
+    html = html + '<div id="weather-g"></div>';
+    html = html + '</div>';
+    html = html + '<div class="graph-container-text-wrapper"></div>';
+
+    $('#graph-container').html(html);
+    document.getElementById("weather-chart").innerHTML = '<div class="ajax-loader"></div>';
+
+}
+
+
 
 // ---------------------------------------------------------
 // Draw graph
 // ---------------------------------------------------------
 
 function drawGraph(data) {
+
+    console.log(data);
 
     var i,k;
     var obsArray = [];
@@ -496,7 +525,7 @@ function drawGraph(data) {
         if(tmp2.length>0){forArray.push(tmp2)}
         
     }
-    
+
     Highcharts.chart('weather-chart', {
 
         chart: {
