@@ -152,25 +152,6 @@ $(function bunttonFunctionalities() {
         opengraphbox();
     });
 
-    // toggle data-content-select box
-    /*
-    $("#toggle-data-content-select").click(function(){
-        $("#data-content-select").slideToggle(200);
-        if(toggleDataSelect == "open"){
-            var content = '<i class="fa fa-arrow-circle-up" aria-hidden="true"></i>   Havaintovalikko';
-            document.getElementById("toggle-data-content-select").innerHTML = content;
-            toggleDataSelect = "closed";
-            //localStorage.setItem("toggleDataSelect","closed");
-            toggleDataSelect = 'closed';
-        } else {
-            var content = '<i class="fa fa-arrow-circle-down" aria-hidden="true"></i>   Havaintovalikko';
-            document.getElementById("toggle-data-content-select").innerHTML = content;
-            //localStorage.setItem("toggleDataSelect","open");
-            toggleDataSelect = 'open';
-        }
-    });
-    */
-
     // select observations dialog 
     var obsValues = !!readCookie('observation_values_hidden');
     $("#data-content-select").dialog({
