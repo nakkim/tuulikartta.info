@@ -15,18 +15,18 @@ var interval = 60000;
 var geoLocation;
 
 // Set parameters to localstorage to remember previous state
-var latitude          = localStorage.getItem("latitude")           ? localStorage.getItem("latitude")    : 60.630556;
-var longtitude        = localStorage.getItem("longtitude")         ? localStorage.getItem("longtitude")  : 24.859726;
-var zoomlevel         = localStorage.getItem("zoomlevel")          ? localStorage.getItem("zoomlevel")   : 8;
+var latitude = localStorage.getItem("latitude") ? localStorage.getItem("latitude") : 60.630556;
+var longtitude = localStorage.getItem("longtitude") ? localStorage.getItem("longtitude") : 24.859726;
+var zoomlevel = localStorage.getItem("zoomlevel") ? localStorage.getItem("zoomlevel") : 8;
 
-var selectedparameter = localStorage.getItem("selectedparameter")  ? localStorage.getItem("longtitude")  : "ws_10min";
-var toggleDataSelect  = "closed";
-
-
+var selectedparameter = localStorage.getItem("selectedparameter") ? localStorage.getItem("longtitude") : "ws_10min";
+var toggleDataSelect = "closed";
 
 
-function debug(par){
-    if(debugvalue === true){
+
+
+function debug(par) {
+    if (debugvalue === true) {
         console.log(par);
     }
 }
@@ -40,38 +40,38 @@ function debug(par){
 // ---------------------------------------------------------
 
 var severity = ['white', // 2-3
-                '#e6f7ff', // 3-4
-                '#ccffcc', // 4-5     kohtalaista
-                '#ccffcc', // 5-6
-                '#ccffcc', // 6-7
-                '#ffff99', // 7-8     navakkaa
-                '#ffff99', // 8-9
-                '#ffff99', // 9-10
-                '#ffff99', // 10-11
-                '#ffff99', // 11-12
-                '#ffff99', // 12-13
-                '#ffff99', // 13-14
-                '#ffcc00', // 14-15   kovaa
-                '#ffcc00', // 15-16
-                '#ffcc00', // 16-17
-                '#ffcc00', // 17-18
-                '#ffcc00', // 18-19
-                '#ffcc00', // 18-19
-                '#ffcc00', // 19-20
-                '#ffcc00', // 21-21
-                '#ff3300', // 21-22   myrskyä
-                '#ff3300', // 22-23
-                '#ff3300', // 23-24
-                '#ff3300', // 24-25
-                '#ff0066', // 25-26   kovaa myrskyä
-                '#ff0066', // 26-27
-                '#ff0066', // 27-28
-                '#cc0099', // 28-29   ankaraa myrskyä
-                '#cc0099', // 29-30
-                '#cc0099', // 30-31
-                '#cc0099', // 31-32
-                '#6600cc', // 32-     hirmumyrskyä
-           ];
+    '#e6f7ff', // 3-4
+    '#ccffcc', // 4-5     kohtalaista
+    '#ccffcc', // 5-6
+    '#ccffcc', // 6-7
+    '#ffff99', // 7-8     navakkaa
+    '#ffff99', // 8-9
+    '#ffff99', // 9-10
+    '#ffff99', // 10-11
+    '#ffff99', // 11-12
+    '#ffff99', // 12-13
+    '#ffff99', // 13-14
+    '#ffcc00', // 14-15   kovaa
+    '#ffcc00', // 15-16
+    '#ffcc00', // 16-17
+    '#ffcc00', // 17-18
+    '#ffcc00', // 18-19
+    '#ffcc00', // 18-19
+    '#ffcc00', // 19-20
+    '#ffcc00', // 21-21
+    '#ff3300', // 21-22   myrskyä
+    '#ff3300', // 22-23
+    '#ff3300', // 23-24
+    '#ff3300', // 24-25
+    '#ff0066', // 25-26   kovaa myrskyä
+    '#ff0066', // 26-27
+    '#ff0066', // 27-28
+    '#cc0099', // 28-29   ankaraa myrskyä
+    '#cc0099', // 29-30
+    '#cc0099', // 30-31
+    '#cc0099', // 31-32
+    '#6600cc', // 32-     hirmumyrskyä
+];
 
 
 
@@ -80,20 +80,20 @@ var severity = ['white', // 2-3
 // TODO: add function description
 // ---------------------------------------------------------
 
-function timeTotime(epoctime){
+function timeTotime(epoctime) {
     // convert epoc time to time stamp
     var d = new Date(0);
     d.setUTCSeconds(epoctime);
     var hours = d.getHours();
     var minutes = d.getMinutes();
     // add leading zeros
-    if(parseInt(hours) < 10){
+    if (parseInt(hours) < 10) {
         hours = '0' + hours;
     }
-    if(parseInt(minutes) < 10){
+    if (parseInt(minutes) < 10) {
         minutes = '0' + minutes;
     }
-    return d.getDate()  + "." + (d.getMonth()+1) + "." + d.getFullYear() + " " + hours + ":" + minutes;
+    return d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear() + " " + hours + ":" + minutes;
 }
 
 
@@ -103,20 +103,20 @@ function timeTotime(epoctime){
 // get observation data from getdata.php
 // ---------------------------------------------------------
 
-function callData(){
+function callData() {
     debug('Getting data... ');
     $.ajax({
         dataType: "json",
-	url: 'php/getdata.php',
-	data: {},
-        error: function() {
+        url: 'php/getdata.php',
+        data: {},
+        error: function () {
             debug('An error has occurred');
         },
-        success: function(data) {
+        success: function (data) {
             debug('Done');
-	    // store the Map-instance in map variable
+            // store the Map-instance in map variable
             emptydata = data;
-            draw(selectedparameter,emptymap,emptydata);
+            draw(selectedparameter, emptymap, emptydata);
         }
     });
 }
@@ -128,29 +128,32 @@ function callData(){
 //  Trigger buttons
 // ---------------------------------------------------------
 
-$(function bunttonFunctionalities(){
+$(function bunttonFunctionalities() {
 
     // select wind parameter and display a short info text
-    $("#select-wind-parameter").change(function() {
-	if($(this).val() == "meanwind"){
-	    var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
-	        text += "10 minuutin mittaisen havaintojakson keskituulta.";
-	    document.getElementById("param-text").innerHTML = text;
-	    draw('ws_10min',emptymap,emptydata);
-	}
-	if($(this).val() == "gustwind"){
-	    var text = "Puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.";
-	    document.getElementById("param-text").innerHTML = text;
-	    draw('wg_10min',emptymap,emptydata);
-	}
+    $("#select-wind-parameter").change(function () {
+        if ($(this).val() == "meanwind") {
+            var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
+            text += "10 minuutin mittaisen havaintojakson keskituulta.";
+            document.getElementById("param-text").innerHTML = text;
+            draw('ws_10min', emptymap, emptydata);
+        }
+        if ($(this).val() == "gustwind") {
+            var text = "Puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.";
+            document.getElementById("param-text").innerHTML = text;
+            draw('wg_10min', emptymap, emptydata);
+        }
+        console.log('test');
     });
 
     // close graph box
-    $('#close-gr').on('click', function(){
-       opengraphbox();
+    $('#close-gr').on('click', function () {
+        console.log('test');
+        opengraphbox();
     });
 
     // toggle data-content-select box
+    /*
     $("#toggle-data-content-select").click(function(){
         $("#data-content-select").slideToggle(200);
         if(toggleDataSelect == "open"){
@@ -166,20 +169,20 @@ $(function bunttonFunctionalities(){
             toggleDataSelect = 'open';
         }
     });
+    */
 
     // select observations dialog 
     var obsValues = !!readCookie('observation_values_hidden');
     $("#data-content-select").dialog({
         position: { my: 'bottom+90', at: 'left+182' },
         autoOpen: !obsValues,
-        close: function() {
+        close: function () {
             createCookie('observation_values_hidden', 'true', 7);
         }
     });
 
-    $("#dialog-opener").click(function() {
-        if(!$("#data-content-select").dialog("isOpen")) {
-            console.log('auki on');
+    $("#dialog-opener").click(function () {
+        if (!$("#data-content-select").dialog("isOpen")) {
             $("#data-content-select").dialog("open");
         } else {
             $("#data-content-select").dialog("close");
@@ -187,7 +190,7 @@ $(function bunttonFunctionalities(){
     });
 
     // draw radar layer again when selected radar changes
-    $("#select-radar-parameter").change(function() {
+    $("#select-radar-parameter").change(function () {
         updateRadarData(emptymap);
     });
 
@@ -200,13 +203,13 @@ $(function bunttonFunctionalities(){
 // Trigger selected parameter and draw values to map
 // ---------------------------------------------------------
 
-function draw(value,emptymap,emptydata){
-    if(value === 'ws_10min'){
-        drawWind(emptymap,emptydata,'ws_10min');
+function draw(value, emptymap, emptydata) {
+    if (value === 'ws_10min') {
+        drawWind(emptymap, emptydata, 'ws_10min');
         selectedparameter = value;
     }
-    if(value === 'wg_10min'){
-        drawWind(emptymap,emptydata,'wg_10min');
+    if (value === 'wg_10min') {
+        drawWind(emptymap, emptydata, 'wg_10min');
         selectedparameter = value;
     }
 }
@@ -220,10 +223,10 @@ function draw(value,emptymap,emptydata){
 
 function initMap() {
     debug('Initializing map... ');
-    var lat  = parseFloat(latitude),
-        lon  = parseFloat(longtitude),
+    var lat = parseFloat(latitude),
+        lon = parseFloat(longtitude),
         zoom = parseInt(zoomlevel);
-    var centerpoint = {lat: lat, lng: lon};
+    var centerpoint = { lat: lat, lng: lon };
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: zoom,
         minZoom: 6,
@@ -236,7 +239,7 @@ function initMap() {
     });
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
             var pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
@@ -250,9 +253,9 @@ function initMap() {
                 map: map,
                 icon: 'symbols/blue-pushpin.png'
             });
-            }, function() {
-                handleLocationError(true, map.getCenter());
-	    });
+        }, function () {
+            handleLocationError(true, map.getCenter());
+        });
     } else {
         // Browser doesn't support Geolocation
         handleLocationError(false, map.getCenter());
@@ -286,13 +289,13 @@ function handleLocationError(browserHasGeolocation, pos) {
 // ---------------------------------------------------------
 
 function updateLocation(map) {
-    google.maps.event.addListener(map, "bounds_changed", function(){
-        var lat  = map.getCenter().lat();
-        var lon  = map.getCenter().lng();
+    google.maps.event.addListener(map, "bounds_changed", function () {
+        var lat = map.getCenter().lat();
+        var lon = map.getCenter().lng();
         var zoom = map.getZoom();
-        localStorage.setItem("latitude",lat);
-        localStorage.setItem("longitude",lon);
-        localStorage.setItem("zoomlevel",zoom);
+        localStorage.setItem("latitude", lat);
+        localStorage.setItem("longitude", lon);
+        localStorage.setItem("zoomlevel", zoom);
     });
 }
 
@@ -303,27 +306,27 @@ function updateLocation(map) {
 // draw wind data
 // ---------------------------------------------------------
 
-function drawWind(map,data,param){
+function drawWind(map, data, param) {
 
     // remove all old markers
-    for (var i = 0; i < emptymarker.length; i++ ) {
+    for (var i = 0; i < emptymarker.length; i++) {
         emptymarker[i].setMap(null);
     }
     emptymarker.length = 0;
 
     var sizeofdata = parseInt(Object.keys(data).length);
     var valid = 0;
-    for(i=0; i<sizeofdata; i++){
-        var location = {lat: parseFloat(data[i]['lat']), lng: parseFloat(data[i]['lon'])};
+    for (i = 0; i < sizeofdata; i++) {
+        var location = { lat: parseFloat(data[i]['lat']), lng: parseFloat(data[i]['lon']) };
         var time = timeTotime(data[i]['epoctime']);
         var latlon = data[i]["lat"] + ',' + data[i]["lon"];
-        if(data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
+        if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
             valid++;
-            if(param == 'ws_10min') {
+            if (param == 'ws_10min') {
                 var text = data[i]['ws_10min'];
                 var color = severity[Math.floor(data[i]['ws_10min'])];
             }
-            if(param == 'wg_10min') {
+            if (param == 'wg_10min') {
                 var text = data[i]['wg_10min'];
                 var color = severity[Math.floor(data[i]['wg_10min'])];
             }
@@ -343,7 +346,7 @@ function drawWind(map,data,param){
                     fillOpacity: 0.7,
                     strokeColor: 'black',
                     strokeWeight: 1.5,
-                    rotation: ((parseFloat(data[i]['wd_10min']) + 180) % 360 ),
+                    rotation: ((parseFloat(data[i]['wd_10min']) + 180) % 360),
                 },
                 position: location,
                 map: map
@@ -355,24 +358,24 @@ function drawWind(map,data,param){
             marker.info = new google.maps.InfoWindow({
                 content: output //stationInfo + stationType + latestObservation + meanWind + gustWind + degWind + dataGraph
             });
-            google.maps.event.addListener(marker, 'click', function() {
+            google.maps.event.addListener(marker, 'click', function () {
                 // this = marker
                 var marker_map = this.getMap();
-                this.info.open(marker_map,this);
+                this.info.open(marker_map, this);
                 // Note: If you call open() without passing a marker, the InfoWindow will use
-		// the position specified upon construction through the InfoWindowOptions object literal.
+                // the position specified upon construction through the InfoWindowOptions object literal.
             });
-            google.maps.event.addListener(marker, 'click', function() {
-            // getObservationGraph(latlon,data[i]["fmisid"],data[i]["type"]);
+            google.maps.event.addListener(marker, 'click', function () {
+                // getObservationGraph(latlon,data[i]["fmisid"],data[i]["type"]);
             });
         }
     }
     var time = data[0]['time'].split('T')
     var timestring = data[0]['time'];
     var timeobj = new Date(timestring).getTime();
-    var timestring = timeTotime(timeobj/1000);
+    var timestring = timeTotime(timeobj / 1000);
     document.getElementById("available-observation-time").innerHTML = timestring
-    debug("parameters drawn "+valid+"/"+parseInt(Object.keys(data).length));
+    debug("parameters drawn " + valid + "/" + parseInt(Object.keys(data).length));
 }
 
 
@@ -384,23 +387,23 @@ function drawWind(map,data,param){
 
 function populateInfoWindow(data) {
 
-    var location = {lat: parseFloat(data['lat']), lng: parseFloat(data['lon'])};
+    var location = { lat: parseFloat(data['lat']), lng: parseFloat(data['lon']) };
     var time = timeTotime(data['epoctime']);
     var latlon = data["lat"] + ',' + data["lon"];
-    
+
     var output = "";
-    if(data['type'] === 'synop') {
+    if (data['type'] === 'synop') {
         var stationType = '<b>Aseman tyyppi:</b> Synop-asema <br>';
     } else {
         var stationType = '<b>Aseman tyyppi:</b> Tiesääasema <br>';
     }
-    
-    output += '<b>Havaintoasema: </b>'+ data['station'] + '<br>';
-    output += '<b>Viimeisin havainto: </b>' +  time  + '<br>';
+
+    output += '<b>Havaintoasema: </b>' + data['station'] + '<br>';
+    output += '<b>Viimeisin havainto: </b>' + time + '<br>';
     output += '<b>Keskituuli: </b>' + data['ws_10min'] + ' m/s <br>';
-    output += '<b>Puuska: </b>' + data['wg_10min'] + ' m/s <br>'; 
+    output += '<b>Puuska: </b>' + data['wg_10min'] + ' m/s <br>';
     output += '<b>Tuulen suunta: </b>' + data['wd_10min'] + '&deg; <br>';
-    output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"'+data["type"]+'\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph('+data["fmisid"]+','+latlon+',\''+data["type"]+'\')">täällä</a>';
+    output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data["type"] + '\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"expandGraph(' + data["fmisid"] + ',' + latlon + ',\'' + data["type"] + '\')">täällä</a>';
 
     return output;
 
@@ -411,9 +414,9 @@ function populateInfoWindow(data) {
 // Expand div that contains graphs
 // ---------------------------------------------------------
 
-function opengraphbox(){
+function opengraphbox() {
     // check the div class and reverse it
-    if(document.getElementById("graph-container").className === "collapsed") {
+    if (document.getElementById("graph-container").className === "collapsed") {
         document.getElementById("graph-container").className = "expanded";
     } else {
         document.getElementById("graph-container").className = "collapsed";
@@ -430,12 +433,12 @@ function opengraphbox(){
 // Expand div that contains graphs
 // ---------------------------------------------------------
 
-function expandGraph(fmisid,lat,lon,type){
+function expandGraph(fmisid, lat, lon, type) {
     //document.getElementById("weather-chart").innerHTML = '';
     document.getElementById("graph-container").className = "expanded";
     constructWeatherGraph("graph-container");
     var latlon = lat + ',' + lon;
-    getObservationGraph(latlon,fmisid,type);
+    getObservationGraph(latlon, fmisid, type);
 }
 
 
@@ -445,7 +448,7 @@ function expandGraph(fmisid,lat,lon,type){
 // Get data for wind graph
 // ---------------------------------------------------------
 
-function getObservationGraph(latlon,fmisid,type){
+function getObservationGraph(latlon, fmisid, type) {
     debug('Gettting data for graph... ');
     $.ajax({
         dataType: "json",
@@ -455,10 +458,10 @@ function getObservationGraph(latlon,fmisid,type){
             fmisid: fmisid,
             type: type
         },
-        error: function() {
+        error: function () {
             debug('An error has occurred');
         },
-        success: function(data) {
+        success: function (data) {
             drawGraph(data);
         }
     });
@@ -470,24 +473,20 @@ function getObservationGraph(latlon,fmisid,type){
 // Get data for wind graph
 // ---------------------------------------------------------
 
-function constructWeatherGraph(container){
+function constructWeatherGraph(container) {
 
     // remove old content
-    document.getElementById("graph-container").innerHTML = "";
+    document.getElementById("graph-box").innerHTML = "";
 
-    var html = ""; 
-    html = html + '<div id="graph-header">';
-    html = html + '<div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>;'
-    html = html + '</div>';
+    var html = "";
     html = html + '<div id="graph-box">';
     html = html + '<div id="weather-chart">';
     html = html + '<div class="ajax-loader"></div>';
     html = html + '</div>';
     html = html + '<div id="weather-g"></div>';
     html = html + '</div>';
-    html = html + '<div class="graph-container-text-wrapper"></div>';
 
-    $('#graph-container').html(html);
+    $('#graph-box').html(html);
     document.getElementById("weather-chart").innerHTML = '<div class="ajax-loader"></div>';
 
 }
@@ -500,19 +499,17 @@ function constructWeatherGraph(container){
 
 function drawGraph(data) {
 
-    console.log(data);
-
-    var i,k;
+    var i, k;
     var obsArray = [];
     var forArray = [];
     var bobsArray = [];
     var bforArray = [];
-    
+
     for (i = 0; i < Object.keys(data).length; i++) {
         var tmp1 = [];
         var tmp2 = [];
-        
-        if(data[i]['datatype'] == 'observation') { 
+
+        if (data[i]['datatype'] == 'observation') {
             tmp1.push(data[i]['epoch']);
             tmp1.push(data[i]['ws']);
             tmp1.push(data[i]['wg']);
@@ -521,9 +518,9 @@ function drawGraph(data) {
             tmp2.push(data[i]['ws']);
             tmp2.push(data[i]['wg']);
         }
-        if(tmp1.length>0){obsArray.push(tmp1)}
-        if(tmp2.length>0){forArray.push(tmp2)}
-        
+        if (tmp1.length > 0) { obsArray.push(tmp1) }
+        if (tmp2.length > 0) { forArray.push(tmp2) }
+
     }
 
     Highcharts.chart('weather-chart', {
@@ -536,7 +533,7 @@ function drawGraph(data) {
         title: {
             text: null
         },
-        
+
         subtitle: {
             text: 'Keskituulen ja maksimipuuskan vaihteluväliy'
         },
@@ -548,7 +545,7 @@ function drawGraph(data) {
                     color: 'black',
                     font: '12px Roboto, sans-serif'
                 }
-            } 
+            }
         },
 
         yAxis: {
@@ -583,7 +580,7 @@ function drawGraph(data) {
         legend: {
             enabled: true
         },
-        
+
         credits: {
             enabled: false
         },
@@ -616,7 +613,6 @@ function drawGraph(data) {
 
 
 
-
 // ---------------------------------------------------------
 // Draw radar data on map
 // ---------------------------------------------------------
@@ -626,18 +622,18 @@ function updateRadarData(map) {
     map.overlayMapTypes.clear();
     var layer = document.getElementById("select-radar-parameter").value;
 
-    if(layer) {
+    if (layer) {
 
         // get timestamp
         debug("Update radar data");
 
-        $.getJSON("php/radartime.php?layer="+layer, function(result){
+        $.getJSON("php/radartime.php?layer=" + layer, function (result) {
             var starttime = result['starttime'];
-            var endtime   = result['endtime'];
+            var endtime = result['endtime'];
 
             var time = new Date(endtime).getTime() / 1000;
             var time = timeTotime(time);
-            
+
             document.getElementById('available-radar').innerHTML = time;
 
             var customParams = [
@@ -648,13 +644,14 @@ function updateRadarData(map) {
 
             // draw radar layer
             map.overlayMapTypes.clear();
-            loadWMS(map, "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms?", customParams);            
+            loadWMS(map, "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms?", customParams);
         });
-        
+
     } else {
         map.overlayMapTypes.clear();
     }
 }
+
 
 
 // ---------------------------------------------------------
@@ -662,29 +659,29 @@ function updateRadarData(map) {
 // https://quirksmode.org/js/cookies.html
 // ---------------------------------------------------------
 
-function createCookie(name,value,days) {
+function createCookie(name, value, days) {
     if (days) {
         var date = new Date();
-        date.setTime(date.getTime()+(days*24*60*60*1000));
-        var expires = "; expires="+date.toGMTString();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        var expires = "; expires=" + date.toGMTString();
     }
     else var expires = "";
-    document.cookie = name+"="+value+expires+"; path=/";
+    document.cookie = name + "=" + value + expires + "; path=/";
 }
 
 function readCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
 }
 
 function eraseCookie(name) {
-    createCookie(name,"",-1);
+    createCookie(name, "", -1);
 }
 
 
@@ -693,17 +690,17 @@ function eraseCookie(name) {
 // Update map icons and data with set interval
 // ---------------------------------------------------------
 
-setInterval(function(){
+setInterval(function () {
 
     debug('............................');
     debug('Update data and draw markers');
     debug('Time now: ' + (new Date()).toUTCString());
-    callData();    
+    callData();
     updateRadarData(emptymap);
 
-    
+
 }, interval);
 
 // https://snazzymaps.com/style/58914/new-road-base-2016
 // https://snazzymaps.com/style/77/clean-cut
-var mapstyle = [{featureType:"road",elementType:"geometry",stylers:[{lightness:100},{visibility:"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#C6E2FF",}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#C5E3BF"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#D1D1B8"}]}];
+var mapstyle = [{ featureType: "road", elementType: "geometry", stylers: [{ lightness: 100 }, { visibility: "simplified" }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "visibility": "on" }, { "color": "#C6E2FF", }] }, { "featureType": "poi", "elementType": "geometry.fill", "stylers": [{ "color": "#C5E3BF" }] }, { "featureType": "road", "elementType": "geometry.fill", "stylers": [{ "color": "#D1D1B8" }] }];
