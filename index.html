@@ -36,7 +36,7 @@
         
     </head>
     
-    <body onload="callData()">
+    <body>
         
         <div id="map"></div>
 
@@ -67,9 +67,9 @@
                 <option value="meanwind">Keskituuli [m/s]</option>
                 <option value="gustwind">Maksimipuuska [m/s]</option>
             </select>
-            <p id="param-text">Havaintoaseman keskituulella tarkoitetaan tyypillisesti 10 minuutin mittaisen
+            <!-- <p id="param-text">Havaintoaseman keskituulella tarkoitetaan tyypillisesti 10 minuutin mittaisen
             havaintojakson keskituulta.
-            </p>
+            </p> -->
             <p>Havaintoaseman nimen, viimeisimmät havainnot sekä kuvaajan saa näkyviin klikkaamalla
             tuulinuolta.
             </p>
@@ -114,10 +114,13 @@
         var d = new Date();
         var n = d.getFullYear();
         document.getElementById("footer-year").innerHTML = n;
+
+        saa.Tuulikartta.callData();
+
     </script>
         
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_VJw8I20HAhmlmrCEDs9qrY2cCY1cq9k&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_VJw8I20HAhmlmrCEDs9qrY2cCY1cq9k&callback=saa.Tuulikartta.initMap">
     </script>
 
 </html>
