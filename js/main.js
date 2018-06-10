@@ -270,6 +270,7 @@ var saa = saa || {};
 
     // ---------------------------------------------------------
     // Get and save user location to localstorage
+    // geolocation overrides this option
     // ---------------------------------------------------------
 
     Tuulikartta.updateLocation = function(map) {
@@ -507,6 +508,7 @@ var saa = saa || {};
 
         }
 
+
         Highcharts.chart('weather-chart', {
 
             chart: {
@@ -679,8 +681,8 @@ var saa = saa || {};
         Tuulikartta.debug('............................');
         Tuulikartta.debug('Update data and draw markers');
         Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
-        Tuulikartta.CallData();
-        updateRadarData(emptymap);
+        Tuulikartta.callData();
+        Tuulikartta.updateRadarData(emptymap);
 
 
     }, interval);
