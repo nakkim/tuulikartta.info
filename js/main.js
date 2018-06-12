@@ -121,7 +121,7 @@ var saa = saa || {};
                 Tuulikartta.debug('Done');
                 // store the Map-instance in map variable
                 emptydata = data;
-                draw(selectedparameter, emptymap, emptydata);
+                Tuulikartta.draw(selectedparameter, emptymap, emptydata);
             }
         });
     }
@@ -135,20 +135,20 @@ var saa = saa || {};
 
     $(function bunttonFunctionalities() {
 
-        // select wind parameter and display a short info text
-        // $("#select-wind-parameter").change(function () {
-        //     if ($(this).val() == "meanwind") {
-        //         var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
-        //         text += "10 minuutin mittaisen havaintojakson keskituulta.";
-        //         document.getElementById("param-text").innerHTML = text;
-        //         draw('ws_10min', emptymap, emptydata);
-        //     }
-        //     if ($(this).val() == "gustwind") {
-        //         var text = "Puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.";
-        //         document.getElementById("param-text").innerHTML = text;
-        //         draw('wg_10min', emptymap, emptydata);
-        //     }
-        // });
+        //select wind parameter and display a short info text
+        $("#select-wind-parameter").change(function () {
+            if ($(this).val() == "meanwind") {
+                // var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
+                // text += "10 minuutin mittaisen havaintojakson keskituulta.";
+                // document.getElementById("param-text").innerHTML = text;
+                Tuulikartta.draw('ws_10min', emptymap, emptydata);
+            }
+            if ($(this).val() == "gustwind") {
+                // var text = "Puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.";
+                // document.getElementById("param-text").innerHTML = text;
+                Tuulikartta.draw('wg_10min', emptymap, emptydata);
+            }
+        });
 
         // close graph box
         $('#close-gr').on('click', function () {
@@ -187,7 +187,7 @@ var saa = saa || {};
     // Trigger selected parameter and draw values to map
     // ---------------------------------------------------------
 
-    function draw(value, emptymap, emptydata) {
+    Tuulikartta.draw = function(value, emptymap, emptydata) {
         if (value === 'ws_10min') {
             Tuulikartta.drawWind(emptymap, emptydata, 'ws_10min');
             selectedparameter = value;
@@ -484,30 +484,7 @@ var saa = saa || {};
 
     Tuulikartta.drawGraph = function(data) {
 
-        var i, k;
-        var obsArray = [];
-        var forArray = [];
-        var bobsArray = [];
-        var bforArray = [];
-
-        for (i = 0; i < Object.keys(data).length; i++) {
-            var tmp1 = [];
-            var tmp2 = [];
-
-            if (data[i]['datatype'] == 'observation') {
-                tmp1.push(data[i]['epoch']);
-                tmp1.push(data[i]['ws']);
-                tmp1.push(data[i]['wg']);
-            } else {
-                tmp2.push(data[i]['epoch']);
-                tmp2.push(data[i]['ws']);
-                tmp2.push(data[i]['wg']);
-            }
-            if (tmp1.length > 0) { obsArray.push(tmp1) }
-            if (tmp2.length > 0) { forArray.push(tmp2) }
-
-        }
-
+        console.log(data);
 
         Highcharts.chart('weather-chart', {
 
@@ -573,11 +550,11 @@ var saa = saa || {};
 
             series: [{
                 name: 'Havaittu: keskituuli - maksimipuuska',
-                data: obsArray
+                data: data.obs.wind
             },
             {
                 name: 'Ennustettu: keskituuli - maksimipuuska',
-                data: forArray
+                data: data.for.wind
             }],
 
             responsive: {
