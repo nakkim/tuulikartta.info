@@ -82,7 +82,7 @@ var saa = saa || {};
 
 
     // ---------------------------------------------------------
-    // TODO: add function description
+    // Convert epoch time to properly formatted time string
     // ---------------------------------------------------------
 
     Tuulikartta.timeTotime = function(epoctime) {
@@ -105,7 +105,7 @@ var saa = saa || {};
 
 
     // ---------------------------------------------------------
-    // get observation data from getdata.php
+    // Get observation data from getdata.php
     // ---------------------------------------------------------
 
     Tuulikartta.callData = function() {
@@ -121,7 +121,9 @@ var saa = saa || {};
                 Tuulikartta.debug('Done');
                 // store the Map-instance in map variable
                 emptydata = data;
-                Tuulikartta.draw(selectedparameter, emptymap, emptydata);
+                Tuulikartta.drawWind(emptymap, emptydata, selectedparameter);
+                selectedparameter = $("#select-wind-parameter").val();
+                //Tuulikartta.draw(selectedparameter, emptymap, emptydata);
             }
         });
     }
@@ -137,17 +139,20 @@ var saa = saa || {};
 
         //select wind parameter and display a short info text
         $("#select-wind-parameter").change(function () {
-            if ($(this).val() == "meanwind") {
+            Tuulikartta.drawWind(emptymap, emptydata, $(this).val());
+
+            //if ($(this).val() == "ws_10min") {
                 // var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
                 // text += "10 minuutin mittaisen havaintojakson keskituulta.";
                 // document.getElementById("param-text").innerHTML = text;
-                Tuulikartta.draw('ws_10min', emptymap, emptydata);
-            }
-            if ($(this).val() == "gustwind") {
+                // Tuulikartta.draw('ws_10min', emptymap, emptydata);
+            //}
+            //if ($(this).val() == "wg_10min") {
                 // var text = "Puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.";
                 // document.getElementById("param-text").innerHTML = text;
-                Tuulikartta.draw('wg_10min', emptymap, emptydata);
-            }
+                // Tuulikartta.draw('wg_10min', emptymap, emptydata);
+            //}
+            
         });
 
         // close graph box
@@ -173,7 +178,7 @@ var saa = saa || {};
             }
         });
 
-        // draw radar layer again when selected radar changes
+        // draw radar layer again when selected radar layer changes
         $("#select-radar-parameter").change(function () {
             Tuulikartta.updateRadarData(emptymap);
         });
@@ -187,6 +192,7 @@ var saa = saa || {};
     // Trigger selected parameter and draw values to map
     // ---------------------------------------------------------
 
+    /*
     Tuulikartta.draw = function(value, emptymap, emptydata) {
         if (value === 'ws_10min') {
             Tuulikartta.drawWind(emptymap, emptydata, 'ws_10min');
@@ -197,6 +203,7 @@ var saa = saa || {};
             selectedparameter = value;
         }
     }
+    */
 
 
 
@@ -455,7 +462,7 @@ var saa = saa || {};
 
 
     // ---------------------------------------------------------
-    // Get data for wind graph
+    // Construct weather graph frame
     // ---------------------------------------------------------
 
     Tuulikartta.constructWeatherGraph = function(container) {
@@ -488,29 +495,29 @@ var saa = saa || {};
 
         Highcharts.chart('weather-chart', {
 
+            /*
             chart: {
                 type: 'columnrange',
-                zoomType: 'x'
-            },
-
+                //zoomType: 'x'
+            },*/
             title: {
                 text: null
             },
-
-            subtitle: {
-                text: 'Keskituulen ja maksimipuuskan vaihteluväliy'
+            rangeSelector: {
+                selected: 2
             },
-
+            subtitle: {
+                text: 'Keskituulen ja maksimipuuskan vaihteluväli'
+            },
             xAxis: {
                 type: 'datetime',
                 labels: {
                     style: {
-                        color: 'black',
+                        color: 'blac',
                         font: '12px Roboto, sans-serif'
                     }
                 }
             },
-
             yAxis: {
                 title: {
                     text: 'Tuulen nopeus [m/s]'
@@ -523,7 +530,6 @@ var saa = saa || {};
                     }
                 }
             },
-
             tooltip: {
                 crosshairs: true,
                 shared: true,
@@ -535,28 +541,40 @@ var saa = saa || {};
                     }
                 }
             },
-
             exporting: {
                 enabled: false
             },
-
             legend: {
                 enabled: true
             },
-
             credits: {
                 enabled: false
             },
-
             series: [{
+                type: 'columnrange',
                 name: 'Havaittu: keskituuli - maksimipuuska',
                 data: data.obs.wind
             },
             {
+                type: 'columnrange',         
                 name: 'Ennustettu: keskituuli - maksimipuuska',
-                data: data.for.wind
-            }],
-
+                data: data.for.wind,
+                color: '#a6a6a6'
+            }/*,
+            {
+                pointStart: data.obs.wind[0][0],
+                pointInterval: 6e5,
+                type: 'windbarb',
+                name: 'Tuulen suunta',
+                data: data.obs.dir
+            },
+            {
+                pointStart: data.for.wind[0][0],
+                pointInterval: 6e5,
+                type: 'windbarb',
+                name: 'Tuulen suunta',
+                data: data.for.dir
+            }*/],
             responsive: {
                 rules: [{
                     condition: {
@@ -571,7 +589,6 @@ var saa = saa || {};
             }
 
         });
-
     }
 
 

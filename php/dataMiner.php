@@ -337,6 +337,8 @@ class DataMiner{
 
         $date = new DateTime();
         $starttime = ($date->format('Y-m-d\TH:i:m'));
+        $endtime = $date->add(new DateInterval('PT12H'));
+        $endtime = ($endtime->format('Y-m-d\TH:i:m'));
         
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
@@ -348,10 +350,10 @@ class DataMiner{
         $url .= "&missingtext=-";
         $url .= "&timestep=10";
         $url .= "&starttime={$starttime}";
-        $url .= "&endtimetime=6h";
+        $url .= "&endtime={$endtime}";
         $url .= "&maxlocations=1";
 
-        $data = file_get_contents($url) or die('Unable to get data from {$url}');
+        $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
 
         /* add datatype, station and epoch time information to each observation */

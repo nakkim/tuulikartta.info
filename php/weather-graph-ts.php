@@ -46,7 +46,7 @@ function formatWindData($data) {
         foreach($dataArray as $array) {
             
             $wind .= "[".$array["epoch"].",".$array["ws"].",".$array["wg"]."],";
-            $dir  .= "[".$array["epoch"].",".$array["wd"]."],";
+            $dir  .= "[".$array["ws"].",".$array["wd"]."],";
         }
 
         // remove last comma and add closing bracket
