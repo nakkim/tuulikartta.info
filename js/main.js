@@ -10,10 +10,11 @@ var saa = saa || {};
 
     'use strict';   
 
-    var debugvalue = false;
-    var emptydata;
-    var emptymap;
-    var emptyradar;
+    // var emptydata;
+    // var emptymap;
+    // var emptyradar;
+
+    saa.Tuulikartta.debugvalue = false;
     var emptymarker = [];
 
     // observation update interval in ms
@@ -120,10 +121,10 @@ var saa = saa || {};
             success: function (data) {
                 Tuulikartta.debug('Done');
                 // store the Map-instance in map variable
-                emptydata = data;
-                Tuulikartta.drawWind(emptymap, emptydata, selectedparameter);
+                saa.Tuulikartta.data = data;
+                Tuulikartta.drawWind(saa.Tuulikartta.map, saa.Tuulikartta.data, selectedparameter);
                 selectedparameter = $("#select-wind-parameter").val();
-                //Tuulikartta.draw(selectedparameter, emptymap, emptydata);
+                //Tuulikartta.draw(selectedparameter, saa.Tuulikartta.map, saa.Tuulikartta.data);
             }
         });
     }
@@ -139,20 +140,7 @@ var saa = saa || {};
 
         //select wind parameter and display a short info text
         $("#select-wind-parameter").change(function () {
-            Tuulikartta.drawWind(emptymap, emptydata, $(this).val());
-
-            //if ($(this).val() == "ws_10min") {
-                // var text = "Havaintoaseman keskituulella tarkoitetaan tyypillisesti ";
-                // text += "10 minuutin mittaisen havaintojakson keskituulta.";
-                // document.getElementById("param-text").innerHTML = text;
-                // Tuulikartta.draw('ws_10min', emptymap, emptydata);
-            //}
-            //if ($(this).val() == "wg_10min") {
-                // var text = "Puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.";
-                // document.getElementById("param-text").innerHTML = text;
-                // Tuulikartta.draw('wg_10min', emptymap, emptydata);
-            //}
-            
+            Tuulikartta.drawWind(saa.Tuulikartta.map, saa.Tuulikartta.data, $(this).val());
         });
 
         // close graph box
@@ -180,34 +168,14 @@ var saa = saa || {};
 
         // draw radar layer again when selected radar layer changes
         $("#select-radar-parameter").change(function () {
-            Tuulikartta.updateRadarData(emptymap);
+            Tuulikartta.updateRadarData(saa.Tuulikartta.map);
         });
 
     });
 
 
 
-
-    // ---------------------------------------------------------
-    // Trigger selected parameter and draw values to map
-    // ---------------------------------------------------------
-
-    /*
-    Tuulikartta.draw = function(value, emptymap, emptydata) {
-        if (value === 'ws_10min') {
-            Tuulikartta.drawWind(emptymap, emptydata, 'ws_10min');
-            selectedparameter = value;
-        }
-        if (value === 'wg_10min') {
-            Tuulikartta.drawWind(emptymap, emptydata, 'wg_10min');
-            selectedparameter = value;
-        }
-    }
-    */
-
-
-
-
+    
     // ---------------------------------------------------------
     // initialize Google Map and set geolocation 
     // ---------------------------------------------------------
@@ -253,7 +221,7 @@ var saa = saa || {};
         }
 
         Tuulikartta.debug('Done');
-        emptymap = map;
+        saa.Tuulikartta.map = map;
         Tuulikartta.updateLocation(map);
         Tuulikartta.updateRadarData(map);
 
@@ -373,6 +341,7 @@ var saa = saa || {};
 
 
 
+
     // ---------------------------------------------------------
     // populate infowindow with observations
     // ---------------------------------------------------------
@@ -400,6 +369,8 @@ var saa = saa || {};
         return output;
 
     }
+
+
 
 
     // ---------------------------------------------------------
@@ -461,6 +432,7 @@ var saa = saa || {};
 
 
 
+
     // ---------------------------------------------------------
     // Construct weather graph frame
     // ---------------------------------------------------------
@@ -485,13 +457,12 @@ var saa = saa || {};
 
 
 
+
     // ---------------------------------------------------------
     // Draw graph
     // ---------------------------------------------------------
 
     Tuulikartta.drawGraph = function(data) {
-
-        console.log(data);
 
         Highcharts.chart('weather-chart', {
 
@@ -593,6 +564,7 @@ var saa = saa || {};
 
 
 
+
     // ---------------------------------------------------------
     // Draw radar data on map
     // ---------------------------------------------------------
@@ -634,6 +606,7 @@ var saa = saa || {};
 
 
 
+
     // ---------------------------------------------------------
     // Cookie functions
     // https://quirksmode.org/js/cookies.html
@@ -666,6 +639,8 @@ var saa = saa || {};
 
 
 
+
+
     // ---------------------------------------------------------
     // Update map icons and data with set interval
     // ---------------------------------------------------------
@@ -676,7 +651,7 @@ var saa = saa || {};
         Tuulikartta.debug('Update data and draw markers');
         Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
         Tuulikartta.callData();
-        Tuulikartta.updateRadarData(emptymap);
+        Tuulikartta.updateRadarData(saa.Tuulikartta.map);
 
 
     }, interval);
