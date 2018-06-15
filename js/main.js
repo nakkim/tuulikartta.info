@@ -624,7 +624,7 @@ var saa = saa || {};
 
                 // draw radar layer
                 map.overlayMapTypes.clear();
-                loadWMS(map, "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms?", customParams);
+                loadWMS(map, "https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms?", customParams);
             });
 
         } else {
