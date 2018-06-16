@@ -571,7 +571,7 @@ var saa = saa || {};
 
     Tuulikartta.updateRadarData = function(map) {
 
-        map.overlayMapTypes.clear();
+        //map.overlayMapTypes.clear();
         var layer = document.getElementById("select-radar-parameter").value;
 
         if (layer) {
