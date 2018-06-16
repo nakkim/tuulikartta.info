@@ -125,7 +125,6 @@ var saa = saa || {};
 
     weatherGraph.drawGraph = function(data) {
 
-        console.log(weatherGraph.getTimeZoneDirrerence());
         Highcharts.chart('weather-chart', {
 
             title: {
