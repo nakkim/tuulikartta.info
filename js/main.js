@@ -145,7 +145,7 @@ var saa = saa || {};
 
         // close graph box
         $('#close-gr').on('click', function () {
-            weatherGraph.opengraphbox();
+            saa.weatherGraph.opengraphbox();
         });
 
         // select observations dialog 
