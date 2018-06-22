@@ -16,16 +16,23 @@
         <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
 
         <title>tuulikartta.info</title>
-
+        
+        <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script> 
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link href="css/style.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+        <script src="js/vendor/leaflet.rotatedMarker.js"></script>
+        <!--<script src="js/leaflet.extra-markers.js"></script>-->
         
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
         <script src="https://use.fontawesome.com/fdf452f08e.js"></script>    
-        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        
         <script src="https://code.highcharts.com/stock/highstock.js"></script>
         <script src="https://code.highcharts.com/stock/highcharts-more.js"></script>
         <script src="https://code.highcharts.com/modules/data.js"></script>
@@ -40,7 +47,7 @@
     
     <body>
         
-        <div id="map"></div>
+        <div id="map" styles="z-index:1"></div>
 
         <div id="data-info">
             <div class="buttons-coll">
@@ -76,6 +83,7 @@
             tuulinuolta.
             </p>
 
+            <!--
             <p style="font-weight: bold;">Tutkakuva</p>
             <div>
                 <select id="select-radar-parameter" class="dropdown">
@@ -83,6 +91,7 @@
                     <option value="suomi_dbz_eureffin">Suomi dBZ</option>
                 </select>
             </div>
+            -->
 
             <footer>
                 <p>Ville Ilkka, 2017-<span id="footer-year"></span></p>
@@ -118,11 +127,14 @@
         document.getElementById("footer-year").innerHTML = n;
 
         saa.Tuulikartta.callData();
+        saa.Tuulikartta.initMap();
 
     </script>
-        
+
+    <!--
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_VJw8I20HAhmlmrCEDs9qrY2cCY1cq9k&callback=saa.Tuulikartta.initMap">
     </script>
+    -->
 
 </html>
