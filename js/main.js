@@ -14,7 +14,7 @@ var saa = saa || {};
     // var emptymap;
     // var emptyradar;
 
-    saa.Tuulikartta.debugvalue = false;
+    saa.Tuulikartta.debugvalue = true;
     saa.Tuulikartta.markerGroup = L.layerGroup();
     var emptymarker = [];
 
@@ -326,43 +326,80 @@ var saa = saa || {};
 
         var sizeofdata = parseInt(Object.keys(data).length);
         saa.Tuulikartta.markerGroup.addTo(saa.Tuulikartta.map);
-        saa.Tuulikartta.debug("Number of markers: "+Object.keys(saa.Tuulikartta.markerGroup._layers).length);
         var valid = 0;
 
         for (var i = 0; i < sizeofdata; i++) {
             var location = { lat: parseFloat(data[i]['lat']), lng: parseFloat(data[i]['lon']) };
             var time = Tuulikartta.timeTotime(data[i]['epoctime']);
             var latlon = data[i]["lat"] + ',' + data[i]["lon"];
-            if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
 
-                valid++;
+            if(param == "ws_10min" || param == "wg_10min") {
 
-                var icon = L.icon({
-                    iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(data[i][param])+'.svg',
-                    iconSize:     [50, 50],  // size of the icon
-                    iconAnchor:   [25, 27],  // point of the icon which will correspond to marker's location
-                    popupAnchor:  [0, 0],    // point from which the popup should open relative to the iconAnchor
-                });
+                if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
 
-                var marker = L.marker([data[i]['lat'],data[i]['lon']],
-                                      {
-                                          icon: icon,
-                                          rotationAngle: Tuulikartta.resolveWindDirection(data[i]['wd_10min'])
-                                      }
-                                     ).addTo(saa.Tuulikartta.markerGroup);
-                marker.bindPopup(saa.Tuulikartta.populateInfoWindow(data[i]));
+                    valid++;
 
-                L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
-                         {
-                             interactive: false,
-                             keyboard: false,
-                             icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
-                         }
-                        ).addTo(saa.Tuulikartta.markerGroup);
+                    var icon = L.icon({
+                        iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(data[i][param])+'.svg',
+                        iconSize:     [50, 50],  // size of the icon
+                        iconAnchor:   [25, 27],  // point of the icon which will correspond to marker's location
+                        popupAnchor:  [0, 0],    // point from which the popup should open relative to the iconAnchor
+                    });
+
+                    var marker = L.marker([data[i]['lat'],data[i]['lon']],
+                                        {
+                                            icon: icon,
+                                            rotationAngle: Tuulikartta.resolveWindDirection(data[i]['wd_10min'])
+                                        }
+                                        ).addTo(saa.Tuulikartta.markerGroup);
+                    marker.bindPopup(saa.Tuulikartta.populateInfoWindow(data[i]));
+
+                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
+                            {
+                                interactive: false,
+                                keyboard: false,
+                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            }
+                            ).addTo(saa.Tuulikartta.markerGroup);
+                }
+            }
+
+            if (param == "ri_10min") {
+
+                if (data[i]['ri_10min'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
+
+                    valid++;
+
+                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
+                            {
+                                interactive: false,
+                                keyboard: false,
+                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            }
+                            ).addTo(saa.Tuulikartta.markerGroup);
+                }
 
             }
+
+            if (param == "r_1h") {
+
+                if (data[i]['r_1h'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
+
+                    valid++;
+
+                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
+                            {
+                                interactive: false,
+                                keyboard: false,
+                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            }
+                            ).addTo(saa.Tuulikartta.markerGroup);
+                }
+
+            }
+
         }
-        //var time = saa.Tuulikartta.data[0]['time'].split('T')
+
         var timestring = saa.Tuulikartta.data[0]['time'];
         var timeobj = new Date(timestring);
         var timestring = Tuulikartta.timeTotime(timeobj / 1000);
