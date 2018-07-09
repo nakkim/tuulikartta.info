@@ -46,7 +46,7 @@ class DataMiner{
 
     public function roaddata() {
         $settings = array();
-        $settings['parameter']      = 'windspeedms,winddirection,WG';
+        $settings['parameter']      = 'windspeedms,winddirection,WG,PRI';
         $settings['timestep']       = '10';
         $settings['apikey']         = 'd6985c41-bfc2-4afa-95a7-72cd2acb604c';
         $settings['storedQueryId']  = 'livi::observations::road::default::timevaluepair';
@@ -130,7 +130,7 @@ class DataMiner{
 
     public function synopdata() {
         $settings = array();
-        $settings['parameter']      = 'ws_10min,wg_10min,wd_10min';
+        $settings['parameter']      = 'ws_10min,wg_10min,wd_10min,r_1h,ri_10min';
         $settings['timestep']       = '10';
         $settings['apikey']         = 'd6985c41-bfc2-4afa-95a7-72cd2acb604c';
         $settings['storedQueryId']  = 'fmi::observations::weather::timevaluepair';

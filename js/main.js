@@ -8,13 +8,14 @@ var saa = saa || {};
 (function(Tuulikartta, undefined)
 {
 
-    'use strict';   
+    'use strict';
 
     // var emptydata;
     // var emptymap;
     // var emptyradar;
 
-    saa.Tuulikartta.debugvalue = false;
+    saa.Tuulikartta.debugvalue = true;
+    saa.Tuulikartta.markerGroup = L.layerGroup();
     var emptymarker = [];
 
     // observation update interval in ms
@@ -29,7 +30,7 @@ var saa = saa || {};
     var zoomlevel   = localStorage.getItem("zoomlevel") ? localStorage.getItem("zoomlevel") : 8;
 
     var selectedparameter = localStorage.getItem("selectedparameter") ? localStorage.getItem("longtitude") : "ws_10min";
-    var toggleDataSelect = "closed";
+    var toggleDataSelect = "close";
 
 
 
@@ -45,39 +46,39 @@ var saa = saa || {};
     // http://ilmatieteenlaitos.fi/tuulet
     // ---------------------------------------------------------
 
-    var severity = ['white', // 2-3
-        '#e6f7ff', // 3-4
-        '#ccffcc', // 4-5     kohtalaista
-        '#ccffcc', // 5-6
-        '#ccffcc', // 6-7
-        '#ffff99', // 7-8     navakkaa
-        '#ffff99', // 8-9
-        '#ffff99', // 9-10
-        '#ffff99', // 10-11
-        '#ffff99', // 11-12
-        '#ffff99', // 12-13
-        '#ffff99', // 13-14
-        '#ffcc00', // 14-15   kovaa
-        '#ffcc00', // 15-16
-        '#ffcc00', // 16-17
-        '#ffcc00', // 17-18
-        '#ffcc00', // 18-19
-        '#ffcc00', // 18-19
-        '#ffcc00', // 19-20
-        '#ffcc00', // 21-21
-        '#ff3300', // 21-22   myrskyä
-        '#ff3300', // 22-23
-        '#ff3300', // 23-24
-        '#ff3300', // 24-25
-        '#ff0066', // 25-26   kovaa myrskyä
-        '#ff0066', // 26-27
-        '#ff0066', // 27-28
-        '#cc0099', // 28-29   ankaraa myrskyä
-        '#cc0099', // 29-30
-        '#cc0099', // 30-31
-        '#cc0099', // 31-32
-        '#6600cc', // 32-     hirmumyrskyä
-    ];
+    //var severity = ['white', // 2-3
+    //    '#e6f7ff', // 3-4
+    //    '#ccffcc', // 4-5     kohtalaista
+    //    '#ccffcc', // 5-6
+    //    '#ccffcc', // 6-7
+    //    '#ffff99', // 7-8     navakkaa
+    //    '#ffff99', // 8-9
+    //    '#ffff99', // 9-10
+    //    '#ffff99', // 10-11
+    //    '#ffff99', // 11-12
+    //    '#ffff99', // 12-13
+    //    '#ffff99', // 13-14
+    //    '#ffcc00', // 14-15   kovaa
+    //    '#ffcc00', // 15-16
+    //    '#ffcc00', // 16-17
+    //    '#ffcc00', // 17-18
+    //    '#ffcc00', // 18-19
+    //    '#ffcc00', // 18-19
+    //    '#ffcc00', // 19-20
+    //    '#ffcc00', // 21-21
+    //    '#ff3300', // 21-22   myrskyä
+    //    '#ff3300', // 22-23
+    //    '#ff3300', // 23-24
+    //    '#ff3300', // 24-25
+    //    '#ff0066', // 25-26   kovaa myrskyä
+    //   '#ff0066', // 26-27
+    //   '#ff0066', // 27-28
+    //   '#cc0099', // 28-29   ankaraa myrskyä
+    //   '#cc0099', // 29-30
+    //   '#cc0099', // 30-31
+    //   '#cc0099', // 31-32
+    //   '#6600cc', // 32-     hirmumyrskyä
+    //];
 
 
 
@@ -122,9 +123,8 @@ var saa = saa || {};
                 Tuulikartta.debug('Done');
                 // store the Map-instance in map variable
                 saa.Tuulikartta.data = data;
-                Tuulikartta.drawWind(saa.Tuulikartta.map, saa.Tuulikartta.data, selectedparameter);
+                Tuulikartta.drawWind(saa.Tuulikartta.data, $("#select-wind-parameter").val());
                 selectedparameter = $("#select-wind-parameter").val();
-                //Tuulikartta.draw(selectedparameter, saa.Tuulikartta.map, saa.Tuulikartta.data);
             }
         });
     }
@@ -138,9 +138,9 @@ var saa = saa || {};
 
     $(function bunttonFunctionalities() {
 
-        //select wind parameter and display a short info text
+        //select wind parameter
         $("#select-wind-parameter").change(function () {
-            Tuulikartta.drawWind(saa.Tuulikartta.map, saa.Tuulikartta.data, $(this).val());
+            Tuulikartta.drawWind(saa.Tuulikartta.data, $(this).val());
         });
 
         // close graph box
@@ -148,10 +148,10 @@ var saa = saa || {};
             saa.weatherGraph.opengraphbox();
         });
 
-        // select observations dialog 
+        // select observations dialog
         var obsValues = !!Tuulikartta.readCookie('observation_values_hidden');
         $("#data-content-select").dialog({
-            position: { my: 'bottom+90', at: 'left+182' },
+            position: { my: 'bottom+90', at: 'rleft+182' },
             autoOpen: !obsValues,
             close: function () {
                 Tuulikartta.createCookie('observation_values_hidden', 'true', 7);
@@ -171,61 +171,94 @@ var saa = saa || {};
             Tuulikartta.updateRadarData(saa.Tuulikartta.map);
         });
 
+        // ---------------------------------------------------------
+        // Get and save user location to localstorage
+        // ---------------------------------------------------------
+
+        saa.Tuulikartta.map.on('move', function() {
+            var lat = saa.Tuulikartta.map.getCenter().lat;
+            var lon = saa.Tuulikartta.map.getCenter().lng;
+            var zoom = saa.Tuulikartta.map.getZoom();
+            localStorage.setItem("latitude", lat);
+            localStorage.setItem("longitude", lon);
+            localStorage.setItem("zoomlevel", zoom);
+        });
+
     });
 
 
 
-    
+
     // ---------------------------------------------------------
-    // initialize Google Map and set geolocation 
+    // initialize Google Map and set geolocation
     // ---------------------------------------------------------
 
     Tuulikartta.initMap = function() {
-        Tuulikartta.debug('Initializing map... ');
+
+        var endDate = new Date();
+        var minutes = Math.floor(endDate.getUTCMinutes()/5)*5;
+        endDate.setUTCMinutes(minutes, 0, 0);
+        var startDate = endDate - 3600*1000;
+
         var lat = parseFloat(latitude),
             lon = parseFloat(longtitude),
             zoom = parseInt(zoomlevel);
-        var centerpoint = { lat: lat, lng: lon };
-        var map = new google.maps.Map(document.getElementById('map'), {
+
+        var map = L.map('map', {
             zoom: zoom,
-            minZoom: 6,
-            maxZoom: 10,
-            styles: mapstyle,
-            center: centerpoint,
-            streetViewControl: false,
-            mapTypeControl: false,
-            fullscreenControl: false
+            minZoom: 5,
+            maxZoom: 11,
+            fullscreenControl: true,
+            timeDimension: false,
+            timeDimensionControl: false,
+            scrollWheelZoom: true,
+            center: [lat,lon],
+            timeDimensionControlOptions: {
+                autoPlay: false,
+                speedSlider: false,
+                playerOptions: {
+                    buffer: 10,
+                    transitionTime: 2000,
+                    loop: true,
+                }
+            }
         });
-        // Try HTML5 geolocation.
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                var pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                map.setCenter(pos);
-                // add pin to use location
-                // https://sites.google.com/site/gmapsdevelopment/
-                var base = 'https://maps.gstatic.com/mapfiles/ridefinder-images/';
-                var marker = new google.maps.Marker({
-                    position: pos,
-                    map: map,
-                    icon: 'symbols/blue-pushpin.png'
-                });
-            }, function () {
-                Tuulikartta.handleLocationError(true, map.getCenter());
-            });
-        } else {
-            // Browser doesn't support Geolocation
-            Tuulikartta.handleLocationError(false, map.getCenter());
-        }
 
-        Tuulikartta.debug('Done');
+        L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">Tuulikartta.info</a> contributors'
+        }).addTo(map);
+        
         saa.Tuulikartta.map = map;
-        Tuulikartta.updateLocation(map);
-        Tuulikartta.updateRadarData(map);
+        Tuulikartta.initWMS();
+    }
 
-        return map;
+    Tuulikartta.initWMS = function() {
+
+        var dataWMS = "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms";
+
+        var radar5min = L.tileLayer.wms(dataWMS, {
+            layers: 'fmi:observation:radar:PrecipitationRate5min',
+            format: 'image/png',
+            tileSize: 1024,
+            transparent: true,
+            opacity: 0.7,
+            version: '1.3.0',
+            crs: L.CRS.EPSG3857,
+            opacity: '0.7'
+        });
+        
+        var overlayMaps = {
+            "Tutka - 5min sadekertymä": radar5min
+        };
+        
+        saa.Tuulikartta.map.on("overlayadd", function(eventLayer) {
+            if (eventLayer.name == "Tutka - 5min sadekertymä") {
+                saa.Tuulikartta.activeLayer = radar5min;
+                Tuulikartta.updateRadarTime();
+            }
+        })
+        
+        L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map);
     }
 
 
@@ -244,100 +277,135 @@ var saa = saa || {};
 
 
     // ---------------------------------------------------------
-    // Get and save user location to localstorage
-    // geolocation overrides this option
+    // Resolve wind speed and icon and  draw wind data
     // ---------------------------------------------------------
 
-    Tuulikartta.updateLocation = function(map) {
-        google.maps.event.addListener(map, "bounds_changed", function () {
-            var lat = map.getCenter().lat();
-            var lon = map.getCenter().lng();
-            var zoom = map.getZoom();
-            localStorage.setItem("latitude", lat);
-            localStorage.setItem("longitude", lon);
-            localStorage.setItem("zoomlevel", zoom);
-        });
+    Tuulikartta.resolveWindSpeed = function(windspeed) {
+        windspeed = parseFloat(windspeed)
+        if (windspeed < 1)
+            return "calm"
+        else if (windspeed >= 1 && windspeed < 2)
+            return "light"
+        else if (windspeed >= 2 && windspeed < 7)
+            return "moderate"
+        else if (windspeed >= 7 && windspeed < 14)
+            return "brisk"
+        else if (windspeed >= 14 && windspeed < 21)
+            return "hard"
+        else if (windspeed >= 21 && windspeed < 25)
+            return "storm"
+        else if (windspeed >= 25 && windspeed < 28)
+            return "severestorm"
+        else if (windspeed >= 28 && windspeed < 32)
+            return "extremestorm"
+        else if (windspeed >= 32)
+            return "hurricane"
+        else
+            return "calm"
     }
 
+    Tuulikartta.resolveWindDirection = function(winddirection) {
+        var winddir = parseFloat(winddirection);
+        return (winddir+180)%360;
+    }
 
+    Tuulikartta.createLabelIcon = function(labelClass,labelText){
+        return L.divIcon({
+            iconSize: null,
+            className: labelClass,
+            iconAnchor: [10, 7],
+            html: labelText
+        })
+    }
 
+    Tuulikartta.drawWind = function(data, param) {
 
-    // ---------------------------------------------------------
-    // draw wind data
-    // ---------------------------------------------------------
-
-    Tuulikartta.drawWind = function(map, data, param) {
-
+        // data = saa.Tuulikartta.data
         // remove all old markers
-        for (var i = 0; i < emptymarker.length; i++) {
-            emptymarker[i].setMap(null);
-        }
-        emptymarker.length = 0;
+        saa.Tuulikartta.markerGroup.clearLayers();
 
         var sizeofdata = parseInt(Object.keys(data).length);
+        saa.Tuulikartta.markerGroup.addTo(saa.Tuulikartta.map);
         var valid = 0;
-        for (i = 0; i < sizeofdata; i++) {
+
+        for (var i = 0; i < sizeofdata; i++) {
             var location = { lat: parseFloat(data[i]['lat']), lng: parseFloat(data[i]['lon']) };
             var time = Tuulikartta.timeTotime(data[i]['epoctime']);
             var latlon = data[i]["lat"] + ',' + data[i]["lon"];
-            if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
-                valid++;
-                if (param == 'ws_10min') {
-                    var text = data[i]['ws_10min'];
-                    var color = severity[Math.floor(data[i]['ws_10min'])];
-                }
-                if (param == 'wg_10min') {
-                    var text = data[i]['wg_10min'];
-                    var color = severity[Math.floor(data[i]['wg_10min'])];
-                }
-                var marker = new google.maps.Marker({
-                    clickable: true,
-                    label: {
-                        text: text,
-                        color: 'black',
-                        fontSize: '17px'
-                    },
-                    icon: {
-                        //animation: google.maps.Animation.DROP,
-                        //path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                        path: 'm -33.990361,-1.1968618 c 0,-18.4590402 35.3952361,-47.3967002 35.0092561,-47.1095602 0,0 35.5166199,28.65052 35.5166199,47.1095602 0,18.4590298 -15.78065,33.4108498 -35.2629399,33.4108498 -19.4822861,0 -35.2629361,-14.95182 -35.2629361,-33.4108498 z',
-                        scale: .5,
-                        fillColor: color,
-                        fillOpacity: 0.7,
-                        strokeColor: 'black',
-                        strokeWeight: 1.5,
-                        rotation: ((parseFloat(data[i]['wd_10min']) + 180) % 360),
-                    },
-                    position: location,
-                    map: map
-                });
-                emptymarker.push(marker);
 
-                var output = Tuulikartta.populateInfoWindow(data[i]);
+            if(param == "ws_10min" || param == "wg_10min") {
 
-                marker.info = new google.maps.InfoWindow({
-                    content: output //stationInfo + stationType + latestObservation + meanWind + gustWind + degWind + dataGraph
-                });
-                google.maps.event.addListener(marker, 'click', function () {
-                    // this = marker
-                    var marker_map = this.getMap();
-                    this.info.open(marker_map, this);
-                    // Note: If you call open() without passing a marker, the InfoWindow will use
-                    // the position specified upon construction through the InfoWindowOptions object literal.
-                });
-                google.maps.event.addListener(marker, 'click', function () {
-                    // getObservationGraph(latlon,data[i]["fmisid"],data[i]["type"]);
-                });
+                if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
+
+                    valid++;
+
+                    var icon = L.icon({
+                        iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(data[i][param])+'.svg',
+                        iconSize:     [50, 50],  // size of the icon
+                        iconAnchor:   [25, 27],  // point of the icon which will correspond to marker's location
+                        popupAnchor:  [0, 0],    // point from which the popup should open relative to the iconAnchor
+                    });
+
+                    var marker = L.marker([data[i]['lat'],data[i]['lon']],
+                                        {
+                                            icon: icon,
+                                            rotationAngle: Tuulikartta.resolveWindDirection(data[i]['wd_10min'])
+                                        }
+                                        ).addTo(saa.Tuulikartta.markerGroup);
+                    marker.bindPopup(saa.Tuulikartta.populateInfoWindow(data[i]));
+
+                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
+                            {
+                                interactive: false,
+                                keyboard: false,
+                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            }
+                            ).addTo(saa.Tuulikartta.markerGroup);
+                }
             }
+
+            if (param == "ri_10min") {
+
+                if (data[i]['ri_10min'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
+
+                    valid++;
+
+                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
+                            {
+                                interactive: false,
+                                keyboard: false,
+                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            }
+                            ).addTo(saa.Tuulikartta.markerGroup);
+                }
+
+            }
+
+            if (param == "r_1h") {
+
+                if (data[i]['r_1h'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
+
+                    valid++;
+
+                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
+                            {
+                                interactive: false,
+                                keyboard: false,
+                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            }
+                            ).addTo(saa.Tuulikartta.markerGroup);
+                }
+
+            }
+
         }
-        var time = data[0]['time'].split('T')
-        var timestring = data[0]['time'];
-        var timeobj = new Date(timestring).getTime();
+
+        var timestring = saa.Tuulikartta.data[0]['time'];
+        var timeobj = new Date(timestring);
         var timestring = Tuulikartta.timeTotime(timeobj / 1000);
-        document.getElementById("available-observation-time").innerHTML = timestring
+        document.getElementById("available-observation-time").innerHTML = timestring;
         Tuulikartta.debug("parameters drawn " + valid + "/" + parseInt(Object.keys(data).length));
     }
-
 
 
 
@@ -408,7 +476,7 @@ var saa = saa || {};
             });
 
         } else {
-            map.overlayMapTypes.clear();
+            //map.overlayMapTypes.clear();
         }
     }
 
@@ -446,55 +514,32 @@ var saa = saa || {};
     }
 
 
+    Tuulikartta.updateRadarTime = function() {
+        $.getJSON("php/radartime.php?layer=fmi:observation:radar:PrecipitationRate5min", function (result) {
+            var starttime = result['starttime'];
+            var endtime = result['endtime'];
 
+            var time = new Date(endtime).getTime() / 1000;
+            var time = Tuulikartta.timeTotime(time);
 
+            document.getElementById('available-radar').innerHTML = time; 
+        })
+    }
+    
 
     // ---------------------------------------------------------
     // Update map icons and data with set interval
     // ---------------------------------------------------------
 
     setInterval(function () {
-
         Tuulikartta.debug('............................');
         Tuulikartta.debug('Update data and draw markers');
         Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
         Tuulikartta.callData();
-        Tuulikartta.updateRadarData(saa.Tuulikartta.map);
-
-
+        if(typeof saa.Tuulikartta.activeLayer !== "undefined") {
+            saa.Tuulikartta.activeLayer.setParams({ preventCache: Date.now() }, false);
+            Tuulikartta.updateRadarTime();
+        }
     }, interval);
-
-    // https://snazzymaps.com/style/58914/new-road-base-2016
-    // https://snazzymaps.com/style/77/clean-cut
-    var mapstyle = [
-    {
-        featureType: "road",
-        elementType: "geometry",
-        stylers: [{
-            lightness: 100
-        }, {
-            visibility: "simplified"
-        }]
-    }, {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [{
-            "visibility": "on"
-        }, {
-            "color": "#C6E2FF",
-        }]
-    }, {
-        "featureType": "poi",
-        "elementType": "geometry.fill",
-        "stylers": [{
-            "color": "#C5E3BF"
-        }]
-    }, {
-        "featureType": "road",
-        "elementType": "geometry.fill",
-        "stylers": [{
-            "color": "#D1D1B8"
-        }]
-    }];
 
 }(saa.Tuulikartta = saa.Tuulikartta || {}));

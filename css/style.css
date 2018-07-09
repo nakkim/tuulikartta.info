@@ -60,12 +60,17 @@ footer a {
 
 #data-info {
     /*height: 89px;*/
+    z-index: 1000;
     overflow: auto;
-    margin: 0px 10px 0px 10px;
-    padding: 5px 0 5px 0;
+    margin: 0px 10px 0px 30px;
+    padding: 0 0 5px 0;
 
     position: fixed;
     top: 0px;
+}
+
+.ui-widget.ui-widget-content {
+    z-index: 1000;
 }
 
 #data-info p {
@@ -162,7 +167,7 @@ footer a {
 }
 
 #graph-container.expanded {
-    z-index: 9;
+    z-index: 1000;
     height: 100%;
     width: 830px;
     position: fixed;
@@ -170,6 +175,7 @@ footer a {
     right: 0;
     background-color: white;
     overflow: hidden;
+    z-index: 1000;
 }
 
 #graph-container.collapsed {
@@ -309,7 +315,7 @@ button .buttons-coll {
 }
 
 button {
-    margin: 20px;
+    margin: 12px 15px 15px 25px;
 }
 
 .custom-btn {
@@ -338,12 +344,11 @@ button {
 
 .btn-1:active {top: 2px;}
 
-
 /* mobile devices and smaller screens */
 
 @media screen and (max-width: 1190px) {
     #graph-container.expanded {
-        z-index: 9;
+        z-index: 1000;
         height: 100%;
         width: 100%;
         position: fixed;
@@ -361,7 +366,7 @@ button {
     }
     
     #info-container.expanded {
-	z-index: 9;
+	z-index: 1000;
         height: 100%;
         width: 100%;
         position: fixed;
@@ -377,7 +382,7 @@ button {
     }
 	
     #graph-container.expanded {
-        z-index: 9;
+        z-index: 1000;
 	height: 100%;
         width: 100%;
         position: fixed;
@@ -434,4 +439,11 @@ button {
         height: 250px;
         /*height: calc(100% - 90px);*/
     }
+}
+
+.textLabelclass {
+    font-weight: bold;
+    color: black;
+    margin-left: -18px; 
+    font-size: 13px;
 }
