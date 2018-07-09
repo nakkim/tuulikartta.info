@@ -441,13 +441,9 @@ button {
     }
 }
 
-
-
-
-
 .textLabelclass {
-    font-weight: 300;
+    font-weight: bold;
     color: black;
-    margin-left: -18px; !important
-    font-size: 18px;
+    margin-left: -18px; 
+    font-size: 13px;
 }
