@@ -10,10 +10,6 @@ var saa = saa || {};
 
     'use strict';
 
-    // var emptydata;
-    // var emptymap;
-    // var emptyradar;
-
     saa.Tuulikartta.debugvalue = true;
     saa.Tuulikartta.markerGroup = L.layerGroup();
     var emptymarker = [];
@@ -39,46 +35,6 @@ var saa = saa || {};
             console.log(par);
         }
     }
-
-
-    // ---------------------------------------------------------
-    // Wind classes
-    // http://ilmatieteenlaitos.fi/tuulet
-    // ---------------------------------------------------------
-
-    //var severity = ['white', // 2-3
-    //    '#e6f7ff', // 3-4
-    //    '#ccffcc', // 4-5     kohtalaista
-    //    '#ccffcc', // 5-6
-    //    '#ccffcc', // 6-7
-    //    '#ffff99', // 7-8     navakkaa
-    //    '#ffff99', // 8-9
-    //    '#ffff99', // 9-10
-    //    '#ffff99', // 10-11
-    //    '#ffff99', // 11-12
-    //    '#ffff99', // 12-13
-    //    '#ffff99', // 13-14
-    //    '#ffcc00', // 14-15   kovaa
-    //    '#ffcc00', // 15-16
-    //    '#ffcc00', // 16-17
-    //    '#ffcc00', // 17-18
-    //    '#ffcc00', // 18-19
-    //    '#ffcc00', // 18-19
-    //    '#ffcc00', // 19-20
-    //    '#ffcc00', // 21-21
-    //    '#ff3300', // 21-22   myrskyä
-    //    '#ff3300', // 22-23
-    //    '#ff3300', // 23-24
-    //    '#ff3300', // 24-25
-    //    '#ff0066', // 25-26   kovaa myrskyä
-    //   '#ff0066', // 26-27
-    //   '#ff0066', // 27-28
-    //   '#cc0099', // 28-29   ankaraa myrskyä
-    //   '#cc0099', // 29-30
-    //   '#cc0099', // 30-31
-    //   '#cc0099', // 31-32
-    //   '#6600cc', // 32-     hirmumyrskyä
-    //];
 
 
 
@@ -246,9 +202,21 @@ var saa = saa || {};
             crs: L.CRS.EPSG3857,
             opacity: '0.7'
         });
+
+        var flash60min = L.tileLayer.wms(dataWMS, {
+            layers: 'fmi:observation:flashicon',
+            format: 'image/png',
+            tileSize: 1024,
+            transparent: true,
+            opacity: 0.7,
+            version: '1.3.0',
+            crs: L.CRS.EPSG3857,
+            opacity: '0.7'
+        });
         
         var overlayMaps = {
-            "Tutka - 5min sadekertymä": radar5min
+            "Tutka - 5min sadekertymä": radar5min,
+            "1h Salamahavainnotä": flash60min
         };
         
         saa.Tuulikartta.map.on("overlayadd", function(eventLayer) {
@@ -320,7 +288,6 @@ var saa = saa || {};
 
     Tuulikartta.drawWind = function(data, param) {
 
-        // data = saa.Tuulikartta.data
         // remove all old markers
         saa.Tuulikartta.markerGroup.clearLayers();
 
@@ -336,9 +303,7 @@ var saa = saa || {};
             if(param == "ws_10min" || param == "wg_10min") {
 
                 if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
-
                     valid++;
-
                     var icon = L.icon({
                         iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(data[i][param])+'.svg',
                         iconSize:     [50, 50],  // size of the icon
@@ -367,9 +332,7 @@ var saa = saa || {};
             if (param == "ri_10min") {
 
                 if (data[i]['ri_10min'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
-
                     valid++;
-
                     L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
                             {
                                 interactive: false,
@@ -384,9 +347,7 @@ var saa = saa || {};
             if (param == "r_1h") {
 
                 if (data[i]['r_1h'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
-
                     valid++;
-
                     L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
                             {
                                 interactive: false,
