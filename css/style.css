@@ -444,6 +444,6 @@ button {
 .textLabelclass {
     font-weight: bold;
     color: black;
-    margin-left: -18px; 
-    font-size: 13px;
+    /*margin-left: -18px;*/ 
+    font-size: 15px;
 }
