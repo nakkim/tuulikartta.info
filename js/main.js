@@ -10,7 +10,7 @@ var saa = saa || {};
 
     'use strict';
 
-    saa.Tuulikartta.debugvalue = true;
+    saa.Tuulikartta.debugvalue = false;
     saa.Tuulikartta.markerGroup = L.layerGroup();
     var emptymarker = [];
 
@@ -306,15 +306,16 @@ var saa = saa || {};
                     valid++;
                     var icon = L.icon({
                         iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(data[i][param])+'.svg',
-                        iconSize:     [50, 50],  // size of the icon
-                        iconAnchor:   [25, 27],  // point of the icon which will correspond to marker's location
+                        iconSize:     [60, 60],  // size of the icon
+                        iconAnchor:   [30, 30],  // point of the icon which will correspond to marker's location
                         popupAnchor:  [0, 0],    // point from which the popup should open relative to the iconAnchor
                     });
 
                     var marker = L.marker([data[i]['lat'],data[i]['lon']],
                                         {
                                             icon: icon,
-                                            rotationAngle: Tuulikartta.resolveWindDirection(data[i]['wd_10min'])
+                                            rotationAngle: Tuulikartta.resolveWindDirection(data[i]['wd_10min']),
+                                            rotationOrigin: 'center center'
                                         }
                                         ).addTo(saa.Tuulikartta.markerGroup);
                     marker.bindPopup(saa.Tuulikartta.populateInfoWindow(data[i]));
