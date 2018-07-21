@@ -216,7 +216,7 @@ var saa = saa || {};
         
         var overlayMaps = {
             "Tutka - 5min sadekertymä": radar5min,
-            "1h Salamahavainnotä": flash60min
+            "1h Salamahavainnot": flash60min
         };
         
         saa.Tuulikartta.map.on("overlayadd", function(eventLayer) {
