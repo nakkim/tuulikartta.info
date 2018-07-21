@@ -332,7 +332,7 @@ var saa = saa || {};
 
             if (param == "ri_10min") {
 
-                if (data[i]['ri_10min'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
+                if (data[i]['ri_10min'] !== 'NaN' && parseFloat(data[i]['ri_10min']) > 0 /*&& data[i]['r_1h'] !== 'NaN'*/) {
                     valid++;
                     L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
                             {
