@@ -200,7 +200,7 @@ var saa = saa || {};
             opacity: 0.7,
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
-            opacity: '0.7'
+            preventCache: Date.now()
         });
 
         var flash60min = L.tileLayer.wms(dataWMS, {
@@ -208,10 +208,10 @@ var saa = saa || {};
             format: 'image/png',
             tileSize: 1024,
             transparent: true,
-            opacity: 0.7,
+            opacity: 0.8,
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
-            opacity: '0.7'
+            preventCache: Date.now()
         });
         
         var overlayMaps = {
