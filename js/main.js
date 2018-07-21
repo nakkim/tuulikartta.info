@@ -190,7 +190,7 @@ var saa = saa || {};
 
     Tuulikartta.initWMS = function() {
 
-        var dataWMS = "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms";
+        var dataWMS = "https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms";
 
         var radar5min = L.tileLayer.wms(dataWMS, {
             layers: 'fmi:observation:radar:PrecipitationRate5min',
