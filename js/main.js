@@ -107,7 +107,12 @@ var saa = saa || {};
         // select observations dialog
         var obsValues = !!Tuulikartta.readCookie('observation_values_hidden');
         $("#data-content-select").dialog({
-            position: { my: 'bottom+90', at: 'rleft+182' },
+            //position: { my: 'bottom+90', at: 'rleft+182' },
+            position: {
+                of: $("body"),
+                my: 'left top+60',
+                at: 'left+54 top'
+            },
             autoOpen: !obsValues,
             close: function () {
                 Tuulikartta.createCookie('observation_values_hidden', 'true', 7);
@@ -190,7 +195,17 @@ var saa = saa || {};
 
     Tuulikartta.initWMS = function() {
 
+        var time = new Date();
+        time.setHours(time.getHours() + Math.round(time.getMinutes()/60));
+        time.setMinutes(0);
+        time.setSeconds(0);
+        time.setMilliseconds(0);
+
+        time = time.toISOString();
+        console.log(time);
+
         var dataWMS = "https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms";
+        var geosrvWMS = "http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Weather/wms";        
 
         var radar5min = L.tileLayer.wms(dataWMS, {
             layers: 'fmi:observation:radar:PrecipitationRate5min',
@@ -213,8 +228,20 @@ var saa = saa || {};
             crs: L.CRS.EPSG3857,
             preventCache: Date.now()
         });
+
+        var cloudiness = L.tileLayer.wms(geosrvWMS, {
+            layers: 'cloudiness-forecast',
+            format: 'image/png',
+            tileSize: 1024,
+            transparent: true,
+            opacity: 1.0,
+            version: '1.3.0',
+            crs: L.CRS.EPSG3857,
+            time: time
+        });
         
         var overlayMaps = {
+            //"Kokonaispilvisyys": cloudiness,
             "Tutka - 5min sadekertymä": radar5min,
             "1h Salamahavainnot": flash60min
         };
