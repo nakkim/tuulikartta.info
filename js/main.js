@@ -151,7 +151,7 @@ var saa = saa || {};
 
 
     // ---------------------------------------------------------
-    // initialize Google Map and set geolocation
+    // initialize Leaflet map and set geolocation
     // ---------------------------------------------------------
 
     Tuulikartta.initMap = function() {
@@ -168,7 +168,7 @@ var saa = saa || {};
         var map = L.map('map', {
             zoom: zoom,
             minZoom: 5,
-            maxZoom: 11,
+            maxZoom: 12,
             fullscreenControl: true,
             timeDimension: false,
             timeDimensionControl: false,
@@ -191,6 +191,31 @@ var saa = saa || {};
         
         saa.Tuulikartta.map = map;
         Tuulikartta.initWMS();
+
+        map.locate({setView: false, maxZoom: 18});
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+    }
+
+    function onLocationFound(e) {
+        var radius = e.accuracy / 2;
+
+        var icon = L.icon({
+            iconUrl: '../symbols/blue-pushpin.png',
+            iconSize:     [32, 32],  // size of the icon
+            iconAnchor:   [10, 32],  // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, 0],    // point from which the popup should open relative to the iconAnchor
+        });
+
+        L.marker(e.latlng, {icon: icon}).addTo(saa.Tuulikartta.map);
+        L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
+        Tuulikartta.map.setView(e.latlng, 11, { animation: true });
+    }
+
+    function onLocationError(e) {
+        Tuulikartta.debug(e.message);
+        console.log('Error: The Geolocation service failed.');
     }
 
     Tuulikartta.initWMS = function() {
@@ -202,7 +227,6 @@ var saa = saa || {};
         time.setMilliseconds(0);
 
         time = time.toISOString();
-        console.log(time);
 
         var dataWMS = "https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms";
         var geosrvWMS = "http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Weather/wms";        
