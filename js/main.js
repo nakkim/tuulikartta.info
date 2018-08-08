@@ -234,23 +234,25 @@ var saa = saa || {};
         var radar5min = L.tileLayer.wms(dataWMS, {
             layers: 'fmi:observation:radar:PrecipitationRate5min',
             format: 'image/png',
-            tileSize: 1024,
+            tileSize: 2048,
             transparent: true,
             opacity: 0.7,
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
-            preventCache: Date.now()
+            //preventCache: Date.now()
         });
 
-        var flash60min = L.tileLayer.wms(dataWMS, {
+        var flash5min = L.tileLayer.wms(dataWMS, {
             layers: 'fmi:observation:flashicon',
             format: 'image/png',
-            tileSize: 1024,
+            tileSize: 2048,
             transparent: true,
             opacity: 0.8,
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
-            preventCache: Date.now()
+            interval_start: 5,
+            timestep: 5
+            //preventCache: Date.now()
         });
 
         var cloudiness = L.tileLayer.wms(geosrvWMS, {
@@ -267,7 +269,7 @@ var saa = saa || {};
         var overlayMaps = {
             //"Kokonaispilvisyys": cloudiness,
             "Tutka - 5min sadekertymä": radar5min,
-            "1h Salamahavainnot": flash60min
+            "5min salamahavainnot": flash5min
         };
         
         saa.Tuulikartta.map.on("overlayadd", function(eventLayer) {
@@ -549,10 +551,14 @@ var saa = saa || {};
         Tuulikartta.debug('Update data and draw markers');
         Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
         Tuulikartta.callData();
-        if(typeof saa.Tuulikartta.activeLayer !== "undefined") {
-            saa.Tuulikartta.activeLayer.setParams({ preventCache: Date.now() }, false);
-            Tuulikartta.updateRadarTime();
-        }
+        Tuulikartta.updateRadarTime();
+        saa.Tuulikartta.map.eachLayer(function(layer) {
+            if( layer instanceof L.TileLayer && 'wmsParams' in layer) {
+                layer.wmsParams.preventCache = Date.now();
+                layer.setParams({});
+                console.log(layer);;
+            }
+        });
     }, interval);
 
 }(saa.Tuulikartta = saa.Tuulikartta || {}));
