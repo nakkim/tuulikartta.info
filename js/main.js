@@ -107,7 +107,12 @@ var saa = saa || {};
         // select observations dialog
         var obsValues = !!Tuulikartta.readCookie('observation_values_hidden');
         $("#data-content-select").dialog({
-            position: { my: 'bottom+90', at: 'rleft+182' },
+            //position: { my: 'bottom+90', at: 'rleft+182' },
+            position: {
+                of: $("body"),
+                my: 'left top+60',
+                at: 'left+54 top'
+            },
             autoOpen: !obsValues,
             close: function () {
                 Tuulikartta.createCookie('observation_values_hidden', 'true', 7);
@@ -146,7 +151,7 @@ var saa = saa || {};
 
 
     // ---------------------------------------------------------
-    // initialize Google Map and set geolocation
+    // initialize Leaflet map and set geolocation
     // ---------------------------------------------------------
 
     Tuulikartta.initMap = function() {
@@ -163,7 +168,7 @@ var saa = saa || {};
         var map = L.map('map', {
             zoom: zoom,
             minZoom: 5,
-            maxZoom: 11,
+            maxZoom: 12,
             fullscreenControl: true,
             timeDimension: false,
             timeDimensionControl: false,
@@ -186,37 +191,85 @@ var saa = saa || {};
         
         saa.Tuulikartta.map = map;
         Tuulikartta.initWMS();
+
+        map.locate({setView: false, maxZoom: 18});
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+    }
+
+    function onLocationFound(e) {
+        var radius = e.accuracy / 2;
+
+        var icon = L.icon({
+            iconUrl: '../symbols/blue-pushpin.png',
+            iconSize:     [32, 32],  // size of the icon
+            iconAnchor:   [10, 32],  // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, 0],    // point from which the popup should open relative to the iconAnchor
+        });
+
+        L.marker(e.latlng, {icon: icon}).addTo(saa.Tuulikartta.map);
+        L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
+        Tuulikartta.map.setView(e.latlng, 11, { animation: true });
+    }
+
+    function onLocationError(e) {
+        Tuulikartta.debug(e.message);
+        console.log('Error: The Geolocation service failed.');
     }
 
     Tuulikartta.initWMS = function() {
 
-        var dataWMS = "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms";
+        var time = new Date();
+        time.setHours(time.getHours() + Math.round(time.getMinutes()/60));
+        time.setMinutes(0);
+        time.setSeconds(0);
+        time.setMilliseconds(0);
+
+        time = time.toISOString();
+
+        var dataWMS = "https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms";
+        var geosrvWMS = "http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Weather/wms";        
 
         var radar5min = L.tileLayer.wms(dataWMS, {
             layers: 'fmi:observation:radar:PrecipitationRate5min',
             format: 'image/png',
-            tileSize: 1024,
+            tileSize: 2048,
             transparent: true,
             opacity: 0.7,
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
-            preventCache: Date.now()
+            //preventCache: Date.now()
         });
 
-        var flash60min = L.tileLayer.wms(dataWMS, {
+        var flash5min = L.tileLayer.wms(dataWMS, {
             layers: 'fmi:observation:flashicon',
             format: 'image/png',
-            tileSize: 1024,
+            tileSize: 2048,
             transparent: true,
             opacity: 0.8,
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
-            preventCache: Date.now()
+            interval_start: 5,
+            timestep: 5
+            //preventCache: Date.now()
+        });
+
+        var cloudiness = L.tileLayer.wms(geosrvWMS, {
+            layers: 'cloudiness-forecast',
+            format: 'image/png',
+            tileSize: 1024,
+            transparent: true,
+            opacity: 1.0,
+            version: '1.3.0',
+            crs: L.CRS.EPSG3857,
+            time: time
         });
         
         var overlayMaps = {
+            //"Kokonaispilvisyys": cloudiness,
             "Tutka - 5min sadekertymä": radar5min,
-            "1h Salamahavainnot": flash60min
+            "5min salamahavainnot": flash5min
         };
         
         saa.Tuulikartta.map.on("overlayadd", function(eventLayer) {
@@ -498,10 +551,14 @@ var saa = saa || {};
         Tuulikartta.debug('Update data and draw markers');
         Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
         Tuulikartta.callData();
-        if(typeof saa.Tuulikartta.activeLayer !== "undefined") {
-            saa.Tuulikartta.activeLayer.setParams({ preventCache: Date.now() }, false);
-            Tuulikartta.updateRadarTime();
-        }
+        Tuulikartta.updateRadarTime();
+        saa.Tuulikartta.map.eachLayer(function(layer) {
+            if( layer instanceof L.TileLayer && 'wmsParams' in layer) {
+                layer.wmsParams.preventCache = Date.now();
+                layer.setParams({});
+                console.log(layer);;
+            }
+        });
     }, interval);
 
 }(saa.Tuulikartta = saa.Tuulikartta || {}));
