@@ -11,8 +11,6 @@ class DataMiner{
 
     }
 
-
-
     /**
     *
     * Calculate time zone difference between UTC0 and local time in Helsinki 
@@ -35,8 +33,6 @@ class DataMiner{
         
     }
 
-
-
     /**
     *
     * Get latest road weather observations 
@@ -45,80 +41,43 @@ class DataMiner{
     */
 
     public function roaddata() {
-        $settings = array();
-        $settings['parameter']      = 'windspeedms,winddirection,WG,PRI';
-        $settings['timestep']       = '10';
-        $settings['apikey']         = 'd6985c41-bfc2-4afa-95a7-72cd2acb604c';
-        $settings['storedQueryId']  = 'livi::observations::road::default::timevaluepair';
-        $settings['bbox']           = '17.91,58.71,32.61,70.59';
-
-        $timeOffset = $this->getTimezoneDifference();
+        $url = "";
+        $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
+        $url .= "&format=json";
+        $url .= "&producer=road";
+        $url .= "&keyword=tiesääasemat";
+        $url .= "&precision=double";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min";
+        $url .= "&missingtext=nan";
+        $url .= "&endtime=now";
+        $url .= "&maxlocations=1";
         
-        $starttime = date("Y-m-d\TH:i:s", time()-$timeOffset*60*60-14*60);
-        $endtime = date("Y-m-d\TH:i:s", time()-$timeOffset*60*60-4*60);
+        $data = file_get_contents($url) or die("Unable to get data from {$url}");
+        $data = json_decode($data, true);
 
-        $url = "http://data.fmi.fi/fmi-apikey/{$settings['apikey']}/wfs?request=getFeature&storedquery_id={$settings['storedQueryId']}&timestep={$settings['timestep']}&parameters={$settings['parameter']}&endtime={$endtime}&starttime={$starttime}&bbox={$settings['bbox']},epsg::4326&";        
-        
-        $xmlData = file_get_contents($url);
-        $resultString = simplexml_load_string($xmlData);
+        /* add datatype, station and epoch time information to each observation */
+        $observationData = [];
+        foreach ( $data as $key => $observation ) {
 
-        $valuesArray = array();
-        $dataArray = array();
-        $x = 0;
-        if(!$resultString){
-            print "Something went wrong, no data to return";
-        } else {
-            $data = $resultString->children('wfs', true);
+            $tmp = $observation;
 
-            $params = explode(',', $settings['parameter']);
+            date_default_timezone_set("UTC");
+            $time = strtotime($observation["time"]);
+            $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
 
-            foreach($data->member as $key => $parameterValue){
-                $dataValues = $parameterValue ->children('omso', true)->PointTimeSeriesObservation->children('om', true)->result->children('wml2', true)->MeasurementTimeseries;
-                foreach($dataValues->point as $key => $datavalue){
+            $tmp["type"] = "road";
+            $tmp["ws_10min"] = number_format((float)$observation["ws_10min"], 1, '.', '');
+            $tmp["wd_10min"] = number_format((float)$observation["wd_10min"], 1, '.', '');
+            $tmp["wg_10min"] = number_format((float)$observation["wg_10min"], 1, '.', '');
+            $tmp["ri_10min"] = number_format((float)$observation["ri_10min"], 1, '.', '');
 
-                    $time = (string)$datavalue->MeasurementTVP->time;
-                    $epoctime = strtotime($time);
-                    $value = (string)$datavalue->MeasurementTVP->value;
-                    $valuesArray["fmisid"] = (string)$parameterValue       -> children('omso', true)  ->
-                                            PointTimeSeriesObservation     -> children('om', true)    ->
-                                            featureOfInterest              -> children('sams', true)  ->
-                                            SF_SpatialSamplingFeature      -> children('sam', true)   ->
-                                            sampledFeature                 -> children('target', true)->
-                                                                            children('target', true)->
-                                                                            children('target', true)->
-                                                                            children('gml', true)   ->identifier;
+            $date = new DateTime($observation["time"]);
+            $tmp["epoctime"] = intVal($date->format('U'));
+            array_push($observationData,$tmp);
 
-                    $valuesArray["station"] = (string)$parameterValue  -> children('omso', true) ->
-                                            PointTimeSeriesObservation -> children('om', true)   ->
-                                            featureOfInterest          -> children('sams', true) ->
-                                            SF_SpatialSamplingFeature  -> children('sams', true) -> 
-                                            shape                      -> children('gml', true)  ->
-                                            Point                      -> children('gml', true)  -> name;
-
-                    $latlon = (string)$parameterValue->children('omso', true)->PointTimeSeriesObservation->children('om', true)->featureOfInterest->children('sams', true)->SF_SpatialSamplingFeature->children('sams', true)->shape->children('gml', true)->Point->children('gml', true)->pos;
-                    $latlont = explode(' ',$latlon);
-
-                    $valuesArray["lat"] = $latlont[0];
-                    $valuesArray["lon"] = $latlont[1];
-
-                    $valuesArray["time"] = $time;
-                    $valuesArray["epoctime"] = $epoctime;
-                    $valuesArray["type"] = 'road';
-
-                    if($x>=count($params)-1){
-                        $valuesArray[$params[$x]] = $value;
-                        array_push($dataArray,$valuesArray);
-                        $x = 0;
-                    } else {
-                        $valuesArray[$params[$x]] = $value;
-                        $x++;
-                    }
-                }
-            }
         }
-        return $dataArray;
+        return $observationData;
     }
-
 
 
     /**
@@ -129,78 +88,43 @@ class DataMiner{
     */
 
     public function synopdata() {
-        $settings = array();
-        $settings['parameter']      = 'ws_10min,wg_10min,wd_10min,r_1h,ri_10min';
-        $settings['timestep']       = '10';
-        $settings['apikey']         = 'd6985c41-bfc2-4afa-95a7-72cd2acb604c';
-        $settings['storedQueryId']  = 'fmi::observations::weather::timevaluepair';
-        $settings['bbox']           = '17.91,58.71,32.61,70.59';
+        $url = "";
+        $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
+        $url .= "&format=json";
+        $url .= "&producer=fmi";
+        $url .= "&keyword=synop_fi";
+        $url .= "&precision=double";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg_10min,ws_10min,wd_10min,ri_10min";
+        $url .= "&missingtext=nan";
+        $url .= "&endtime=now";
+        $url .= "&maxlocations=1";
 
-        $starttime = date("Y-m-d\TH:i:s", time()-3*60*60-14*60);
-        $endtime = date("Y-m-d\TH:i:s", time()-3*60*60-4*60);
+        $data = file_get_contents($url) or die("Unable to get data from {$url}");
+        $data = json_decode($data, true);
 
-        $url = "http://data.fmi.fi/fmi-apikey/{$settings['apikey']}/wfs?request=getFeature&storedquery_id={$settings['storedQueryId']}&timestep={$settings['timestep']}&parameters={$settings['parameter']}&endtime={$endtime}&starttime={$starttime}&bbox={$settings['bbox']},epsg::4326&";
+        /* add datatype, station and epoch time information to each observation */
+        $observationData = [];
+        foreach ( $data as $key => $observation ) {
 
-        $xmlData = file_get_contents($url);
-        $resultString = simplexml_load_string($xmlData);
+            $tmp = $observation;
 
-        $valuesArray = array();
-        $dataArray = array();
-        $x = 0;
-        if(!$resultString){
-            print "Something went wrong, no data to return";
-        } else {
-            $data = $resultString->children('wfs', true);
+            date_default_timezone_set("UTC");
+            $time = strtotime($observation["time"]);
+            $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
 
-            $params = explode(',', $settings['parameter']);
+            $tmp["type"] = "road";
+            $tmp["ws_10min"] = number_format((float)$observation["ws_10min"], 1, '.', '');
+            $tmp["wd_10min"] = number_format((float)$observation["wd_10min"], 1, '.', '');
+            $tmp["wg_10min"] = number_format((float)$observation["wg_10min"], 1, '.', '');
+            $tmp["ri_10min"] = number_format((float)$observation["ri_10min"], 1, '.', '');
 
-            foreach($data->member as $key => $parameterValue){
-                $dataValues = $parameterValue ->children('omso', true)->PointTimeSeriesObservation->children('om', true)->result->children('wml2', true)->MeasurementTimeseries;
-                foreach($dataValues->point as $key => $datavalue){
+            $date = new DateTime($observation["time"]);
+            $tmp["epoctime"] = intVal($date->format('U'));
+            array_push($observationData,$tmp);
 
-                    $time = (string)$datavalue->MeasurementTVP->time;
-                    $epoctime = strtotime($time);
-                    $value = (string)$datavalue->MeasurementTVP->value;
-                    $valuesArray["fmisid"] = (string)$parameterValue       -> children('omso', true)  ->
-                                            PointTimeSeriesObservation     -> children('om', true)    ->
-                                            featureOfInterest              -> children('sams', true)  ->
-                                            SF_SpatialSamplingFeature      -> children('sam', true)   ->
-                                            sampledFeature                 -> children('target', true)->
-                                                                            children('target', true)->
-                                                                            children('target', true)->
-                                                                            children('gml', true)   ->identifier;
-
-                    $valuesArray["station"] = (string)$parameterValue   -> children('omso', true) ->
-                                            PointTimeSeriesObservation -> children('om', true)   ->
-                                            featureOfInterest          -> children('sams', true) ->
-                                            SF_SpatialSamplingFeature  -> children('sams', true) ->
-                                            shape                      -> children('gml', true)  ->
-                                            Point                      -> children('gml', true)  -> name;
-
-                    $latlon = (string)$parameterValue->children('omso', true)->PointTimeSeriesObservation->children('om', true)->featureOfInterest->children('sams', true)->SF_SpatialSamplingFeature->children('sams', true)->shape->children('gml', true)->Point->children('gml', true)->pos;
-                    $latlont = explode(' ',$latlon);
-
-                    $valuesArray["lat"] = $latlont[0];
-                    $valuesArray["lon"] = $latlont[1];
-                    $valuesArray["type"] = "synop";
-                    $valuesArray["time"] = $time;
-                    $valuesArray["epoctime"] = $epoctime;
-
-                    if($x>=count($params)-1){
-                        $valuesArray[$params[$x]] = $value;
-                        array_push($dataArray,$valuesArray);
-                        $x = 0;
-                    } else {
-                        $valuesArray[$params[$x]] = $value;
-                        $x++;
-                    }
-                }
-            }
         }
-        return $dataArray;
+        return $observationData;
     }
-
-
 
     /**
     *
@@ -233,8 +157,6 @@ class DataMiner{
         
     //     return json_encode($data);
     // }
-
-
 
     /**
     *
@@ -274,8 +196,6 @@ class DataMiner{
         }
         return $observationData;
     }
-
-
 
     /**
     *
@@ -323,8 +243,6 @@ class DataMiner{
         return $observationData;
     }
 
-
-
     /**
     *
     * Get Harmonie forecast data from timeseries
@@ -339,7 +257,7 @@ class DataMiner{
         $starttime = ($date->format('Y-m-d\TH:i:m'));
         $endtime = $date->add(new DateInterval('PT12H'));
         $endtime = ($endtime->format('Y-m-d\TH:i:m'));
-        
+
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
         $url .= "&format=json";
@@ -371,14 +289,11 @@ class DataMiner{
             unset($tmp["winddirection"]);
             $date = new DateTime($forecast["time"]);
             $tmp["epoch"] = 1000*intVal($date->format('U'));
-            array_push($forecastData,$tmp); 
+            array_push($forecastData,$tmp);
 
         }
         return $forecastData;
     }
-
-
-
 
     /**
     *

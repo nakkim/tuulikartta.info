@@ -45,8 +45,10 @@ var saa = saa || {};
 
     Tuulikartta.timeTotime = function(epoctime) {
         // convert epoc time to time stamp
-        var d = new Date(0);
-        d.setUTCSeconds(epoctime);
+        // console.log(epoctime);
+        var d = new Date(epoctime*1000);
+        //console.log(d);
+        //d.setUTCSeconds(epoctime);
         var hours = d.getHours();
         var minutes = d.getMinutes();
         // add leading zeros
@@ -210,7 +212,7 @@ var saa = saa || {};
 
         L.marker(e.latlng, {icon: icon}).addTo(saa.Tuulikartta.map);
         L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
-        Tuulikartta.map.setView(e.latlng, 11, { animation: true });
+        Tuulikartta.map.setView(e.latlng, 9, { animation: true });
     }
 
     function onLocationError(e) {
@@ -357,11 +359,15 @@ var saa = saa || {};
 
                 if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
                     valid++;
+
+                    if(data[i][param] < 10) { var iconAnchor = [30, 28] }
+                    if(data[i][param] >= 10) { var iconAnchor = [25, 28] }
+
                     var icon = L.icon({
                         iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(data[i][param])+'.svg',
-                        iconSize:     [60, 60],  // size of the icon
-                        iconAnchor:   [30, 30],  // point of the icon which will correspond to marker's location
-                        popupAnchor:  [0, 0],    // point from which the popup should open relative to the iconAnchor
+                        iconSize:     [60, 60],    // size of the icon
+                        iconAnchor:   iconAnchor,  // point of the icon which will correspond to marker's location
+                        popupAnchor:  [0, 0],      // point from which the popup should open relative to the iconAnchor
                     });
 
                     var marker = L.marker([data[i]['lat'],data[i]['lon']],
@@ -415,11 +421,16 @@ var saa = saa || {};
 
         }
 
-        var timestring = saa.Tuulikartta.data[0]['time'];
-        var timeobj = new Date(timestring);
-        var timestring = Tuulikartta.timeTotime(timeobj / 1000);
-        document.getElementById("available-observation-time").innerHTML = timestring;
-        Tuulikartta.debug("parameters drawn " + valid + "/" + parseInt(Object.keys(data).length));
+        for (var i = 0; i < sizeofdata; i++) {
+            if(saa.Tuulikartta.data[i]['type'] === 'synop') {
+                var timestring = saa.Tuulikartta.data[i]['time'];
+                var timeobj = new Date(timestring);
+                var timestring = Tuulikartta.timeTotime(timeobj / 1000);
+                document.getElementById("available-observation-time").innerHTML = timestring;
+                break;
+            }
+        }
+        
     }
 
 
@@ -447,6 +458,7 @@ var saa = saa || {};
         output += '<b>Keskituuli: </b>' + data['ws_10min'] + ' m/s <br>';
         output += '<b>Puuska: </b>' + data['wg_10min'] + ' m/s <br>';
         output += '<b>Tuulen suunta: </b>' + data['wd_10min'] + '&deg; <br>';
+        output += stationType;
         output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data["type"] + '\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data["fmisid"] + ',' + latlon + ',\'' + data["type"] + '\')">täällä</a>';
 
         return output;
