@@ -45,7 +45,8 @@ var saa = saa || {};
 
     Tuulikartta.timeTotime = function(epoctime) {
         // convert epoc time to time stamp
-        var d = new Date(0);
+        console.log(epoctime);
+        var d = new Date();
         d.setUTCSeconds(epoctime);
         var hours = d.getHours();
         var minutes = d.getMinutes();
@@ -447,6 +448,7 @@ var saa = saa || {};
         output += '<b>Keskituuli: </b>' + data['ws_10min'] + ' m/s <br>';
         output += '<b>Puuska: </b>' + data['wg_10min'] + ' m/s <br>';
         output += '<b>Tuulen suunta: </b>' + data['wd_10min'] + '&deg; <br>';
+        output += stationType;
         output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data["type"] + '\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data["fmisid"] + ',' + latlon + ',\'' + data["type"] + '\')">täällä</a>';
 
         return output;
