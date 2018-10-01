@@ -370,7 +370,7 @@ var saa = saa || {};
                     var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
                         {
                             icon: icon,
-                            rotationAngle: Tuulikartta.resolveWindDirection(data[i]['wd_10min']),
+                            rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wd_10min']),
                             rotationOrigin: 'center center'
                         }).addTo(saa.Tuulikartta.markerGroup);
 
@@ -393,7 +393,7 @@ var saa = saa || {};
                         {
                             interactive: false,
                             keyboard: false,
-                            icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", saa.Tuulikartta.data[i][param])
                         }).addTo(saa.Tuulikartta.markerGroup);
                 }
 
@@ -403,11 +403,11 @@ var saa = saa || {};
 
                 if (saa.Tuulikartta.data[i]['r_1h'] !== 'NaN') {
                     valid++;
-                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
+                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
-                            icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", saa.Tuulikartta.data[i][param])
                         }).addTo(saa.Tuulikartta.markerGroup);
                 }
 
