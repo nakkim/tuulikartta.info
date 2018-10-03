@@ -212,7 +212,7 @@ var saa = saa || {};
         });
 
         L.marker(e.latlng, {icon: icon}).addTo(saa.Tuulikartta.map);
-        L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
+        // L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
         Tuulikartta.map.setView(e.latlng, 9, { animation: true });
     }
 
