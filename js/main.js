@@ -352,8 +352,8 @@ var saa = saa || {};
 
             if(param == "ws_10min" || param == "wg_10min") {
 
-                if (saa.Tuulikartta.data[i]['ws_10min'] !== 'NaN' && saa.Tuulikartta.data[i]['wd_10min'] !== 'NaN' 
-                        && saa.Tuulikartta.data[i]['wg_10min'] !== 'NaN') {
+                if (saa.Tuulikartta.data[i]['ws_10min'] !== null && saa.Tuulikartta.data[i]['wd_10min'] !== null 
+                        && saa.Tuulikartta.data[i]['wg_10min'] !== null) {
 
                     valid++;
 
@@ -380,20 +380,20 @@ var saa = saa || {};
                         {
                             interactive: false,
                             keyboard: false,
-                            icon:Tuulikartta.createLabelIcon("textLabelclass", saa.Tuulikartta.data[i][param])
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
                         }).addTo(saa.Tuulikartta.markerGroup);
                 }
             }
 
             if (param == "ri_10min") {
 
-                if (saa.Tuulikartta.data[i]['ri_10min'] !== 'NaN' && parseFloat(saa.Tuulikartta.data[i]['ri_10min']) > 0) {
+                if (saa.Tuulikartta.data[i]['ri_10min'] !== null && parseFloat(saa.Tuulikartta.data[i]['ri_10min']) > 0) {
                     valid++;
                     L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
-                            icon:Tuulikartta.createLabelIcon("textLabelclass", saa.Tuulikartta.data[i][param])
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
                         }).addTo(saa.Tuulikartta.markerGroup);
                 }
 
@@ -401,13 +401,13 @@ var saa = saa || {};
 
             if (param == "r_1h") {
 
-                if (saa.Tuulikartta.data[i]['r_1h'] !== 'NaN') {
+                if (saa.Tuulikartta.data[i]['r_1h'] !== null) {
                     valid++;
                     L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
-                            icon:Tuulikartta.createLabelIcon("textLabelclass", saa.Tuulikartta.data[i][param])
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
                         }).addTo(saa.Tuulikartta.markerGroup);
                 }
 

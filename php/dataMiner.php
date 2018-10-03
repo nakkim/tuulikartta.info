@@ -47,7 +47,7 @@ class DataMiner{
         $url .= "&producer=road";
         $url .= "&keyword=tiesääasemat";
         $url .= "&precision=double";
-        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min,sum_t(pri:60m:60m)%20as%20ri_1h";
         $url .= "&missingtext=nan";
         $url .= "&endtime=now";
         $url .= "&maxlocations=1";
@@ -66,16 +66,13 @@ class DataMiner{
             $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
 
             $tmp["type"] = "road";
-            $tmp["ws_10min"] = number_format((float)$observation["ws_10min"], 1, '.', '');
-            $tmp["wd_10min"] = number_format((float)$observation["wd_10min"], 1, '.', '');
-            $tmp["wg_10min"] = number_format((float)$observation["wg_10min"], 1, '.', '');
-            $tmp["ri_10min"] = number_format((float)$observation["ri_10min"], 1, '.', '');
-
+            
             $date = new DateTime($observation["time"]);
             $tmp["epoctime"] = intVal($date->format('U'));
             array_push($observationData,$tmp);
 
         }
+
         return $observationData;
     }
 
@@ -94,13 +91,14 @@ class DataMiner{
         $url .= "&producer=fmi";
         $url .= "&keyword=synop_fi";
         $url .= "&precision=double";
-        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg_10min,ws_10min,wd_10min,ri_10min";
-        $url .= "&missingtext=nan";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg_10min,ws_10min,wd_10min,ri_10min,sum_t(ri_10min:1h:0)%20as%20ri_1h";
+        $url .= "&missingvtext=nan";
         $url .= "&endtime=now";
         $url .= "&maxlocations=1";
 
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
+
 
         /* add datatype, station and epoch time information to each observation */
         $observationData = [];
@@ -112,17 +110,14 @@ class DataMiner{
             $time = strtotime($observation["time"]);
             $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
 
-            $tmp["type"] = "road";
-            $tmp["ws_10min"] = number_format((float)$observation["ws_10min"], 1, '.', '');
-            $tmp["wd_10min"] = number_format((float)$observation["wd_10min"], 1, '.', '');
-            $tmp["wg_10min"] = number_format((float)$observation["wg_10min"], 1, '.', '');
-            $tmp["ri_10min"] = number_format((float)$observation["ri_10min"], 1, '.', '');
+            $tmp["type"] = "synop";
 
             $date = new DateTime($observation["time"]);
             $tmp["epoctime"] = intVal($date->format('U'));
             array_push($observationData,$tmp);
 
         }
+
         return $observationData;
     }
 
