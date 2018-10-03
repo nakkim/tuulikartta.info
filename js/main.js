@@ -10,6 +10,7 @@ var saa = saa || {};
 
     'use strict';
 
+    saa.Tuulikartta.data = [];
     saa.Tuulikartta.debugvalue = false;
     saa.Tuulikartta.markerGroup = L.layerGroup();
     var emptymarker = [];
@@ -81,7 +82,7 @@ var saa = saa || {};
                 Tuulikartta.debug('Done');
                 // store the Map-instance in map variable
                 saa.Tuulikartta.data = data;
-                Tuulikartta.drawWind(saa.Tuulikartta.data, $("#select-wind-parameter").val());
+                Tuulikartta.drawWind($("#select-wind-parameter").val());
                 selectedparameter = $("#select-wind-parameter").val();
             }
         });
@@ -98,7 +99,7 @@ var saa = saa || {};
 
         //select wind parameter
         $("#select-wind-parameter").change(function () {
-            Tuulikartta.drawWind(saa.Tuulikartta.data, $(this).val());
+            Tuulikartta.drawWind($(this).val());
         });
 
         // close graph box
@@ -211,7 +212,7 @@ var saa = saa || {};
         });
 
         L.marker(e.latlng, {icon: icon}).addTo(saa.Tuulikartta.map);
-        L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
+        // L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
         Tuulikartta.map.setView(e.latlng, 9, { animation: true });
     }
 
@@ -284,9 +285,6 @@ var saa = saa || {};
         L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map);
     }
 
-
-
-
     // ---------------------------------------------------------
     //  catch location error message
     // ---------------------------------------------------------
@@ -295,9 +293,6 @@ var saa = saa || {};
         geoLocation = 'false';
         console.log('Error: The Geolocation service failed.');
     }
-
-
-
 
     // ---------------------------------------------------------
     // Resolve wind speed and icon and  draw wind data
@@ -341,80 +336,79 @@ var saa = saa || {};
         })
     }
 
-    Tuulikartta.drawWind = function(data, param) {
+    Tuulikartta.drawWind = function(param) {
 
         // remove all old markers
         saa.Tuulikartta.markerGroup.clearLayers();
 
-        var sizeofdata = parseInt(Object.keys(data).length);
+        var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length);
         saa.Tuulikartta.markerGroup.addTo(saa.Tuulikartta.map);
         var valid = 0;
 
         for (var i = 0; i < sizeofdata; i++) {
-            var location = { lat: parseFloat(data[i]['lat']), lng: parseFloat(data[i]['lon']) };
-            var time = Tuulikartta.timeTotime(data[i]['epoctime']);
-            var latlon = data[i]["lat"] + ',' + data[i]["lon"];
+            var location = { lat: parseFloat(saa.Tuulikartta.data[i]['lat']), lng: parseFloat(saa.Tuulikartta.data[i]['lon']) };
+            var time = Tuulikartta.timeTotime(saa.Tuulikartta.data[i]['epoctime']);
+            var latlon = saa.Tuulikartta.data[i]["lat"] + ',' + saa.Tuulikartta.data[i]["lon"];
 
             if(param == "ws_10min" || param == "wg_10min") {
 
-                if (data[i]['ws_10min'] !== 'NaN' && data[i]['wd_10min'] !== 'NaN' && data[i]['wg_10min'] !== 'NaN') {
+                if (saa.Tuulikartta.data[i]['ws_10min'] !== null && saa.Tuulikartta.data[i]['wd_10min'] !== null 
+                        && saa.Tuulikartta.data[i]['wg_10min'] !== null) {
+
                     valid++;
 
-                    if(data[i][param] < 10) { var iconAnchor = [30, 28] }
-                    if(data[i][param] >= 10) { var iconAnchor = [25, 28] }
+                    if(saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
+                    if(saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
 
                     var icon = L.icon({
-                        iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(data[i][param])+'.svg',
+                        iconUrl: '../symbols/wind/'+saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])+'.svg',
                         iconSize:     [60, 60],    // size of the icon
                         iconAnchor:   iconAnchor,  // point of the icon which will correspond to marker's location
                         popupAnchor:  [0, 0],      // point from which the popup should open relative to the iconAnchor
                     });
 
-                    var marker = L.marker([data[i]['lat'],data[i]['lon']],
-                                        {
-                                            icon: icon,
-                                            rotationAngle: Tuulikartta.resolveWindDirection(data[i]['wd_10min']),
-                                            rotationOrigin: 'center center'
-                                        }
-                                        ).addTo(saa.Tuulikartta.markerGroup);
-                    marker.bindPopup(saa.Tuulikartta.populateInfoWindow(data[i]));
+                    var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
+                        {
+                            icon: icon,
+                            rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wd_10min']),
+                            rotationOrigin: 'center center'
+                        }).addTo(saa.Tuulikartta.markerGroup);
 
-                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
-                            {
-                                interactive: false,
-                                keyboard: false,
-                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
-                            }
-                            ).addTo(saa.Tuulikartta.markerGroup);
+                    marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]));
+
+                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                        {
+                            interactive: false,
+                            keyboard: false,
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+                        }).addTo(saa.Tuulikartta.markerGroup);
                 }
             }
 
             if (param == "ri_10min") {
 
-                if (data[i]['ri_10min'] !== 'NaN' && parseFloat(data[i]['ri_10min']) > 0 /*&& data[i]['r_1h'] !== 'NaN'*/) {
+                if (saa.Tuulikartta.data[i]['ri_10min'] !== null && parseFloat(saa.Tuulikartta.data[i]['ri_10min']) > 0) {
                     valid++;
-                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
-                            {
-                                interactive: false,
-                                keyboard: false,
-                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
-                            }
-                            ).addTo(saa.Tuulikartta.markerGroup);
+                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                        {
+                            interactive: false,
+                            keyboard: false,
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+                        }).addTo(saa.Tuulikartta.markerGroup);
                 }
 
             }
 
             if (param == "r_1h") {
 
-                if (data[i]['r_1h'] !== 'NaN' /*&& data[i]['r_1h'] !== 'NaN'*/) {
+                if (saa.Tuulikartta.data[i]['r_1h'] !== null) {
                     valid++;
-                    L.marker(new L.LatLng(data[i]['lat'],data[i]['lon']),
-                            {
-                                interactive: false,
-                                keyboard: false,
-                                icon:Tuulikartta.createLabelIcon("textLabelclass", data[i][param])
-                            }
-                            ).addTo(saa.Tuulikartta.markerGroup);
+                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                        {
+                            interactive: false,
+                            keyboard: false,
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+                        }).addTo(saa.Tuulikartta.markerGroup);
                 }
 
             }
@@ -432,9 +426,6 @@ var saa = saa || {};
         }
         
     }
-
-
-
 
     // ---------------------------------------------------------
     // populate infowindow with observations
@@ -464,9 +455,6 @@ var saa = saa || {};
         return output;
 
     }
-
-
-
 
     // ---------------------------------------------------------
     // Draw radar data on map
@@ -506,9 +494,6 @@ var saa = saa || {};
             //map.overlayMapTypes.clear();
         }
     }
-
-
-
 
     // ---------------------------------------------------------
     // Cookie functions
@@ -553,7 +538,6 @@ var saa = saa || {};
         })
     }
     
-
     // ---------------------------------------------------------
     // Update map icons and data with set interval
     // ---------------------------------------------------------
