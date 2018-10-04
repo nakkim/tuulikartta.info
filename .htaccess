@@ -5,7 +5,7 @@ RewriteRule (.*) https://tuulikartta.info [R=301,L]
 #Create filter to match files  cache
 
 <Files *.js>
-Header add "Cache-Control" "max-age=604800"
+Header add "Cache-Control" "max-age=0"
 </Files>
 
 <Files *.css>
