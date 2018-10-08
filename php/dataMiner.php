@@ -47,7 +47,7 @@ class DataMiner{
         $url .= "&producer=road";
         $url .= "&keyword=tiesääasemat";
         $url .= "&precision=double";
-        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min,sum_t(pri:60m:60m)%20as%20ri_1h";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,temperature,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min,sum_t(pri:60m:60m)%20as%20ri_1h";
         $url .= "&missingtext=nan";
         $url .= "&endtime=now";
         $url .= "&maxlocations=1";
@@ -91,7 +91,7 @@ class DataMiner{
         $url .= "&producer=fmi";
         $url .= "&keyword=synop_fi";
         $url .= "&precision=double";
-        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,wg_10min,ws_10min,wd_10min,ri_10min,sum_t(ri_10min:1h:0)%20as%20ri_1h";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,temperature,wg_10min,ws_10min,wd_10min,ri_10min,sum_t(ri_10min:1h:0)%20as%20ri_1h";
         $url .= "&missingvtext=nan";
         $url .= "&endtime=now";
         $url .= "&maxlocations=1";

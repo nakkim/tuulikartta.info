@@ -4,7 +4,7 @@ RewriteRule (.*) https://tuulikartta.info [R=301,L]
 
 #Create filter to match files  cache
 
-<filesMatch "\.(js|css)$">
+<filesMatch "\.(js|css|html)$">
   FileETag None
   <ifModule mod_headers.c>    
     Header unset ETag

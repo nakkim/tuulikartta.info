@@ -22,23 +22,18 @@ var saa = saa || {};
     var geoLocation;
 
     // Set parameters to localstorage to remember previous state
-    var latitude    = localStorage.getItem("latitude") ? localStorage.getItem("latitude") : 60.630556;
+    var latitude    = localStorage.getItem("latitude")   ? localStorage.getItem("latitude")   : 60.630556;
     var longtitude  = localStorage.getItem("longtitude") ? localStorage.getItem("longtitude") : 24.859726;
-    var zoomlevel   = localStorage.getItem("zoomlevel") ? localStorage.getItem("zoomlevel") : 8;
+    var zoomlevel   = localStorage.getItem("zoomlevel")  ? localStorage.getItem("zoomlevel")  : 8;
 
     var selectedparameter = localStorage.getItem("selectedparameter") ? localStorage.getItem("longtitude") : "ws_10min";
     var toggleDataSelect = "close";
-
-
 
     Tuulikartta.debug = function(par) {
         if (Tuulikartta.debugvalue === true) {
             console.log(par);
         }
     }
-
-
-
 
     // ---------------------------------------------------------
     // Convert epoch time to properly formatted time string
@@ -62,9 +57,6 @@ var saa = saa || {};
         return d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear() + " " + hours + ":" + minutes;
     }
 
-
-
-
     // ---------------------------------------------------------
     // Get observation data from getdata.php
     // ---------------------------------------------------------
@@ -87,9 +79,6 @@ var saa = saa || {};
             }
         });
     }
-
-
-
 
     // ---------------------------------------------------------
     //  Trigger buttons
@@ -149,9 +138,6 @@ var saa = saa || {};
         });
 
     });
-
-
-
 
     // ---------------------------------------------------------
     // initialize Leaflet map and set geolocation
@@ -322,6 +308,44 @@ var saa = saa || {};
             return "calm"
     }
 
+    Tuulikartta.resolveTemperature = function(temperature) {
+        temperature = parseFloat(temperature);
+        if (temperature < -30) return "#8a79f7";
+        if (temperature >= -30 && temperature < -28) return "#8a79f7";
+        if (temperature >= -28 && temperature < -26) return "#6e70e7";
+        if (temperature >= -26 && temperature < -24) return "#5268d8";
+        if (temperature >= -24 && temperature < -22) return "#3760c9";
+        if (temperature >= -22 && temperature < -20) return "#1B58BA";
+        if (temperature >= -20 && temperature < -18) return "#0050AB";
+        if (temperature >= -18 && temperature < -16) return "#196BBE";
+        if (temperature >= -16 && temperature < -14) return "#3286D1";
+        if (temperature >= -14 && temperature < -12) return "#4BA1E4";
+        if (temperature >= -12 && temperature < -10) return "#65BDF7";
+        if (temperature >= -10 && temperature < -8) return "#77c8f8";
+        if (temperature >= -8 && temperature < -6) return "#8ad3f9";
+        if (temperature >= -6 && temperature < -4) return "#9cdefb";
+        if (temperature >= -4 && temperature < -2) return "#afe9fc";
+        if (temperature >= -2 && temperature < -1) return "#c1f4fd";
+        if (temperature >= -1 && temperature < 0) return "#d4ffff";
+        if (temperature >= 0 && temperature < 1) return "#05b38a";
+        if (temperature >= 1 && temperature < 2) return "#02d495";
+        if (temperature >= 2 && temperature < 4) return "#8aedbb";
+        if (temperature >= 4 && temperature < 6) return "#ccffd0";
+        if (temperature >= 6 && temperature < 8) return "#ebfccf";
+        if (temperature >= 8 && temperature < 10) return "#ebff7a";
+        if (temperature >= 10 && temperature < 12) return "#ffea80";
+        if (temperature >= 12 && temperature < 14) return "#f7d423";
+        if (temperature >= 14 && temperature < 16) return "#f5b400";
+        if (temperature >= 16 && temperature < 18) return "#f29500";
+        if (temperature >= 18 && temperature < 20) return "#f07400";
+        if (temperature >= 20 && temperature < 22) return "#ff5324";
+        if (temperature >= 22 && temperature < 24) return "#f71707";
+        if (temperature >= 24 && temperature < 26) return "#db0a07";
+        if (temperature >= 26 && temperature < 28) return "#bd0404";
+        if (temperature >= 28 && temperature < 30) return "#000000";
+        if (temperature > 30) return "#000000";
+    }
+    
     Tuulikartta.resolveWindDirection = function(winddirection) {
         var winddir = parseFloat(winddirection);
         return (winddir+180)%360;
@@ -413,6 +437,49 @@ var saa = saa || {};
 
             }
 
+            if (param == "temperature") {
+
+                var fillColor = Tuulikartta.resolveTemperature(saa.Tuulikartta.data[i][param]);
+
+                var svgicon = "";
+                var svgicon = svgicon + '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">';
+                    svgicon = svgicon +   '<g><path d="M20.4,48.8c6.7,1.3,12.5-3.8,12.5-10.3c0-3.4-1.7-6.5-4.3-8.4V7.2c0-3.4-2.7-6.2-6.2-6.2c-3.4,0-6.2,2.8-6.2,6.2v22.9   c-3.1,2.3-4.9,6.2-4,10.6C13,44.7,16.3,48,20.4,48.8z M17.5,32l0.9-0.7v-24c0-2.2,1.8-3.9,3.9-3.9c2.2,0,4,1.8,4,3.9v24l0.9,0.7   c2.1,1.5,3.3,4,3.3,6.6c0,2.2-0.9,4.3-2.4,5.8c-1.6,1.5-3.6,2.4-5.8,2.4c-4.1,0-7.3-2.9-8-6.5C13.8,37,15,33.8,17.5,32z"></path>';
+                    svgicon = svgicon +     '<path d="M22.4,44.4c1.6,0,3.1-0.6,4.2-1.7c1.1-1.1,1.7-2.6,1.7-4.2c0-4-3.4-5.3-4.3-6.1V15.5h-3.3v16.9c-0.7,0.8-5.1,2.4-4.1,7.3   C17.1,42.3,19.4,44.4,22.4,44.4z" stroke="black" fill="'+fillColor+'"></path>';
+                    svgicon = svgicon +     '<path d="M36.9,7.8h-5.7v2.3h5.7c0.6,0,1.1-0.5,1.1-1.1C38.1,8.3,37.6,7.8,36.9,7.8z"></path>';
+                    svgicon = svgicon +     '<path d="M35.8,15c0-0.6-0.5-1.1-1.1-1.1h-3.4v2.3h3.4C35.3,16.1,35.8,15.6,35.8,15z"></path>';
+                    svgicon = svgicon +     '<path d="M38.1,21c0-0.6-0.5-1.1-1.1-1.1h-5.7v2.3h5.7C37.6,22.2,38.1,21.6,38.1,21z"></path>';
+                    svgicon = svgicon +   '</g>';
+                    svgicon = svgicon + '</svg>';
+
+                var icon = encodeURI("data:image/svg+xml," + svgicon).replace('#','%23');
+
+                if (saa.Tuulikartta.data[i]['temperature'] !== null) {
+
+                    var icon = L.icon({
+                        // iconUrl: '../symbols/temperature.svg',
+                        iconUrl: icon,
+                        iconSize:     [30, 30],
+                        iconAnchor:   [40, 10],
+                        popupAnchor:  [0, 0]
+                    });
+
+                    var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
+                        {
+                            icon: icon,
+                        }).addTo(saa.Tuulikartta.markerGroup);
+
+                    marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]));
+
+                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                        {
+                            interactive: false,
+                            keyboard: false,
+                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+                        }).addTo(saa.Tuulikartta.markerGroup);
+                }
+
+            }
+
         }
 
         for (var i = 0; i < sizeofdata; i++) {
@@ -437,19 +504,34 @@ var saa = saa || {};
         var time = Tuulikartta.timeTotime(data['epoctime']);
         var latlon = data["lat"] + ',' + data["lon"];
 
-        var output = "";
+        var wind = data['ws_10min'] + ' m/s',
+            gust = data['wg_10min'] + ' m/s',
+            dir  = data['wd_10min'] + '&deg;',
+            temp = data['temperature'] + '&degC'
+
+        if(wind === 'null m/s') wind = "-";
+        if(gust === 'null m/s') gust = "-";
+        if(dir  === 'null&deg;') dir  = "-";
+        if(temp === 'null&degC') temp = "-";
+        
         if (data['type'] === 'synop') {
             var stationType = '<b>Aseman tyyppi:</b> Synop-asema <br>';
         } else {
             var stationType = '<b>Aseman tyyppi:</b> Tiesääasema <br>';
         }
 
+        if(data['wg_10min'] === null) {
+
+        }
+        
+        var output = "";
         output += '<b>Havaintoasema: </b>' + data['station'] + '<br>';
-        output += '<b>Viimeisin havainto: </b>' + time + '<br>';
-        output += '<b>Keskituuli: </b>' + data['ws_10min'] + ' m/s <br>';
-        output += '<b>Puuska: </b>' + data['wg_10min'] + ' m/s <br>';
-        output += '<b>Tuulen suunta: </b>' + data['wd_10min'] + '&deg; <br>';
         output += stationType;
+        output += '<b>Viimeisin havainto: </b>' + time + '<br>';
+        output += '<b>Keskituuli: </b>' + wind + ' <br>';
+        output += '<b>Puuska: </b>' + gust + ' <br>';
+        output += '<b>Tuulen suunta: </b>' + dir + ' <br>';
+        output += '<b>Lämpötila: </b>' + temp + ' <br>';
         output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data["type"] + '\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data["fmisid"] + ',' + latlon + ',\'' + data["type"] + '\')">täällä</a>';
 
         return output;
