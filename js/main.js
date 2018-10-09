@@ -315,12 +315,12 @@ var saa = saa || {};
         if (temperature >= -28 && temperature < -26) return "#6e70e7";
         if (temperature >= -26 && temperature < -24) return "#5268d8";
         if (temperature >= -24 && temperature < -22) return "#3760c9";
-        if (temperature >= -22 && temperature < -20) return "#1B58BA";
-        if (temperature >= -20 && temperature < -18) return "#0050AB";
-        if (temperature >= -18 && temperature < -16) return "#196BBE";
-        if (temperature >= -16 && temperature < -14) return "#3286D1";
-        if (temperature >= -14 && temperature < -12) return "#4BA1E4";
-        if (temperature >= -12 && temperature < -10) return "#65BDF7";
+        if (temperature >= -22 && temperature < -20) return "#1b58ba";
+        if (temperature >= -20 && temperature < -18) return "#0050ab";
+        if (temperature >= -18 && temperature < -16) return "#196bbe";
+        if (temperature >= -16 && temperature < -14) return "#3286d1";
+        if (temperature >= -14 && temperature < -12) return "#4ba1e4";
+        if (temperature >= -12 && temperature < -10) return "#65dbf7";
         if (temperature >= -10 && temperature < -8) return "#77c8f8";
         if (temperature >= -8 && temperature < -6) return "#8ad3f9";
         if (temperature >= -6 && temperature < -4) return "#9cdefb";
@@ -344,6 +344,7 @@ var saa = saa || {};
         if (temperature >= 26 && temperature < 28) return "#bd0404";
         if (temperature >= 28 && temperature < 30) return "#000000";
         if (temperature > 30) return "#000000";
+        return '#8aedbb';
     }
     
     Tuulikartta.resolveWindDirection = function(winddirection) {
@@ -440,6 +441,8 @@ var saa = saa || {};
             if (param == "temperature") {
 
                 var fillColor = Tuulikartta.resolveTemperature(saa.Tuulikartta.data[i][param]);
+                var hex = fillColor.substr(1);
+                hex = 'hex'+hex;
 
                 var svgicon = "";
                 var svgicon = svgicon + '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">';
@@ -470,11 +473,18 @@ var saa = saa || {};
 
                     marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]));
 
+                    var cssClass = '';
+                    if(saa.Tuulikartta.data[i][param] < 0) {
+                        cssClass = 'textLabelclassNeg';
+                    } else {
+                        cssClass = 'textLabelclassPos';
+                    }
+
                     L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
-                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+                            icon:Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
                         }).addTo(saa.Tuulikartta.markerGroup);
                 }
 
