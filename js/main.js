@@ -315,12 +315,12 @@ var saa = saa || {};
         if (temperature >= -28 && temperature < -26) return "#6e70e7";
         if (temperature >= -26 && temperature < -24) return "#5268d8";
         if (temperature >= -24 && temperature < -22) return "#3760c9";
-        if (temperature >= -22 && temperature < -20) return "#1B58BA";
-        if (temperature >= -20 && temperature < -18) return "#0050AB";
-        if (temperature >= -18 && temperature < -16) return "#196BBE";
-        if (temperature >= -16 && temperature < -14) return "#3286D1";
-        if (temperature >= -14 && temperature < -12) return "#4BA1E4";
-        if (temperature >= -12 && temperature < -10) return "#65BDF7";
+        if (temperature >= -22 && temperature < -20) return "#1b58ba";
+        if (temperature >= -20 && temperature < -18) return "#0050ab";
+        if (temperature >= -18 && temperature < -16) return "#196bbe";
+        if (temperature >= -16 && temperature < -14) return "#3286d1";
+        if (temperature >= -14 && temperature < -12) return "#4ba1e4";
+        if (temperature >= -12 && temperature < -10) return "#65dbf7";
         if (temperature >= -10 && temperature < -8) return "#77c8f8";
         if (temperature >= -8 && temperature < -6) return "#8ad3f9";
         if (temperature >= -6 && temperature < -4) return "#9cdefb";
@@ -344,6 +344,7 @@ var saa = saa || {};
         if (temperature >= 26 && temperature < 28) return "#bd0404";
         if (temperature >= 28 && temperature < 30) return "#000000";
         if (temperature > 30) return "#000000";
+        return '#8aedbb';
     }
     
     Tuulikartta.resolveWindDirection = function(winddirection) {
@@ -440,9 +441,11 @@ var saa = saa || {};
             if (param == "temperature") {
 
                 var fillColor = Tuulikartta.resolveTemperature(saa.Tuulikartta.data[i][param]);
+                var hex = fillColor.substr(1);
+                hex = 'hex'+hex;
 
                 var svgicon = "";
-                var svgicon = svgicon + '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">';
+                    svgicon = svgicon + '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">';
                     svgicon = svgicon +   '<g><path d="M20.4,48.8c6.7,1.3,12.5-3.8,12.5-10.3c0-3.4-1.7-6.5-4.3-8.4V7.2c0-3.4-2.7-6.2-6.2-6.2c-3.4,0-6.2,2.8-6.2,6.2v22.9   c-3.1,2.3-4.9,6.2-4,10.6C13,44.7,16.3,48,20.4,48.8z M17.5,32l0.9-0.7v-24c0-2.2,1.8-3.9,3.9-3.9c2.2,0,4,1.8,4,3.9v24l0.9,0.7   c2.1,1.5,3.3,4,3.3,6.6c0,2.2-0.9,4.3-2.4,5.8c-1.6,1.5-3.6,2.4-5.8,2.4c-4.1,0-7.3-2.9-8-6.5C13.8,37,15,33.8,17.5,32z"></path>';
                     svgicon = svgicon +     '<path d="M22.4,44.4c1.6,0,3.1-0.6,4.2-1.7c1.1-1.1,1.7-2.6,1.7-4.2c0-4-3.4-5.3-4.3-6.1V15.5h-3.3v16.9c-0.7,0.8-5.1,2.4-4.1,7.3   C17.1,42.3,19.4,44.4,22.4,44.4z" stroke="black" fill="'+fillColor+'"></path>';
                     svgicon = svgicon +     '<path d="M36.9,7.8h-5.7v2.3h5.7c0.6,0,1.1-0.5,1.1-1.1C38.1,8.3,37.6,7.8,36.9,7.8z"></path>';
@@ -474,12 +477,57 @@ var saa = saa || {};
                         {
                             interactive: false,
                             keyboard: false,
-                            icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+                            icon:Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
                         }).addTo(saa.Tuulikartta.markerGroup);
                 }
 
             }
+            
+            if (param == "visibility") {
+    
+                if (saa.Tuulikartta.data[i]['visibility'] !== null) {
+                    var labelClass = "textLabelclassGrey";
+                    if(parseFloat(saa.Tuulikartta.data[i][param]) < 2000 && parseFloat(saa.Tuulikartta.data[i][param]) >= 1000) {
+                        labelClass = 'textLabelclass'
 
+                        var icon = L.icon({
+                            iconUrl: '../symbols/mist.svg',
+                            iconSize:     [60, 60],
+                            iconAnchor:   [66, 25],
+                            popupAnchor:  [0, 0]
+                        });
+
+                        var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
+                            {
+                                icon: icon,
+                            }).addTo(saa.Tuulikartta.markerGroup);
+                    }
+                                            
+                    if(parseFloat(saa.Tuulikartta.data[i][param]) < 1000) {
+                        labelClass = 'textLabelclassRed'
+
+                        var icon = L.icon({
+                            iconUrl: '../symbols/fog.svg',
+                            iconSize:     [60, 60],
+                            iconAnchor:   [66, 25],
+                            popupAnchor:  [0, 0]
+                        });
+
+                        var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
+                            {
+                                icon: icon,
+                            }).addTo(saa.Tuulikartta.markerGroup);
+                    }
+
+                    var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                        {
+                            interactive: true,
+                            keyboard: false,
+                            icon:Tuulikartta.createLabelIcon(labelClass, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+                        }).addTo(saa.Tuulikartta.markerGroup);
+                    marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]));
+                }
+            }
         }
 
         for (var i = 0; i < sizeofdata; i++) {
@@ -507,12 +555,14 @@ var saa = saa || {};
         var wind = data['ws_10min'] + ' m/s',
             gust = data['wg_10min'] + ' m/s',
             dir  = data['wd_10min'] + '&deg;',
-            temp = data['temperature'] + '&degC'
+            temp = data['temperature'] + '&degC',
+            vis  = data['visibility'] + ' m'
 
         if(wind === 'null m/s') wind = "-";
         if(gust === 'null m/s') gust = "-";
         if(dir  === 'null&deg;') dir  = "-";
         if(temp === 'null&degC') temp = "-";
+        if(vis === 'null m') vis = "-";
         
         if (data['type'] === 'synop') {
             var stationType = '<b>Aseman tyyppi:</b> Synop-asema <br>';
@@ -532,6 +582,7 @@ var saa = saa || {};
         output += '<b>Puuska: </b>' + gust + ' <br>';
         output += '<b>Tuulen suunta: </b>' + dir + ' <br>';
         output += '<b>Lämpötila: </b>' + temp + ' <br>';
+        output += '<b>Näkyvyys: </b>' + vis + ' <br>';
         output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data["type"] + '\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data["fmisid"] + ',' + latlon + ',\'' + data["type"] + '\')">täällä</a>';
 
         return output;
