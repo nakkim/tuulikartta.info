@@ -447,3 +447,17 @@ button {
     /*margin-left: -18px;*/ 
     font-size: 15px;
 }
+
+.textLabelclassGrey {
+    font-weight: bold;
+    color: rgb(184, 183, 183);
+    /*margin-left: -18px;*/ 
+    font-size: 15px;
+}
+
+.textLabelclassRed {
+    font-weight: bold;
+    color: rgb(130, 1, 1);
+    /*margin-left: -18px;*/ 
+    font-size: 15px;
+}
