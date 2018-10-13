@@ -448,11 +448,26 @@ button {
     font-size: 15px;
 }
 
-.textLabelclassGrey {
+.textLabelclassBlack {
     font-weight: bold;
-    color: rgb(184, 183, 183);
+    color: black;
     /*margin-left: -18px;*/ 
     font-size: 15px;
+    background-color: rgba(255,255,255,0.2);
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.textLabelclassGrey {
+    font-weight: bold;
+    color: rgb(130, 129, 129);
+    /*margin-left: -18px;*/ 
+    font-size: 11px;
+    background-color: rgba(255,255,255,0.2);
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .textLabelclassRed {
@@ -460,4 +475,8 @@ button {
     color: rgb(130, 1, 1);
     /*margin-left: -18px;*/ 
     font-size: 15px;
+    background-color: rgba(255,255,255,0.2);
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
 }

@@ -488,7 +488,7 @@ var saa = saa || {};
                 if (saa.Tuulikartta.data[i]['visibility'] !== null) {
                     var labelClass = "textLabelclassGrey";
                     if(parseFloat(saa.Tuulikartta.data[i][param]) < 2000 && parseFloat(saa.Tuulikartta.data[i][param]) >= 1000) {
-                        labelClass = 'textLabelclass'
+                        labelClass = 'textLabelclassBlack'
 
                         var icon = L.icon({
                             iconUrl: '../symbols/mist.svg',
