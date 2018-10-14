@@ -12,7 +12,8 @@ var saa = saa || {};
 
     saa.Tuulikartta.data = [];
     saa.Tuulikartta.debugvalue = false;
-    saa.Tuulikartta.markerGroup = L.layerGroup();
+    saa.Tuulikartta.markerGroupSynop = L.layerGroup();
+    saa.Tuulikartta.markerGroupRoad  = L.layerGroup();
     var emptymarker = [];
 
     // observation update interval in ms
@@ -28,6 +29,7 @@ var saa = saa || {};
 
     var selectedparameter = localStorage.getItem("selectedparameter") ? localStorage.getItem("longtitude") : "ws_10min";
     var toggleDataSelect = "close";
+    var minRoadZoomLevel = 9;
 
     Tuulikartta.debug = function(par) {
         if (Tuulikartta.debugvalue === true) {
@@ -364,10 +366,35 @@ var saa = saa || {};
     Tuulikartta.drawWind = function(param) {
 
         // remove all old markers
-        saa.Tuulikartta.markerGroup.clearLayers();
+        saa.Tuulikartta.markerGroupSynop.clearLayers();
+        saa.Tuulikartta.markerGroupRoad.clearLayers();
 
         var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length);
-        saa.Tuulikartta.markerGroup.addTo(saa.Tuulikartta.map);
+        saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map);
+        saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map);
+
+        // check zoom levels and hide road observations if needed
+        if (saa.Tuulikartta.map.getZoom() < minRoadZoomLevel){
+            console.log('Poista tiesäähavainnot');
+            console.log(saa.Tuulikartta.map.getZoom());
+            saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad);
+        } else {
+            console.log('Lisää tiesäähavainnot')
+            console.log(saa.Tuulikartta.map.getZoom());
+            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad);
+        }
+        saa.Tuulikartta.map.on('zoomend', function() {
+            if (saa.Tuulikartta.map.getZoom() < minRoadZoomLevel){
+                console.log('Poista tiesäähavainnot');
+                console.log(saa.Tuulikartta.map.getZoom());
+                saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad);
+            } else {
+                console.log('Lisää tiesäähavainnot')
+                console.log(saa.Tuulikartta.map.getZoom());
+                saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad);
+            }
+        });
+
         var valid = 0;
 
         for (var i = 0; i < sizeofdata; i++) {
@@ -397,16 +424,29 @@ var saa = saa || {};
                             icon: icon,
                             rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wd_10min']),
                             rotationOrigin: 'center center'
-                        }).addTo(saa.Tuulikartta.markerGroup);
+                        });
+
+                    if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                        marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                    } else {
+                        marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                    }
 
                     marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]));
 
-                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                    var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
                             icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-                        }).addTo(saa.Tuulikartta.markerGroup);
+                        });
+
+                    if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                        marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                    } else {
+                        marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                    }
+
                 }
             }
 
@@ -414,12 +454,18 @@ var saa = saa || {};
 
                 if (saa.Tuulikartta.data[i]['ri_10min'] !== null && parseFloat(saa.Tuulikartta.data[i]['ri_10min']) > 0) {
                     valid++;
-                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                    var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
                             icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-                        }).addTo(saa.Tuulikartta.markerGroup);
+                        });
+
+                    if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                        marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                    } else {
+                        marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                    }
                 }
 
             }
@@ -428,12 +474,18 @@ var saa = saa || {};
 
                 if (saa.Tuulikartta.data[i]['r_1h'] !== null) {
                     valid++;
-                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                    var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
                             icon:Tuulikartta.createLabelIcon("textLabelclass", parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-                        }).addTo(saa.Tuulikartta.markerGroup);
+                        });
+
+                    if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                        marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                    } else {
+                        marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                    }
                 }
 
             }
@@ -469,16 +521,28 @@ var saa = saa || {};
                     var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
                         {
                             icon: icon,
-                        }).addTo(saa.Tuulikartta.markerGroup);
+                        });
+
+                    if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                        marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                    } else {
+                        marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                    }
 
                     marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]));
 
-                    L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
+                    var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
                         {
                             interactive: false,
                             keyboard: false,
                             icon:Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-                        }).addTo(saa.Tuulikartta.markerGroup);
+                        });
+
+                    if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                        marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                    } else {
+                        marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                    }
                 }
 
             }
@@ -500,7 +564,7 @@ var saa = saa || {};
                         var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
                             {
                                 icon: icon,
-                            }).addTo(saa.Tuulikartta.markerGroup);
+                            }).addTo(saa.Tuulikartta.markerGroupSynop);
                     }
                                             
                     if(parseFloat(saa.Tuulikartta.data[i][param]) < 1000) {
@@ -516,7 +580,13 @@ var saa = saa || {};
                         var marker = L.marker([saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']],
                             {
                                 icon: icon,
-                            }).addTo(saa.Tuulikartta.markerGroup);
+                            }).addTo(saa.Tuulikartta.markerGroupSynop);
+
+                        if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                            marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                        } else {
+                            marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                        }
                     }
 
                     var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
@@ -524,7 +594,14 @@ var saa = saa || {};
                             interactive: true,
                             keyboard: false,
                             icon:Tuulikartta.createLabelIcon(labelClass, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-                        }).addTo(saa.Tuulikartta.markerGroup);
+                        });
+
+                    if(saa.Tuulikartta.data[i]['type'] === 'road') {
+                        marker.addTo(saa.Tuulikartta.markerGroupRoad);
+                    } else {
+                        marker.addTo(saa.Tuulikartta.markerGroupSynop);
+                    }
+
                     marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]));
                 }
             }
