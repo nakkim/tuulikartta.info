@@ -581,12 +581,6 @@ var saa = saa || {};
                             {
                                 icon: icon,
                             }).addTo(saa.Tuulikartta.markerGroupSynop);
-
-                        if(saa.Tuulikartta.data[i]['type'] === 'road') {
-                            marker.addTo(saa.Tuulikartta.markerGroupRoad);
-                        } else {
-                            marker.addTo(saa.Tuulikartta.markerGroupSynop);
-                        }
                     }
 
                     var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'],saa.Tuulikartta.data[i]['lon']),
