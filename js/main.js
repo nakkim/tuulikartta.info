@@ -43,10 +43,7 @@ var saa = saa || {};
 
     Tuulikartta.timeTotime = function(epoctime) {
         // convert epoc time to time stamp
-        // console.log(epoctime);
         var d = new Date(epoctime*1000);
-        //console.log(d);
-        //d.setUTCSeconds(epoctime);
         var hours = d.getHours();
         var minutes = d.getMinutes();
         // add leading zeros
@@ -375,22 +372,14 @@ var saa = saa || {};
 
         // check zoom levels and hide road observations if needed
         if (saa.Tuulikartta.map.getZoom() < minRoadZoomLevel){
-            console.log('Poista tiesäähavainnot');
-            console.log(saa.Tuulikartta.map.getZoom());
             saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad);
         } else {
-            console.log('Lisää tiesäähavainnot')
-            console.log(saa.Tuulikartta.map.getZoom());
             saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad);
         }
         saa.Tuulikartta.map.on('zoomend', function() {
             if (saa.Tuulikartta.map.getZoom() < minRoadZoomLevel){
-                console.log('Poista tiesäähavainnot');
-                console.log(saa.Tuulikartta.map.getZoom());
                 saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad);
             } else {
-                console.log('Lisää tiesäähavainnot')
-                console.log(saa.Tuulikartta.map.getZoom());
                 saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad);
             }
         });
@@ -756,7 +745,6 @@ var saa = saa || {};
             if( layer instanceof L.TileLayer && 'wmsParams' in layer) {
                 layer.wmsParams.preventCache = Date.now();
                 layer.setParams({});
-                console.log(layer);;
             }
         });
     }, interval);
