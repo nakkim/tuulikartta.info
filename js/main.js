@@ -73,7 +73,7 @@ var saa = saa || {};
                 Tuulikartta.debug('Done');
                 // store the Map-instance in map variable
                 saa.Tuulikartta.data = data;
-                Tuulikartta.drawWind($("#select-wind-parameter").val());
+                Tuulikartta.drawData($("#select-wind-parameter").val());
                 selectedparameter = $("#select-wind-parameter").val();
             }
         });
@@ -87,7 +87,7 @@ var saa = saa || {};
 
         //select wind parameter
         $("#select-wind-parameter").change(function () {
-            Tuulikartta.drawWind($(this).val());
+            Tuulikartta.drawData($(this).val());
         });
 
         // close graph box
@@ -170,11 +170,12 @@ var saa = saa || {};
                     transitionTime: 2000,
                     loop: true,
                 }
-            }
+            },
+            attribution: 'Tuulikartta.info'
         });
 
         L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">Tuulikartta.info</a> contributors'
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
         }).addTo(map);
         
         saa.Tuulikartta.map = map;
@@ -224,9 +225,11 @@ var saa = saa || {};
             format: 'image/png',
             tileSize: 2048,
             transparent: true,
+            interval_start: 60,
             opacity: 0.7,
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
+            attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>',
             //preventCache: Date.now()
         });
 
@@ -239,7 +242,8 @@ var saa = saa || {};
             version: '1.3.0',
             crs: L.CRS.EPSG3857,
             interval_start: 5,
-            timestep: 5
+            timestep: 5,
+            attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>',
             //preventCache: Date.now()
         });
 
@@ -360,7 +364,7 @@ var saa = saa || {};
         })
     }
 
-    Tuulikartta.drawWind = function(param) {
+    Tuulikartta.drawData = function(param) {
 
         // remove all old markers
         saa.Tuulikartta.markerGroupSynop.clearLayers();
