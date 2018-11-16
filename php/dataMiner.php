@@ -40,7 +40,7 @@ class DataMiner{
     *
     */
 
-    public function roaddata() {
+    public function roaddata($timestamp) {
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
         $url .= "&format=json";
@@ -49,8 +49,13 @@ class DataMiner{
         $url .= "&precision=double";
         $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,temperature,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min,sum_t(pri:60m:60m)%20as%20ri_1h";
         $url .= "&missingtext=nan";
-        $url .= "&endtime=now";
         $url .= "&maxlocations=1";
+
+        if($timestamp == "now") {
+            $url .= "&endtime=now";
+        } else {
+            $url .= "&starttime={$timestamp}&endtime={$timestamp}&timestep=10";
+        }
         
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
@@ -84,7 +89,7 @@ class DataMiner{
     *
     */
 
-    public function synopdata() {
+    public function synopdata($timestamp) {
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
         $url .= "&format=json";
@@ -93,8 +98,13 @@ class DataMiner{
         $url .= "&precision=double";
         $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,temperature,wg_10min,ws_10min,wd_10min,ri_10min,sum_t(ri_10min:1h:0)%20as%20ri_1h";
         $url .= "&missingvtext=nan";
-        $url .= "&endtime=now";
         $url .= "&maxlocations=1";
+
+        if($timestamp == "now") {
+            $url .= "&endtime=now";
+        } else {
+            $url .= "&starttime=${timestamp}&endtime=${timestamp}&timestep=10";
+        }
 
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);

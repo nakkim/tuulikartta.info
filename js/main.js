@@ -12,6 +12,7 @@ var saa = saa || {};
 
     saa.Tuulikartta.data = [];
     saa.Tuulikartta.debugvalue = false;
+    saa.Tuulikartta.timestamp = 'now';
     saa.Tuulikartta.markerGroupSynop = L.layerGroup();
     saa.Tuulikartta.markerGroupRoad  = L.layerGroup();
     var emptymarker = [];
@@ -65,7 +66,9 @@ var saa = saa || {};
         $.ajax({
             dataType: "json",
             url: 'php/getdata.php',
-            data: {},
+            data: {
+                time: saa.Tuulikartta.timestamp
+            },
             error: function () {
                 Tuulikartta.debug('An error has occurred');
             },
@@ -641,12 +644,18 @@ var saa = saa || {};
         var output = "";
         output += '<b>Havaintoasema: </b>' + data['station'] + '<br>';
         output += stationType;
+
+        if(saa.Tuulikartta.timestamp === 'now')
         output += '<b>Viimeisin havainto: </b>' + time + '<br>';
+        else
+        output += '<b>Havaintoaika: </b>' + time + '<br>';
+
         output += '<b>Keskituuli: </b>' + wind + ' <br>';
         output += '<b>Puuska: </b>' + gust + ' <br>';
         output += '<b>Tuulen suunta: </b>' + dir + ' <br>';
         output += '<b>Lämpötila: </b>' + temp + ' <br>';
         output += '<b>Näkyvyys: </b>' + vis + ' <br>';
+        if(saa.Tuulikartta.timestamp === 'now')
         output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data["type"] + '\" fmisid=\"' + data["fmisid"] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data["fmisid"] + ',' + latlon + ',\'' + data["type"] + '\')">täällä</a>';
 
         return output;
@@ -740,17 +749,19 @@ var saa = saa || {};
     // ---------------------------------------------------------
 
     setInterval(function () {
-        Tuulikartta.debug('............................');
-        Tuulikartta.debug('Update data and draw markers');
-        Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
-        Tuulikartta.callData();
-        Tuulikartta.updateRadarTime();
-        saa.Tuulikartta.map.eachLayer(function(layer) {
-            if( layer instanceof L.TileLayer && 'wmsParams' in layer) {
-                layer.wmsParams.preventCache = Date.now();
-                layer.setParams({});
-            }
-        });
+        if(saa.Tuulikartta.timestamp === 'now') {
+            Tuulikartta.debug('............................');
+            Tuulikartta.debug('Update data and draw markers');
+            Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
+            Tuulikartta.callData();
+            Tuulikartta.updateRadarTime();
+            saa.Tuulikartta.map.eachLayer(function(layer) {
+                if( layer instanceof L.TileLayer && 'wmsParams' in layer) {
+                    layer.wmsParams.preventCache = Date.now();
+                    layer.setParams({});
+                }
+            });
+        }
     }, interval);
 
 }(saa.Tuulikartta = saa.Tuulikartta || {}));
