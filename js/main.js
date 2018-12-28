@@ -11,7 +11,7 @@ var saa = saa || {};
     'use strict';
 
     saa.Tuulikartta.data = [];
-    saa.Tuulikartta.debugvalue = false;
+    saa.Tuulikartta.debugvalue = true;
     saa.Tuulikartta.timestamp = 'now';
     saa.Tuulikartta.markerGroupSynop = L.layerGroup();
     saa.Tuulikartta.markerGroupRoad  = L.layerGroup();
@@ -63,6 +63,8 @@ var saa = saa || {};
 
     Tuulikartta.callData = function() {
         Tuulikartta.debug('Getting data... ');
+        document.getElementById('data-loader').innerHTML = "Ladataan havaintoja... <img href='url(../symbols/default.gif)'></img>"
+        document.body.style.cursor = 'wait';
         $.ajax({
             dataType: "json",
             url: 'php/getdata.php',
@@ -70,14 +72,18 @@ var saa = saa || {};
                 time: saa.Tuulikartta.timestamp
             },
             error: function () {
+                document.body.style.cursor = 'default';
                 Tuulikartta.debug('An error has occurred');
             },
             success: function (data) {
+                document.body.style.cursor = 'default';
                 Tuulikartta.debug('Done');
                 // store the Map-instance in map variable
                 saa.Tuulikartta.data = data;
+                Tuulikartta.clearMarkers();
                 Tuulikartta.drawData($("#select-wind-parameter").val());
                 selectedparameter = $("#select-wind-parameter").val();
+                document.getElementById('data-loader').innerHTML = "";   
             }
         });
     }
@@ -90,6 +96,7 @@ var saa = saa || {};
 
         //select wind parameter
         $("#select-wind-parameter").change(function () {
+            Tuulikartta.clearMarkers();
             Tuulikartta.drawData($(this).val());
         });
 
@@ -99,32 +106,32 @@ var saa = saa || {};
         });
 
         // select observations dialog
-        var obsValues = !!Tuulikartta.readCookie('observation_values_hidden');
-        $("#data-content-select").dialog({
-            //position: { my: 'bottom+90', at: 'rleft+182' },
-            position: {
-                of: $("body"),
-                my: 'left top+60',
-                at: 'left+54 top'
-            },
-            autoOpen: !obsValues,
-            close: function () {
-                Tuulikartta.createCookie('observation_values_hidden', 'true', 7);
-            }
-        });
+        // var obsValues = !!Tuulikartta.readCookie('observation_values_hidden');
+        // $("#data-content-select").dialog({
+        //     //position: { my: 'bottom+90', at: 'rleft+182' },
+        //     position: {
+        //         of: $("body"),
+        //         my: 'left top+60',
+        //         at: 'left+54 top'
+        //     },
+        //     autoOpen: !obsValues,
+        //     close: function () {
+        //         Tuulikartta.createCookie('observation_values_hidden', 'true', 7);
+        //     }
+        // });
 
-        $("#dialog-opener").click(function () {
-            if (!$("#data-content-select").dialog("isOpen")) {
-                $("#data-content-select").dialog("open");
-            } else {
-                $("#data-content-select").dialog("close");
-            }
-        });
+        // $("#dialog-opener").click(function () {
+        //     if (!$("#data-content-select").dialog("isOpen")) {
+        //         $("#data-content-select").dialog("open");
+        //     } else {
+        //         $("#data-content-select").dialog("close");
+        //     }yyyy + ''
+        // });
 
-        // draw radar layer again when selected radar layer changes
-        $("#select-radar-parameter").change(function () {
-            Tuulikartta.updateRadarData(saa.Tuulikartta.map);
-        });
+        // // draw radar layer again when selected radar layer changes
+        // $("#select-radar-parameter").change(function () {
+        //     Tuulikartta.updateRadarData(saa.Tuulikartta.map);
+        // });
 
         // ---------------------------------------------------------
         // Get and save user location to localstorage
@@ -138,6 +145,98 @@ var saa = saa || {};
             localStorage.setItem("longitude", lon);
             localStorage.setItem("zoomlevel", zoom);
         });
+
+        // ---------------------------------------------------------
+        // get observatinos with timestamp
+        // ---------------------------------------------------------     
+
+        $("#select-content-datasearch").click(function () {
+            var date = document.getElementById('datepicker-button').value;
+            var time = document.getElementById('clockpicker-button').value;
+
+            var timestring = moment(date+' '+time, ['DD-MM-YYYY HH:mm']);
+            timestring = timestring.utc().format('YYYY-MM-DDTHH:mm:ss');
+            timestring = timestring + 'Z'
+            saa.Tuulikartta.timestamp = timestring;
+
+            Tuulikartta.debug('............................');
+            Tuulikartta.debug(`Find observations from ${timestring}`)
+            Tuulikartta.clearMarkers();
+            Tuulikartta.callData()
+        });
+
+        $("#select-content-now").click(function () {
+            saa.Tuulikartta.timestamp = 'now';
+
+            Tuulikartta.debug('............................');
+            Tuulikartta.debug('Get latest observations')
+            Tuulikartta.clearMarkers();
+            Tuulikartta.callData()
+        });
+
+        // ---------------------------------------------------------
+        // progress and regress of time
+        // --------------------------------------------------------- 
+
+        $("#timepicker-progress-time").click(function () {
+
+            Tuulikartta.clearMarkers();
+
+            var date = document.getElementById('datepicker-button').value;
+            var time = document.getElementById('clockpicker-button').value;
+
+            var time = moment(date+' '+time, ['DD-MM-YYYY HH:mm']);
+            var newTime = moment(time).add(1, 'hours');
+
+            var timestring = newTime.utc().format('YYYY-MM-DDTHH:mm:ss');
+            timestring = timestring + 'Z'
+
+            Tuulikartta.debug('............................');
+            Tuulikartta.debug('Progress time');
+            Tuulikartta.debug(`Find observations from ${timestring}`)
+
+            var utcOffSet = moment(timestring).utcOffset();
+            if(utcOffSet < 0)
+            newTime.subtrack(Math.abs(utcOffSet),'minutes')
+            if(utcOffSet > 0)
+            newTime.add(Math.abs(utcOffSet),'minutes')
+            
+            document.getElementById('datepicker-button').value = newTime.format('DD.MM.YYYY');
+            document.getElementById('clockpicker-button').value = newTime.format('HH:mm');
+
+            saa.Tuulikartta.timestamp = timestring;
+            Tuulikartta.callData();
+        })
+
+        $("#timepicker-regress-time").click(function () {
+
+            Tuulikartta.clearMarkers();
+
+            var date = document.getElementById('datepicker-button').value;
+            var time = document.getElementById('clockpicker-button').value;
+
+            var time = moment(date+' '+time, ['DD-MM-YYYY HH:mm']);
+            var newTime = moment(time).subtract(1, 'hours');
+
+            var timestring = newTime.utc().format('YYYY-MM-DDTHH:mm:ss');
+            timestring = timestring + 'Z'
+
+            Tuulikartta.debug('............................');
+            Tuulikartta.debug('Progress time');
+            Tuulikartta.debug(`Find observations from ${timestring}`)
+
+            var utcOffSet = moment(timestring).utcOffset();
+            if(utcOffSet < 0)
+            newTime.subtrack(Math.abs(utcOffSet),'minutes')
+            if(utcOffSet > 0)
+            newTime.add(Math.abs(utcOffSet),'minutes')
+            
+            document.getElementById('datepicker-button').value = newTime.format('DD.MM.YYYY');
+            document.getElementById('clockpicker-button').value = newTime.format('HH:mm');
+
+            saa.Tuulikartta.timestamp = timestring;
+            Tuulikartta.callData();
+        })
 
     });
 
@@ -178,7 +277,7 @@ var saa = saa || {};
         });
 
         L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
+            attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
         }).addTo(map);
         
         saa.Tuulikartta.map = map;
@@ -270,7 +369,7 @@ var saa = saa || {};
         saa.Tuulikartta.map.on("overlayadd", function(eventLayer) {
             if (eventLayer.name == "Tutka - 5min sadekertymä") {
                 saa.Tuulikartta.activeLayer = radar5min;
-                Tuulikartta.updateRadarTime();
+                // Tuulikartta.updateRadarTime();
             }
         })
         
@@ -367,12 +466,13 @@ var saa = saa || {};
         })
     }
 
-    Tuulikartta.drawData = function(param) {
-
+    Tuulikartta.clearMarkers = function() {
         // remove all old markers
         saa.Tuulikartta.markerGroupSynop.clearLayers();
         saa.Tuulikartta.markerGroupRoad.clearLayers();
+    }
 
+    Tuulikartta.drawData = function(param) {
         var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length);
         saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map);
         saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map);
@@ -597,13 +697,15 @@ var saa = saa || {};
             }
         }
 
-        for (var i = 0; i < sizeofdata; i++) {
-            if(saa.Tuulikartta.data[i]['type'] === 'synop') {
-                var timestring = saa.Tuulikartta.data[i]['time'];
-                var timeobj = new Date(timestring);
-                var timestring = Tuulikartta.timeTotime(timeobj / 1000);
-                document.getElementById("available-observation-time").innerHTML = timestring;
-                break;
+        if(saa.Tuulikartta.timestamp === 'now') {
+            for (var i = 0; i < sizeofdata; i++) {
+                if(saa.Tuulikartta.data[i]['type'] === 'synop') {
+                    var timestring = saa.Tuulikartta.data[i]['time'];
+                    var timeobj = new Date(timestring);
+                    var timestring = Tuulikartta.timeTotime(timeobj / 1000);
+                    document.getElementById("clockpicker-button").value = timestring.split(' ')[1];
+                    break;
+                }
             }
         }
         
@@ -754,7 +856,7 @@ var saa = saa || {};
             Tuulikartta.debug('Update data and draw markers');
             Tuulikartta.debug('Time now: ' + (new Date()).toUTCString());
             Tuulikartta.callData();
-            Tuulikartta.updateRadarTime();
+            // Tuulikartta.updateRadarTime();
             saa.Tuulikartta.map.eachLayer(function(layer) {
                 if( layer instanceof L.TileLayer && 'wmsParams' in layer) {
                     layer.wmsParams.preventCache = Date.now();

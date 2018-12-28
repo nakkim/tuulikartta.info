@@ -68,7 +68,7 @@ class DataMiner{
 
             date_default_timezone_set("UTC");
             $time = strtotime($observation["time"]);
-            $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
+            $tmp["time"] = date('Y-m-d\TH:i:s\Z',$time);
 
             $tmp["type"] = "road";
             
@@ -118,7 +118,7 @@ class DataMiner{
 
             date_default_timezone_set("UTC");
             $time = strtotime($observation["time"]);
-            $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
+            $tmp["time"] = date('Y-m-d\TH:i:s\Z',$time);
 
             $tmp["type"] = "synop";
 
