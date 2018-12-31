@@ -168,6 +168,7 @@ var saa = saa || {};
       Tuulikartta.debug('............................')
       Tuulikartta.debug('Get latest observations')
       Tuulikartta.clearMarkers()
+      Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
     })
 
@@ -199,6 +200,7 @@ var saa = saa || {};
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
       saa.Tuulikartta.timestamp = timestring
+      Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
     })
 
@@ -226,6 +228,7 @@ var saa = saa || {};
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
       saa.Tuulikartta.timestamp = timestring
+      Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
     })
   })
@@ -309,7 +312,7 @@ var saa = saa || {};
     time = time.toISOString()
 
     var dataWMS = 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms'
-    var geosrvWMS = 'http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Weather/wms'
+    var geosrvWMS = 'http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Radar/wms'
 
     var radar5min = L.tileLayer.wms(dataWMS, {
       layers: 'fmi:observation:radar:PrecipitationRate5min',
@@ -318,6 +321,18 @@ var saa = saa || {};
       transparent: true,
       interval_start: 60,
       opacity: 0.7,
+      version: '1.3.0',
+      crs: L.CRS.EPSG3857,
+      attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
+      // preventCache: Date.now()
+    })
+
+    var radar = L.tileLayer.wms(geosrvWMS, {
+      layers: 'suomi_dbz_eureffin',
+      format: 'image/png',
+      tileSize: 2048,
+      transparent: true,
+      opacity: 0.5,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
@@ -351,13 +366,14 @@ var saa = saa || {};
 
     var overlayMaps = {
       // "Kokonaispilvisyys": cloudiness,
-      'Tutka - 5min sadekertymä': radar5min,
+      'Tutka - Sateen intensiteetti': radar,
+      // 'Tutka - 5min sadekertymä': radar5min,
       '5min salamahavainnot': flash5min
     }
 
     saa.Tuulikartta.map.on('overlayadd', function (eventLayer) {
-      if (eventLayer.name === 'Tutka - 5min sadekertymä') {
-        saa.Tuulikartta.activeLayer = radar5min
+      if (eventLayer.name === 'Tutka - Sateen intensiteetti') {
+        saa.Tuulikartta.activeLayer = radar
         // Tuulikartta.updateRadarTime();
       }
     })
@@ -721,35 +737,29 @@ var saa = saa || {};
   // ---------------------------------------------------------
 
   Tuulikartta.updateRadarData = function (map) {
-    // map.overlayMapTypes.clear();
-    var layer = document.getElementById('select-radar-parameter').value
 
-    if (layer) {
-      // get timestamp
-      Tuulikartta.debug('Update radar data')
+    // map.eachLayer(function (layer) {
+    //   map.removeLayer(layer);
+    // });
+  
+    // var customParams = [
+    //   'format=image/png',
+    //   'layers=skandinavia_dbz_eureffin',
+    //   'styles=',
+    //   `time=${Tuulikartta.timestamp}`
+    // ]
 
-      $.getJSON('php/radartime.php?layer=' + layer, function (result) {
-        var starttime = result['starttime']
-        var endtime = result['endtime']
+    // if(Tuulikartta.timestamp === 'now')
+    // var customParams = [
+    //   'format=image/png',
+    //   'layers=skandinavia_dbz_eureffin',
+    //   'styles='
+    // ]
 
-        var time = new Date(endtime).getTime() / 1000
-        var time = Tuulikartta.timeTotime(time)
+    // // draw radar layer
+    // map.overlayMapTypes.clear()
+    // loadWMS(map, 'http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Radar/wms?', customParams)
 
-        document.getElementById('available-radar').innerHTML = time
-
-        var customParams = [
-          'format=image/png',
-          'layers=fmi:observation:radar:PrecipitationRate5min',
-          'styles='
-        ]
-
-        // draw radar layer
-        map.overlayMapTypes.clear()
-        loadWMS(map, 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms?', customParams)
-      })
-    } else {
-      // map.overlayMapTypes.clear();
-    }
   }
 
   // ---------------------------------------------------------

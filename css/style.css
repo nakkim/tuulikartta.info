@@ -141,12 +141,12 @@ body {
     }
 }
 
-@media screen and (max-width: 683px) {
+/* @media screen and (max-width: 683px) {
 
     .leaflet-top.leaflet-left, .leaflet-top.leaflet-right {
         margin-top: 80px;
     }
-}
+} */
 
 @media screen and (max-width: 372px) {
     .leaflet-top.leaflet-left, .leaflet-top.leaflet-right {
@@ -284,7 +284,11 @@ body {
     padding-right: 5px;
 }
 
-
+label {
+    display: inline-block;
+    margin-bottom: 0px;
+    font-weight: normal;
+}
 
 /* *********************** */
 .select-style {
@@ -301,6 +305,7 @@ body {
     padding: 5px 8px;
     width: 130%;
     border: none;
+    height: 100%;
     box-shadow: none;
     background: transparent;
     background-image: none;
