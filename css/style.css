@@ -284,6 +284,61 @@ body {
     padding-right: 5px;
 }
 
+.textLabelclassBlackBackgroundBlue {
+    font-weight: bold;
+    color: #80b3ff;
+    /*margin-left: -18px;*/ 
+    font-size: 12px;
+    background-color: black;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.textLabelclassBlackBackgroundGreen {
+    font-weight: bold;
+    color: #5cd65c;
+    /*margin-left: -18px;*/ 
+    font-size: 12px;
+    background-color: black;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.textLabelclassBlackBackgroundYellow {
+    font-weight: bold;
+    color: #ffffb3;
+    /*margin-left: -18px;*/ 
+    font-size: 12px;
+    background-color: black;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.textLabelclassBlackBackgroundOrange {
+    font-weight: bold;
+    color: #ffbf80;
+    /*margin-left: -18px;*/ 
+    font-size: 12px;
+    background-color: black;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.textLabelclassBlackBackgroundPurple {
+    font-weight: bold;
+    color: #ff80df;
+    /*margin-left: -18px;*/ 
+    font-size: 12px;
+    background-color: black;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 label {
     display: inline-block;
     margin-bottom: 0px;

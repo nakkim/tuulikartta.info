@@ -399,6 +399,61 @@ var saa = saa || {};
     if (windspeed < 1) { return 'calm' } else if (windspeed >= 1 && windspeed < 2) { return 'light' } else if (windspeed >= 2 && windspeed < 7) { return 'moderate' } else if (windspeed >= 7 && windspeed < 14) { return 'brisk' } else if (windspeed >= 14 && windspeed < 21) { return 'hard' } else if (windspeed >= 21 && windspeed < 25) { return 'storm' } else if (windspeed >= 25 && windspeed < 28) { return 'severestorm' } else if (windspeed >= 28 && windspeed < 32) { return 'extremestorm' } else if (windspeed >= 32) { return 'hurricane' } else { return 'calm' }
   }
 
+  Tuulikartta.resolveWawaCode = function (wawa) {
+    wawa = parseInt(wawa)
+    if (wawa === 0) return null
+    if (wawa === 10) return {short:'Utu',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 20) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 21) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 22) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    if (wawa === 23) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 24) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 25) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 30) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 31) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 32) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 33) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 40) return {short:'Sade',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 41) return {short:'Sade',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 42) return {short:'Sade',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 50) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    if (wawa === 51) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    if (wawa === 52) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    if (wawa === 53) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    if (wawa === 54) return {short:'J.Tihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 55) return {short:'J.Tihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 56) return {short:'J.Tihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 60) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 61) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 62) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 63) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 64) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 65) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 66) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 67) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 68) return {short:'Räntä',long:'',class:'textLabelclassBlackBackgroundOrange'}
+    if (wawa === 70) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 71) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 72) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 73) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 74) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 75) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 76) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 77) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 78) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 80) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'sadekuuroja'
+    if (wawa === 81) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
+    if (wawa === 82) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
+    if (wawa === 83) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
+    if (wawa === 84) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
+    if (wawa === 85) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}  //'lumikuuroja'
+    if (wawa === 86) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}  //'lumikuuroja'
+    if (wawa === 87) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}  //'lumikuuroja'
+    if (wawa === 89) return {short:'S.Rae',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    else return null
+
+  }
+
   Tuulikartta.resolveTemperature = function (temperature) {
     temperature = parseFloat(temperature)
     if (temperature < -30) return '#8a79f7'
@@ -459,6 +514,7 @@ var saa = saa || {};
   }
 
   Tuulikartta.drawData = function (param) {
+    console.log(param)
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
     saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
     saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
@@ -669,6 +725,26 @@ var saa = saa || {};
 
           marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
         }
+      }
+
+      if (param === 'wawa') {
+        if (saa.Tuulikartta.data[i]['wawa'] !== null && Tuulikartta.resolveWawaCode(saa.Tuulikartta.data[i]['wawa']) !== null) {
+          var code = Tuulikartta.resolveWawaCode(saa.Tuulikartta.data[i]['wawa'])
+          var labelClass = code.class
+          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+            {
+              interactive: true,
+              keyboard: false,
+              icon: Tuulikartta.createLabelIcon(labelClass, code.short)
+            })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+        } 
       }
     }
 
