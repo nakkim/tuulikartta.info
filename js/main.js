@@ -28,7 +28,7 @@ var saa = saa || {};
 
   var selectedparameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
   var toggleDataSelect = 'close'
-  var minRoadZoomLevel = 9
+  var minRoadZoomLevel = 8
 
   Tuulikartta.debug = function (par) {
     if (Tuulikartta.debugvalue === true) {
@@ -402,54 +402,54 @@ var saa = saa || {};
   Tuulikartta.resolveWawaCode = function (wawa) {
     wawa = parseInt(wawa)
     if (wawa === 0) return null
-    if (wawa === 10) return {short:'Utu',long:'',class:'textLabelclassBlackBackground'}
-    if (wawa === 20) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 10) return {short:'Utu',long:'',class:'textLabelclassBlackBackgroundWhite'}
+    if (wawa === 20) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
     if (wawa === 21) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundGreen'}
     if (wawa === 22) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
-    if (wawa === 23) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 24) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 25) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 30) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
-    if (wawa === 31) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
-    if (wawa === 32) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
-    if (wawa === 33) return {short:'Sumu',long:'',class:'textLabelclassBlackBackground'}
-    if (wawa === 40) return {short:'Sade',long:'',class:'textLabelclassBlackBackground'}
-    if (wawa === 41) return {short:'Sade',long:'',class:'textLabelclassBlackBackground'}
-    if (wawa === 42) return {short:'Sade',long:'',class:'textLabelclassBlackBackground'}
+    if (wawa === 23) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 24) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 25) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 30) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
+    if (wawa === 31) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
+    if (wawa === 32) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
+    if (wawa === 33) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
+    if (wawa === 40) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite'}
+    if (wawa === 41) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite'}
+    if (wawa === 42) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite'}
     if (wawa === 50) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
     if (wawa === 51) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
     if (wawa === 52) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
     if (wawa === 53) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
-    if (wawa === 54) return {short:'J.Tihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 55) return {short:'J.Tihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 56) return {short:'J.Tihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 60) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 61) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 62) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 63) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 64) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 65) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 66) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 67) return {short:'J.Sade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 54) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 55) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 56) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 60) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 61) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 62) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 63) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 64) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 65) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 66) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
+    if (wawa === 67) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
     if (wawa === 68) return {short:'Räntä',long:'',class:'textLabelclassBlackBackgroundOrange'}
-    if (wawa === 70) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 71) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 72) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 73) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 74) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 75) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 76) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 77) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 78) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 80) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'sadekuuroja'
-    if (wawa === 81) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
-    if (wawa === 82) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
-    if (wawa === 83) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
-    if (wawa === 84) return {short:'S.Vesi',long:'',class:'textLabelclassBlackBackgroundGreen'} //'vesikuuroja'
-    if (wawa === 85) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}  //'lumikuuroja'
-    if (wawa === 86) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}  //'lumikuuroja'
-    if (wawa === 87) return {short:'S.Lumi',long:'',class:'textLabelclassBlackBackgroundBlue'}  //'lumikuuroja'
-    if (wawa === 89) return {short:'S.Rae',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    if (wawa === 70) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 71) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 72) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 73) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 74) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 75) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 76) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 77) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 78) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 80) return {short:'Sadekuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'} 
+    if (wawa === 81) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'} 
+    if (wawa === 82) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 83) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 84) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'}
+    if (wawa === 85) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 86) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 87) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue'}
+    if (wawa === 89) return {short:'Raesadetta',long:'',class:'textLabelclassBlackBackgroundYellow'}
     else return null
 
   }

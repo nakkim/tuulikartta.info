@@ -295,9 +295,20 @@ body {
     padding-right: 5px;
 }
 
+/* .textLabelclassBlackBackgroundGreen {
+    font-weight: bold;
+    color: #d6f5d6;
+    /*margin-left: -18px;*/ 
+    font-size: 12px;
+    background-color: black;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+} */
+
 .textLabelclassBlackBackgroundGreen {
     font-weight: bold;
-    color: #5cd65c;
+    color: #28a428;
     /*margin-left: -18px;*/ 
     font-size: 12px;
     background-color: black;
@@ -331,6 +342,17 @@ body {
 .textLabelclassBlackBackgroundPurple {
     font-weight: bold;
     color: #ff80df;
+    /*margin-left: -18px;*/ 
+    font-size: 12px;
+    background-color: black;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.textLabelclassBlackBackgroundWhite {
+    font-weight: bold;
+    color: #ffffff;
     /*margin-left: -18px;*/ 
     font-size: 12px;
     background-color: black;
