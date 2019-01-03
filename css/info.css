@@ -185,3 +185,44 @@ footer p {
         position: relative;
     }
 }
+
+.media-content {
+    margin: 10px 0 35px 0;
+    padding: 2px 0 2px 0;
+    max-height: 30px;
+}
+
+.media-button {
+    margin: 0 5px 0 5px;
+    display:inline-block;
+    border:0;
+    width:50px;
+    height:50px;
+    position: relative;
+    -webkit-transition: all 200ms ease-in;
+    -webkit-transform: scale(1); 
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(1); 
+    -moz-transition: all 200ms ease-in;
+    -moz-transform: scale(1);
+    transition: all 200ms ease-in;
+    transform: scale(1);   
+}
+
+.media-button-img {
+    width: 100%;
+    height: 100%;
+}
+
+.media-button:hover {
+    /* box-shadow: 0px 0px 10px #000000; */
+    z-index: 2;
+    -webkit-transition: all 200ms ease-in;
+    -webkit-transform: scale(1.1);
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(1.2);   
+    -moz-transition: all 200ms ease-in;
+    -moz-transform: scale(1.2);
+    transition: all 200ms ease-in;
+    transform: scale(1.2);
+}
