@@ -40,17 +40,22 @@ class DataMiner{
     *
     */
 
-    public function roaddata() {
+    public function roaddata($timestamp) {
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
         $url .= "&format=json";
         $url .= "&producer=road";
         $url .= "&keyword=tiesääasemat";
         $url .= "&precision=double";
-        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,temperature,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min,sum_t(pri:60m:60m)%20as%20ri_1h";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,vsaa%20as%20wawa,temperature,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min,sum_t(pri:60m:60m)%20as%20ri_1h";
         $url .= "&missingtext=nan";
-        $url .= "&endtime=now";
         $url .= "&maxlocations=1";
+
+        if($timestamp == "now") {
+            $url .= "&endtime=now";
+        } else {
+            $url .= "&starttime={$timestamp}&endtime={$timestamp}&timestep=10";
+        }
         
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
@@ -63,7 +68,7 @@ class DataMiner{
 
             date_default_timezone_set("UTC");
             $time = strtotime($observation["time"]);
-            $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
+            $tmp["time"] = date('Y-m-d\TH:i:s\Z',$time);
 
             $tmp["type"] = "road";
             
@@ -84,17 +89,22 @@ class DataMiner{
     *
     */
 
-    public function synopdata() {
+    public function synopdata($timestamp) {
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
         $url .= "&format=json";
         $url .= "&producer=fmi";
         $url .= "&keyword=synop_fi";
         $url .= "&precision=double";
-        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,temperature,wg_10min,ws_10min,wd_10min,ri_10min,sum_t(ri_10min:1h:0)%20as%20ri_1h";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,wawa,temperature,wg_10min,ws_10min,wd_10min,ri_10min,sum_t(ri_10min:1h:0)%20as%20ri_1h";
         $url .= "&missingvtext=nan";
-        $url .= "&endtime=now";
         $url .= "&maxlocations=1";
+
+        if($timestamp == "now") {
+            $url .= "&endtime=now";
+        } else {
+            $url .= "&starttime=${timestamp}&endtime=${timestamp}&timestep=10";
+        }
 
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
@@ -108,7 +118,7 @@ class DataMiner{
 
             date_default_timezone_set("UTC");
             $time = strtotime($observation["time"]);
-            $tmp["time"] = date('Y-m-d\TH:m:s\Z',$time);
+            $tmp["time"] = date('Y-m-d\TH:i:s\Z',$time);
 
             $tmp["type"] = "synop";
 

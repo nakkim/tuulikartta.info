@@ -11,98 +11,105 @@
         <meta name="author" content="Ville Ilkka"/>
         <meta name="robots" content="index,follow"/>
         <meta name="robots" content="noodp"/>
-        
+
         <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
         <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
 
         <title>tuulikartta.info</title>
-        
-        <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script> 
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link href="css/style.css" rel="stylesheet">
-        <link href="css/temperature.css" rel="stylesheet">
 
+        <script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+        <link href="//fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <!-- <script src="https://use.fontawesome.com/fdf452f08e.js"></script> -->
+
+        <!-- moment.js -->
+        <script src="js/vendor/moment.js"></script>   
+        
+        <!-- bootstrap datepicker -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+        <link id="bs-css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+        <link id="bsdp-css" href="css/bootstrap-datepicker.min.css" rel="stylesheet">
+        <script src="js/vendor/bootstrap-datepicker.min.js"></script>
+        <script src="js/vendor/bootstrap-datepicker.fi.min.js"></script>
+
+        <!-- leaflet.js -->
         <link rel="stylesheet" href="css/leaflet.css" />
-        <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+        <script src="//unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
         <script src="js/vendor/leaflet.rotatedMarker.js"></script>
 
-        <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
-        <script type="text/javascript" src="js/vendor/leaflet.timedimension.js"></script>
-        <script type="text/javascript" src="js/vendor/leaflet.timedimension.util.js"></script>
-        <script type="text/javascript" src="js/vendor/leaflet.timedimension.layer.js"></script>
-        <script type="text/javascript" src="js/vendor/leaflet.timedimension.layer.wms.js"></script>
-        <script type="text/javascript" src="js/vendor/leaflet.timedimension.player.js"></script>
-        <script type="text/javascript" src="js/vendor/leaflet.timedimension.control.js"></script>
-
-        <link rel="stylesheet" href="css/leaflet.timedimension.control.css" />
-        
-        <script src="js/vendor/jquery-1.12.4.js"></script>
-        <script src="js/vendor/jquery-ui.js"></script>
-
-        <script src="https://use.fontawesome.com/fdf452f08e.js"></script>    
-        
-        <script src="https://code.highcharts.com/stock/highstock.js"></script>
-        <script src="https://code.highcharts.com/stock/highcharts-more.js"></script>
-        <script src="https://code.highcharts.com/modules/data.js"></script>
-        <script src="https://code.highcharts.com/modules/windbarb.js"></script>
-        <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+        <!-- highcharts -->
+        <script src="//code.highcharts.com/stock/highstock.js"></script>
+        <script src="//code.highcharts.com/stock/highcharts-more.js"></script>
+        <script src="//code.highcharts.com/modules/data.js"></script>
+        <script src="//code.highcharts.com/modules/windbarb.js"></script>
+        <script src="//code.highcharts.com/stock/modules/exporting.js"></script>
 
         <script src="js/main.js"></script>
         <script src="js/graph.js"></script>
         <script src="js/wms.js"></script>
 
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/temperature.css" rel="stylesheet">
+
+
+        <script>
+        $(document).ready(function() {
+            var cal = $('#datepicker-button').datepicker({
+                language: 'fi',
+                format: 'dd.mm.yyyy',
+                endDate: '+0d',
+                autoclose: true,
+                todayBtn: true,
+                defaultDate: new Date()
+            });
+            cal.datepicker("setDate",'now');
+        })
+        </script>
+
     </head>
-    
+
     <body>
-        
-        <div id="map" styles="z-index:1"></div>
 
-        <div id="data-info">
-            <div class="buttons-coll">
-                <button class="custom-btn btn-1" id="dialog-opener">Havaintovalikko</button>
+        <div class="data-info" style="display: block">
+            <div class="data-info-wrapper" align=center>
+                <div class="select-box">
+
+                    <button id="select-content-info" class="select-button"><img src="symbols/info.svg" style="height:16px;"></img></button>
+                    <!-- <button id="select-content-embed" class="select-button"><img src="symbols/embed.svg" style="height:16px;"></img></button> -->
+
+                    <span class="select-content-wrapper">
+                        <select id="select-wind-parameter" class="select-style" style="height:26px;">
+                            <option value="ws_10min">Keskituuli</option>
+                            <option value="wg_10min">Maksimipuuska</option>
+                            <option value="ri_10min">Sademäärä</option>
+                            <option value="temperature">Lämpötila</option>
+                            <option value="visibility">Näkyvyys</option>
+                            <option value="wawa">Merkitsevä sää</option>
+                        </select>
+                    </span>
+
+                    <span class="select-content-wrapper">
+                        <input id="datepicker-button" class="select-button" style="text-align:center;max-width:90px;">
+                        <input id="clockpicker-button" class="select-button" style="text-align:center; max-width:50px;">      
+                        <span class="ph-float">
+                            <a href='#' id="select-content-datasearch" class='ph-button ph-btn-blue'>Hae</a>
+                        </span>
+                    </span>
+
+                    <span id="select-content-wrapper-time" class="select-content-wrapper">
+                        <button id="timepicker-regress-time" class="select-button">&laquo; 1h</button>
+                        <!-- <button class="select-button">&laquo; 10min</button> -->
+                        <span class="ph-float">
+                            <a href='#' id="select-content-now" class='ph-button ph-btn-blue'>Nyt</a>
+                        </span>
+                        <!-- <button class="select-button">10min &raquo;</button> -->
+                        <button id="timepicker-progress-time" class="select-button">1h &raquo;</button>  
+                    </span>
+                </div>
             </div>
-        </div>      
-
-        <div id="data-content-select" title="tuulikartta.info">
-            
-            <table style="margin: 5px 0 10px 0;">
-                <tbody>
-                    <tr>
-                        <td><b>Uusin synop-havainto </b></td>
-                        <td><b>:</b></td>
-                        <td id="available-observation-time"></td>
-                    </tr>
-                    <tr>
-                        <td><b>Uusin tutkakuva </b></td>
-                        <td><b>:</b></td>
-                    <td id="available-radar"></td>
-                    </tr>
-                </tbody>
-            </table>
-                
-            <select id="select-wind-parameter" class="dropdown">
-                <option value="ws_10min">Keskituuli [m/s]</option>
-                <option value="wg_10min">Maksimipuuska [m/s]</option>
-                <option value="ri_10min">Sademäärä [mm/10min]</option>
-                <option value="temperature">Lämpötila [ºC]</option>
-                <option value="visibility">Näkyvyys [m]</option>
-            </select>
-
-            <p>Havaintoaseman nimen, viimeisimmät havainnot sekä kuvaajan saa näkyviin klikkaamalla
-            tuulinuolta.
-            </p>
-
-            <footer>
-                <p>Ville Ilkka, 2017-<span id="footer-year"></span></p>
-                <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikartta.info">contact@tuulikartta.info</a></p>
-                <p><a href="https://www.tuulikartta.info/tietoa-sivustosta/">Tietoa sivustosta</a><p>
-                <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-                <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-             </footer>
-
         </div>
+
+        <div id="map" styles="z-index:1"></div>
 
         <div id="graph-container" class="collapsed">
             <div id="graph-header">
@@ -110,6 +117,9 @@
             </div>
             <div id="graph-box"></div>
         </div>
+
+        <div id="data-loader" class="leaflet-bottom leaflet-left leaflet-control-attribution leaflet-control"></div>
+
     </body >
 
     <script>
@@ -125,7 +135,7 @@
     <script>
         var d = new Date();
         var n = d.getFullYear();
-        document.getElementById("footer-year").innerHTML = n;
+        // document.getElementById("footer-year").innerHTML = n;
 
         saa.Tuulikartta.callData();
         saa.Tuulikartta.initMap();

@@ -2,7 +2,7 @@
 <html lang="fi">
 <head>
     <meta charset="utf-8">
-    <title>tuulikartta.info - tieota palvelusta</title>
+    <title>tuulikartta.info - tietoa palvelusta</title>
     <meta name="description" content="tuulikaetta.info - tietoa palvelusta, tietosuoja sekä evästeet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link href="../css/normalize.css" rel="stylesheet" media="all">
@@ -22,8 +22,8 @@
         <ul>
           <li><a href="https://www.tuulikartta.info/">Tuulikartta</a></li>
           <li><a class="active" href="#">Tietoa palvelusta</a></li>
-          <li><a href="#">Seuraa kehitystä</a></li>
-          <li><a href="#">Ota yhteyttä</a></li>
+          <!-- <li><a href="#">Seuraa kehitystä</a></li> -->
+          <li><a id="open-contact-modal" href="#">Ota yhteyttä</a></li>
         </ul>
       </div>
     </nav>
@@ -36,31 +36,48 @@
         <h2>Tietoa palvelusta</h1>
       </header>
       <main role="main">
+        
         <p><span style="font-weight:bold">tuulikartta.info</span> on oman lennokkiharrastuksen kylkeen syntynyt nettisivuprojekti, joka ajatuksena on tarjota
           k&auml;ytt&auml;jille tuulihavaintoja (lähes) reaaliajassa.</p>
-        <p>Tällä hetkellä sivustolla voi tarkastella Ilmatieteen laitoksen havaintoasemien sekä Liikenneviraston tiesääasemien keskituulen 
-          sekä maksimipuuskan 10 minuutin välein päivittyviä havaintoja.
+        <p>
+          Tällä hetkellä sivustolla voi tarkastella Ilmatieteen laitoksen havaintoasemien sekä Liikenneviraston tiesääasemien keskituulen 
+          sekä maksimipuuskan, lämpötilan, sademäärän, näkyvyyden sekä havaitun vallitsevan sään 10 minuutin välein päivittyviä havaintoja.
         </p>
         <p>Havaintojakson keskituulella tarkoitetaan tyypillisesti 10 minuutin mittaisen havaintojakson keskiarvoa, puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.</p>
+        
         <p><span style="font-weight:bold">Tuuliluokat</span></p>
         <div id="legend-wrapper" style="overflow:auto; margin-bottom:20px;">
             <img src="../symbols/legend.png" style="float:left;"></img>
             <p>Tuulen nopeudet on jaoteltu yhdeksään eri osaan ja ne piirrtään oheisen taulukon mukaisin värein.</p>
-            <p>Kovia tuulia sekä myrskytuulia esiintyy Suomessa tyypillisesti vain ajoittain merialueilla sekä tuntureilla,
+            <p>
+              Kovia tuulia sekä myrskytuulia esiintyy Suomessa tyypillisesti vain ajoittain merialueilla sekä tuntureilla,
               puuskittainen tuuli voi sen sijaan ajoittain yltää maa-alueillakin myrskylukemiin.
             </p>
             <p>
               Esimerkiksi kesäiset ukkosmyräkät eivät siis varsinaisesti ole myrskyjä, vaan enemmänkin rajuilmoja tai myräköitä.
             </p>
         </div>
-        <p>Vahinkoja aiheuttavat tuulet ovat usein hyvin puuskittaisia. Hetkelliset, lyhytaikaiset 5–10 sekunnin puuskat ylittävät
+        <p>
+          Vahinkoja aiheuttavat tuulet ovat usein hyvin puuskittaisia. Hetkelliset, lyhytaikaiset 5–10 sekunnin puuskat ylittävät
           10 minuutin keskituulen nopeuden säätilanteesta riippuen noin 1,5-kertaisina, enimmillään noin 2-kertaisina.
         </p>
-        <p>Tuulen nopeudenylittäessä 16-17 m/s alkavat puiden oksat katkeilla, yli 20 m/s nopeudet alkavat katkoa
+        <p>
+          Tuulen nopeudenylittäessä 16-17 m/s alkavat puiden oksat katkeilla, yli 20 m/s nopeudet alkavat katkoa
           ja kaataa jo puita ja tehdä pientä vahinkoa kattorakenteille.
         </p>
         <p>Lisätietoja voi lukea Ilmatieteen laitoksen <a href="http://ilmatieteenlaitos.fi/tuulet">teemasivuilta</a>.</p>
 
+        <p><span style="font-weight:bold">Näkyvyys ja vallitseva sää</span></p>
+        <p>
+          Vallitsevan sään ja näkyvyyden mittausten toiminta perustuu valon sironnan mittaamiseen. Tällaisessa optisessa mittarissa on lähi-infrapunavalon lähetin ja vastaanotin. 
+          Mitä enemmän ilmassa on vesipisaroita, jääkiteitä tai muita hiukkasia (esim. vesi- tai lumisade, pöly, savu) sitä enemmän lähetteen valoa siroaa vastaanottimelle. Optinen mittari laskee siroavasta 
+          valosta näkyvyystiedon, sekä pyrkii määrittämään vallitsevan sään (esim. sateen tyypin ja olomuodon).  
+        </p>
+        <p>
+            Meteorologisella näkyvyydellä tarkoitetaan ilman läpinäkyvyyttä. Näkyvyyteen eivät vaikuta pimeys tai maaston esteet. Meteorologista näkyvyyttä pienentää ilman kuiva sameus 
+            (auer, pöly, savu) tai kostea sameus (utu, sumu, sade). Näkyvyyden ollessa hyvä, voi kohteita havaita yli 10 kilometrin, kohtalaisella näkyvyydellä 4-10 kilometrin ja huonolla näkyvyydellä 1-4 
+            kilometrin päähän. Alle 1 kilometrin näkyvyys on erittäin huono.
+        </p>
               
 
         <p><span style="font-weight:bold">Käytetty aineisto</span></p>
@@ -91,8 +108,36 @@
     </div> 
     <footer>
       <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
+      <div class="media-content" align="center">
+        <a href="https://twitter.com/viilkka"><div class="media-button" > <img class="media-button-img" src="../symbols/twitter.png"></img> </div></a>
+        <a href="https://github.com/nakkim"><div class="media-button" > <img class="media-button-img" src="../symbols/github.png"></img> </div></a>
+        <!-- <a href="#"><div class="media-button" > <img class="media-button-img" src="symbols/rss.png"></img> </div></a> -->
+        <a href="https://fi.linkedin.com/in/ville-ilkka-1a0622146"><div class="media-button" > <img class="media-button-img" src="../symbols/linkedin.png"></img> </div></a>
+      </div>  
       <p>Ville Ilkka, 2016-<span id="footer-year"></span></p>
     </footer> 
+  </div>
+
+    <!-- The Modal -->
+  <div id="contact-form" class="contact-modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h1>Lähetä palautetta</h1>
+      <div class="container">
+          <form action="tietoa-sivustosta/mail_handler.php">
+            <!-- <label for="name">Nimi</label> -->
+            <input type="text" id="name" name="name" placeholder="Nimi">
+            <!-- <label for="email">Sähköpostiosoite</label> -->
+            <input type="text" id="email" name="email" placeholder="Sähköpostiosoite">
+            <label for="subject">Palaute</label>
+            <textarea id="subject" name="subject" style="height:200px"></textarea>
+            <input id="submit" type="submit" value="Lähetä">
+          </form>
+        </div>
+      </div>
+  
   </div>
 
   <script>
@@ -109,6 +154,23 @@
     var d = new Date();
     var n = d.getFullYear();
     document.getElementById("footer-year").innerHTML = n;
+  </script>
+
+  <script>
+    // var modal = document.getElementById('contact-form');
+    // var btn = document.getElementById("open-contact-modal");
+    // var span = document.getElementsByClassName("close")[0];
+    // btn.onclick = function() {
+    //   modal.style.display = "block";
+    // }
+    // span.onclick = function() {
+    //   modal.style.display = "none";
+    // }
+    // window.onclick = function(event) {
+    //   if (event.target == modal) {
+    //     modal.style.display = "none";
+    //   }
+    // }
   </script>
 
 </body>
