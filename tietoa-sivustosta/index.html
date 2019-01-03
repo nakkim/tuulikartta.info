@@ -23,7 +23,7 @@
           <li><a href="https://www.tuulikartta.info/">Tuulikartta</a></li>
           <li><a class="active" href="#">Tietoa palvelusta</a></li>
           <!-- <li><a href="#">Seuraa kehitystä</a></li> -->
-          <li><a href="#">Ota yhteyttä</a></li>
+          <li><a id="open-contact-modal" href="#">Ota yhteyttä</a></li>
         </ul>
       </div>
     </nav>
@@ -112,10 +112,32 @@
         <a href="https://twitter.com/viilkka"><div class="media-button" > <img class="media-button-img" src="../symbols/twitter.png"></img> </div></a>
         <a href="https://github.com/nakkim"><div class="media-button" > <img class="media-button-img" src="../symbols/github.png"></img> </div></a>
         <!-- <a href="#"><div class="media-button" > <img class="media-button-img" src="symbols/rss.png"></img> </div></a> -->
-        <a href="https://fi.linkedin.com/in/ville-ilkka-1a0622146"><div class="media-button" > <img class="media-button-img" src="symbols/linkedin.png"></img> </div></a>
+        <a href="https://fi.linkedin.com/in/ville-ilkka-1a0622146"><div class="media-button" > <img class="media-button-img" src="../symbols/linkedin.png"></img> </div></a>
       </div>  
       <p>Ville Ilkka, 2016-<span id="footer-year"></span></p>
     </footer> 
+  </div>
+
+    <!-- The Modal -->
+  <div id="contact-form" class="contact-modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h1>Lähetä palautetta</h1>
+      <div class="container">
+          <form action="tietoa-sivustosta/mail_handler.php">
+            <!-- <label for="name">Nimi</label> -->
+            <input type="text" id="name" name="name" placeholder="Nimi">
+            <!-- <label for="email">Sähköpostiosoite</label> -->
+            <input type="text" id="email" name="email" placeholder="Sähköpostiosoite">
+            <label for="subject">Palaute</label>
+            <textarea id="subject" name="subject" style="height:200px"></textarea>
+            <input id="submit" type="submit" value="Lähetä">
+          </form>
+        </div>
+      </div>
+  
   </div>
 
   <script>
@@ -132,6 +154,23 @@
     var d = new Date();
     var n = d.getFullYear();
     document.getElementById("footer-year").innerHTML = n;
+  </script>
+
+  <script>
+    // var modal = document.getElementById('contact-form');
+    // var btn = document.getElementById("open-contact-modal");
+    // var span = document.getElementsByClassName("close")[0];
+    // btn.onclick = function() {
+    //   modal.style.display = "block";
+    // }
+    // span.onclick = function() {
+    //   modal.style.display = "none";
+    // }
+    // window.onclick = function(event) {
+    //   if (event.target == modal) {
+    //     modal.style.display = "none";
+    //   }
+    // }
   </script>
 
 </body>
