@@ -401,7 +401,7 @@ var saa = saa || {};
 
   Tuulikartta.resolveWawaCode = function (wawa) {
     wawa = parseInt(wawa)
-    if (wawa === 0) return null
+    if (wawa === 0) return {short:'Poutaa',long:'',class:'textLabelclassGrey'}
     if (wawa === 10) return {short:'Utu',long:'',class:'textLabelclassBlackBackgroundWhite'}
     if (wawa === 20) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
     if (wawa === 21) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundGreen'}
