@@ -170,6 +170,15 @@ var saa = saa || {};
       Tuulikartta.clearMarkers()
       Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
+
+      Tuulikartta.debug(`Load latest radar data`)
+      saa.Tuulikartta.map.eachLayer(function (layer) {
+        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
+          layer.wmsParams.preventCache = Date.now()
+          layer.setParams({time: ''})
+        }
+      })
+      Tuulikartta.debug('Done')
     })
 
     // ---------------------------------------------------------
@@ -202,6 +211,15 @@ var saa = saa || {};
       saa.Tuulikartta.timestamp = timestring
       Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
+
+      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timestamp}`)
+      saa.Tuulikartta.map.eachLayer(function (layer) {
+        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
+          layer.wmsParams.preventCache = Date.now()
+          layer.setParams({time: saa.Tuulikartta.timestamp})
+        }
+      })
+      Tuulikartta.debug('Done')
     })
 
     $('#timepicker-regress-time').click(function () {
@@ -230,6 +248,15 @@ var saa = saa || {};
       saa.Tuulikartta.timestamp = timestring
       Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
+
+      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timestamp}`)
+      saa.Tuulikartta.map.eachLayer(function (layer) {
+        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
+          layer.wmsParams.preventCache = Date.now()
+          layer.setParams({time: saa.Tuulikartta.timestamp})
+        }
+      })
+      Tuulikartta.debug('Done')
     })
   })
 
@@ -514,7 +541,6 @@ var saa = saa || {};
   }
 
   Tuulikartta.drawData = function (param) {
-    console.log(param)
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
     saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
     saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
