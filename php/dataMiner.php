@@ -133,38 +133,6 @@ class DataMiner{
 
     /**
     *
-    * Get Harmonie forecast data from timeseries
-    * @param    lat,lon coordinates 
-    * @return   data as json string
-    *
-    */
-
-    // public function HarmonieForecast($latlon) {
-
-    //     $date = new DateTime();
-    //     $starttime = ($date->format('Y-m-d\TH:i:m'));
-        
-    //     $url = "";
-    //     $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
-    //     $url .= "&format=json";
-    //     $url .= "&producer=harmonie_skandinavia_pinta";
-    //     $url .= "&latlon={$latlon}";
-    //     $url .= "&precision=double";
-    //     $url .= "&param=name,epochtime,temperature,weathersymbol3,smartsymboltext,precipitation1h,dark";
-    //     $url .= "&missingtext=-";
-    //     $url .= "&timestep=60";
-    //     $url .= "&starttime={$starttime}";
-    //     $url .= "&endtimetime=6h";
-    //     $url .= "&maxlocations=1";
-
-    //     $data = file_get_contents($url) or die('Unable to get data from {$url}');
-    //     $data = json_decode($data, true);
-        
-    //     return json_encode($data);
-    // }
-
-    /**
-    *
     * Get road observation data from timeseries
     * @param    station fmisid 
     * @return   data as an array
