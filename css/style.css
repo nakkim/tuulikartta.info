@@ -141,12 +141,12 @@ body {
     }
 }
 
-/* @media screen and (max-width: 683px) {
+@media screen and (max-width: 555px) {
 
     .leaflet-top.leaflet-left, .leaflet-top.leaflet-right {
         margin-top: 80px;
     }
-} */
+}
 
 @media screen and (max-width: 372px) {
     .leaflet-top.leaflet-left, .leaflet-top.leaflet-right {
