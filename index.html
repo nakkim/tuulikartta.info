@@ -70,12 +70,13 @@
 
     <body>
 
-        <div class="data-info" style="display: block">
+        <div id="gui-box" class="data-info" style="display: block">
             <div class="data-info-wrapper" align=center>
                 <div class="select-box">
 
-                    <button id="select-content-info" class="select-button"><img src="symbols/info.svg" style="height:16px;"></img></button>
-                    <!-- <button id="select-content-embed" class="select-button"><img src="symbols/embed.svg" style="height:16px;"></img></button> -->
+                    <a href="/tietoa-sivustosta">
+		      <button id="select-content-info" class="select-button"><img src="symbols/info.svg" style="height:16px;"></img></button>
+		    </a>
 
                     <span class="select-content-wrapper">
                         <select id="select-wind-parameter" class="select-style" style="height:26px;">
@@ -98,11 +99,9 @@
 
                     <span id="select-content-wrapper-time" class="select-content-wrapper">
                         <button id="timepicker-regress-time" class="select-button">&laquo; 1h</button>
-                        <!-- <button class="select-button">&laquo; 10min</button> -->
                         <span class="ph-float">
                             <a href='#' id="select-content-now" class='ph-button ph-btn-blue'>Nyt</a>
                         </span>
-                        <!-- <button class="select-button">10min &raquo;</button> -->
                         <button id="timepicker-progress-time" class="select-button">1h &raquo;</button>  
                     </span>
                 </div>

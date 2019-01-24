@@ -777,10 +777,11 @@ var saa = saa || {};
     if (saa.Tuulikartta.timestamp === 'now') {
       for (var i = 0; i < sizeofdata; i++) {
         if (saa.Tuulikartta.data[i]['type'] === 'synop') {
-          var timestring = saa.Tuulikartta.data[i]['time']
-          var timeobj = new Date(timestring)
-          var timestring = Tuulikartta.timeTotime(timeobj / 1000)
-          document.getElementById('clockpicker-button').value = timestring.split(' ')[1]
+	  var time = moment(saa.Tuulikartta.data[i]['time'], ['YYYY-MM-DDTHH:mm:ssZ'])
+	  var timestring = time.format('DD.MM.YYYY HH:mm')
+	      
+          document.getElementById('datepicker-button').value = timestring.split(' ')[0]
+	  document.getElementById('clockpicker-button').value = timestring.split(' ')[1]
           break
         }
       }
