@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="IE=edge">
         <!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <title>Pintatuulihavainnot kartalla - tuulikartta.info</title>
         <meta name="description" content="Pintatuulihavainnot Ilmatieteen laitoksen avoimen datan avulla."/>
         <meta name="rating" content="Safe For Kids"/>
@@ -36,6 +36,8 @@
         <link rel="stylesheet" href="css/leaflet.css" />
         <script src="//unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
         <script src="js/vendor/leaflet.rotatedMarker.js"></script>
+        <script src="https://unpkg.com/leaflet-responsive-popup@0.6.3/leaflet.responsive.popup.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-responsive-popup@0.6.3/leaflet.responsive.popup.css" />
 
         <!-- highcharts -->
         <script src="//code.highcharts.com/stock/highstock.js"></script>
@@ -82,7 +84,7 @@
                         <select id="select-wind-parameter" class="select-style" style="height:26px;">
                             <option value="ws_10min">Keskituuli</option>
                             <option value="wg_10min">Maksimipuuska</option>
-                            <option value="ri_10min">Sademäärä</option>
+                            <option value="ri_10min">Sateen intensiteetti</option>
                             <option value="temperature">Lämpötila</option>
                             <option value="visibility">Näkyvyys</option>
                             <option value="wawa">Vallitseva sää</option>

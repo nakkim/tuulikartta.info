@@ -30,6 +30,9 @@ var saa = saa || {};
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
 
+  // popup max width
+  var maxWidth = 650
+
   Tuulikartta.debug = function (par) {
     if (Tuulikartta.debugvalue === true) {
       console.log(par)
@@ -559,8 +562,10 @@ var saa = saa || {};
       }
     })
 
-    var valid = 0
-
+    if (L.Browser.mobile) {
+      maxWidth = 250
+    }
+    
     for (var i = 0; i < sizeofdata; i++) {
       var location = { lat: parseFloat(saa.Tuulikartta.data[i]['lat']), lng: parseFloat(saa.Tuulikartta.data[i]['lon']) }
       var time = Tuulikartta.timeTotime(saa.Tuulikartta.data[i]['epoctime'])
@@ -569,7 +574,6 @@ var saa = saa || {};
       if (param == 'ws_10min' || param === 'wg_10min') {
         if (saa.Tuulikartta.data[i]['ws_10min'] !== null && saa.Tuulikartta.data[i]['wd_10min'] !== null &&
                         saa.Tuulikartta.data[i]['wg_10min'] !== null) {
-          valid++
 
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
           if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
@@ -590,12 +594,18 @@ var saa = saa || {};
 
           if (saa.Tuulikartta.data[i]['type'] === 'road') {
             marker.addTo(saa.Tuulikartta.markerGroupRoad)
-          } else {
+          } else {saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i])
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
 
-          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
-
+          //marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+                    saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
+          
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
               interactive: false,
@@ -613,7 +623,6 @@ var saa = saa || {};
 
       if (param === 'ri_10min') {
         if (saa.Tuulikartta.data[i]['ri_10min'] !== null && parseFloat(saa.Tuulikartta.data[i]['ri_10min']) > 0) {
-          valid++
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
               interactive: false,
@@ -631,7 +640,6 @@ var saa = saa || {};
 
       if (param === 'r_1h') {
         if (saa.Tuulikartta.data[i]['r_1h'] !== null) {
-          valid++
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
               interactive: false,
@@ -684,7 +692,13 @@ var saa = saa || {};
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
 
-          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          // marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
 
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
@@ -750,6 +764,12 @@ var saa = saa || {};
           }
 
           marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
         }
       }
 
@@ -770,6 +790,12 @@ var saa = saa || {};
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
           marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
         } 
       }
     }
@@ -777,60 +803,85 @@ var saa = saa || {};
     if (saa.Tuulikartta.timestamp === 'now') {
       for (var i = 0; i < sizeofdata; i++) {
         if (saa.Tuulikartta.data[i]['type'] === 'synop') {
-	  var time = moment(saa.Tuulikartta.data[i]['time'], ['YYYY-MM-DDTHH:mm:ssZ'])
-	  var timestring = time.format('DD.MM.YYYY HH:mm')
-	      
+	        var time = moment(saa.Tuulikartta.data[i]['time'], ['YYYY-MM-DDTHH:mm:ssZ'])
+	        var timestring = time.format('DD.MM.YYYY HH:mm')
           document.getElementById('datepicker-button').value = timestring.split(' ')[0]
-	  document.getElementById('clockpicker-button').value = timestring.split(' ')[1]
+	        document.getElementById('clockpicker-button').value = timestring.split(' ')[1]
           break
         }
       }
     }
+
+    saa.Tuulikartta.map.on('popupopen', function(e) {
+      Tuulikartta.debug('............................')
+      var fmisid = e.popup._source.fmisid
+      var type = e.popup._source.type
+      Tuulikartta.debug('fmisid: '+e.popup._source.fmisid+', type: '+e.popup._source.type)
+      if(type === 'Synop-asema') type = 'synop'
+      if(type === 'Tiesääasema') type = 'road'
+      console.log(type)
+      saa.Tuulikartta.timestamp = "graph" // to avoid data reload
+      saa.weatherGraph.getObservationGraph(fmisid,type)
+    })
+    
+    saa.Tuulikartta.map.on('popupclose', function(e){
+      saa.Tuulikartta.timestamp = "now"
+    })
+
   }
 
   // ---------------------------------------------------------
   // populate infowindow with observations
   // ---------------------------------------------------------
 
-  Tuulikartta.populateInfoWindow = function (data) {
+  Tuulikartta.populateInfoWindow = function (data,fmisid) {
     var location = { lat: parseFloat(data['lat']), lng: parseFloat(data['lon']) }
     var time = Tuulikartta.timeTotime(data['epoctime'])
     var latlon = data['lat'] + ',' + data['lon']
 
-    var wind = data['ws_10min'] + ' m/s'
-    var gust = data['wg_10min'] + ' m/s'
-    var dir = data['wd_10min'] + '&deg;'
-    var temp = data['temperature'] + '&degC'
-    var vis = data['visibility'] + ' m'
+    if (L.Browser.mobile) {
+      maxWidth = 250
+    }
 
-    if (wind === 'null m/s') wind = '-'
-    if (gust === 'null m/s') gust = '-'
-    if (dir === 'null&deg;') dir = '-'
-    if (temp === 'null&degC') temp = '-'
-    if (vis === 'null m') vis = '-'
+    // var wind = data['ws_10min'] + ' m/s'
+    // var gust = data['wg_10min'] + ' m/s'
+    // var dir = data['wd_10min'] + '&deg;'
+    // var temp = data['temperature'] + '&degC'
+    // var vis = data['visibility'] + ' m'
+
+    // if (wind === 'null m/s') wind = '-'
+    // if (gust === 'null m/s') gust = '-'
+    // if (dir === 'null&deg;') dir = '-'
+    // if (temp === 'null&degC') temp = '-'
+    // if (vis === 'null m') vis = '-'
 
     if (data['type'] === 'synop') {
-      var stationType = '<b>Aseman tyyppi:</b> Synop-asema <br>'
+      var stationType = '<b>Aseman tyyppi:</b> <span id="station-type">Synop-asema</span> <br>'
     } else {
-      var stationType = '<b>Aseman tyyppi:</b> Tiesääasema <br>'
+      var stationType = '<b>Aseman tyyppi:</b> <span id="station-type">Tiesääasema</span> <br>'
     }
 
-    if (data['wg_10min'] === null) {
+    // if (data['wg_10min'] === null) {
+    // }
 
-    }
-
-    var output = ''
+    var output = '<div style="text-align:center;">'
     output += '<b>Havaintoasema: </b>' + data['station'] + '<br>'
     output += stationType
 
-    if (saa.Tuulikartta.timestamp === 'now') { output += '<b>Viimeisin havainto: </b>' + time + '<br>' } else { output += '<b>Havaintoaika: </b>' + time + '<br>' }
+    if (saa.Tuulikartta.timestamp === 'now') { 
+      output += '<b>Viimeisin havainto: </b>' + time + '<br>' 
+    } else { 
+      output += '<b>Havaintoaika: </b>' + time + '<br>' 
+    }
+    output += '</div>'
+    output += `<div id="graph-box" style="width:${maxWidth}px;"></div><div id="weather-chart-${fmisid}"/></div>`
 
-    output += '<b>Keskituuli: </b>' + wind + ' <br>'
-    output += '<b>Puuska: </b>' + gust + ' <br>'
-    output += '<b>Tuulen suunta: </b>' + dir + ' <br>'
-    output += '<b>Lämpötila: </b>' + temp + ' <br>'
-    output += '<b>Näkyvyys: </b>' + vis + ' <br>'
-    if (saa.Tuulikartta.timestamp === 'now') { output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data['type'] + '\" fmisid=\"' + data['fmisid'] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data['fmisid'] + ',' + latlon + ',\'' + data['type'] + '\')">täällä</a>' }
+    // output += '<b>Keskituuli: </b>' + wind + ' <br>'
+    // output += '<b>Puuska: </b>' + gust + ' <br>'
+    // output += '<b>Tuulen suunta: </b>' + dir + ' <br>'
+    // output += '<b>Lämpötila: </b>' + temp + ' <br>'
+    // output += '<b>Näkyvyys: </b>' + vis + ' <br>'
+    // if (saa.Tuulikartta.timestamp === 'now') { output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data['type'] + '\" fmisid=\"' + data['fmisid'] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data['fmisid'] + ',' + latlon + ',\'' + data['type'] + '\')">täällä</a>' }
 
     return output
   }

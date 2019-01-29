@@ -10,18 +10,18 @@ $data = [];
 
 if ($type == 'road') {
     $obs = $dataMiner->roadObservation($fmisid);
-    $for = $dataMiner->HarmonieForecast($latlon);
+    // $for = $dataMiner->HarmonieForecast($latlon);
     //$data = $dataMiner->combineData($obs, $for);
 }
 if ($type == 'synop') {
     $obs = $dataMiner->synopObservation($fmisid);
-    $for = $dataMiner->HarmonieForecast($latlon);
+    // $for = $dataMiner->HarmonieForecast($latlon);
     //$data = $dataMiner->combineData($obs, $for);
 }
 
 $combinedData = [];
 $combinedData["obs"] = $obs;
-$combinedData["for"] = $for;
+$combinedData["for"] = [];
 
 print formatWindData($combinedData);
 

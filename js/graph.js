@@ -59,13 +59,12 @@ var saa = saa || {};
     // Get data for wind graph
     // ---------------------------------------------------------
 
-    weatherGraph.getObservationGraph = function(latlon, fmisid, type) {
-        saa.Tuulikartta.debug('Gettting data for graph... ');
+    weatherGraph.getObservationGraph = function(fmisid,type) {
+        saa.Tuulikartta.debug('Getting data for graph... ');
         $.ajax({
             dataType: "json",
             url: 'php/weather-graph-ts.php',
             data: {
-                latlon: latlon,
                 fmisid: fmisid,
                 type: type
             },
@@ -73,7 +72,8 @@ var saa = saa || {};
                 saa.Tuulikartta.debug('An error has occurred');
             },
             success: function (data) {
-                weatherGraph.drawGraph(data);
+                saa.Tuulikartta.debug('Draw graph')
+                weatherGraph.drawGraph(data,fmisid);
             }
         });
     }
@@ -123,10 +123,21 @@ var saa = saa || {};
     // Draw graph
     // ---------------------------------------------------------
 
-    weatherGraph.drawGraph = function(data) {
+    weatherGraph.drawGraph = function(data,fmisid) {
 
-        Highcharts.chart('weather-chart', {
+        Highcharts.chart(`weather-chart-${fmisid}`, {
 
+            chart: {
+                spacingTop: 0,
+                spacingRight: 0,
+                spacingBottom: 0,
+                spacingLeft: 0,
+                plotBorderWidth: 0,
+                marginLeft: 40,
+                marginRight: 10,
+                marginBottom: 30,
+                height: '300px'
+            },
             title: {
                 text: null
             },
@@ -137,7 +148,7 @@ var saa = saa || {};
                 selected: 1
             },
             subtitle: {
-                text: 'Keskituulen ja maksimipuuskan vaihteluväli',
+                text: 'Keskituulen ja maksimipuuskan vaihteluväli [m/s]',
                 style: {
                     color: 'black',
                     font: '12px Roboto, sans-serif'
@@ -168,8 +179,11 @@ var saa = saa || {};
                 }
             },
             yAxis: {
+                // title: {
+                //     text: 'Tuulen nopeus [m/s]'
+                // },
                 title: {
-                    text: 'Tuulen nopeus [m/s]'
+                    text: null
                 },
                 min: 0,
                 labels: {
@@ -194,22 +208,23 @@ var saa = saa || {};
                 enabled: false
             },
             legend: {
-                enabled: true
+                enabled: false
             },
             credits: {
                 enabled: false
             },
             series: [{
                 type: 'columnrange',
-                name: 'Havaittu: keskituuli - maksimipuuska',
+                name: 'Keskituuli - maksimipuuska',
                 data: data.obs.wind
-            },
-            {
-                type: 'columnrange',
-                name: 'Ennustettu: keskituuli - maksimipuuska',
-                data: data.for.wind,
-                color: '#a6a6a6'
-            }],
+            }]
+            // {
+            //     type: 'columnrange',
+            //     name: 'Ennustettu: keskituuli - maksimipuuska',
+            //     data: data.for.wind,
+            //     color: '#a6a6a6'
+            // }]
+            ,
             responsive: {
                 rules: [{
                     condition: {
