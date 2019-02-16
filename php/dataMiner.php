@@ -375,7 +375,7 @@ class DataMiner{
         $url .= "&producer=road";
         $url .= "&fmisid={$fmisid}";
         $url .= "&precision=double";
-        $url .= "&param=name,time,wg,ws,wd,rr1h";
+        $url .= "&param=name,time,wg,ws,wd,rr1h,t2m";
         $url .= "&missingtext=null";
         $url .= "&starttime=-18h";
         $url .= "&maxlocations=1";
