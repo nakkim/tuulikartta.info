@@ -59,14 +59,15 @@ var saa = saa || {};
     // Get data for wind graph
     // ---------------------------------------------------------
 
-    weatherGraph.getObservationGraph = function(fmisid,type) {
+    weatherGraph.getObservationGraph = function(fmisid,type,timestamp) {
         saa.Tuulikartta.debug('Getting data for graph... ');
         $.ajax({
             dataType: "json",
             url: 'php/weather-graph-ts.php',
             data: {
                 fmisid: fmisid,
-                type: type
+                type: type,
+                timestamp: timestamp
             },
             error: function () {
                 saa.Tuulikartta.debug('An error has occurred');
@@ -125,7 +126,9 @@ var saa = saa || {};
 
     weatherGraph.drawGraph = function(data,fmisid) {
 
-        Highcharts.chart(`weather-chart-${fmisid}`, {
+        console.log(fmisid,document.getElementById(`weather-chart-${fmisid}`),data)
+
+        var chart1 = Highcharts.chart(`weather-chart-${fmisid}`, {
 
             chart: {
                 spacingTop: 0,
@@ -135,7 +138,7 @@ var saa = saa || {};
                 plotBorderWidth: 0,
                 marginLeft: 40,
                 marginRight: 10,
-                marginBottom: 30,
+                marginBottom: 65,
                 height: '300px'
             },
             title: {
@@ -149,6 +152,143 @@ var saa = saa || {};
             },
             subtitle: {
                 text: 'Keskituulen ja maksimipuuskan vaihteluväli [m/s]',
+                style: {
+                    color: 'black',
+                    font: '12px Roboto, sans-serif'
+                }
+            },
+            xAxis: [{
+                type: 'datetime',
+                labels: {
+                    formatter: function () {
+                        var date    = new Date(this.value),
+                            hours   = weatherGraph.formatTimeLabel(date.getHours()),
+                            minutes = weatherGraph.formatTimeLabel(date.getMinutes()),
+                            day     = weatherGraph.resolveWeekDay(date.getDay());
+
+                        if( hours !== "00" ) {
+                            return hours + ":" + minutes;
+                        }
+                        else {
+                            // if 12 AM return day name
+                            //return day + ", " + hours + ":" + minutes;
+                            return day;
+                        }
+                    }
+                },
+                style: {
+                    color: 'black',
+                    font: '12px Roboto, sans-serif'
+                },
+                offset: 35,
+                minorTickInterval: 'auto',
+                minorTickColor: '#f2f2f2'
+            }],
+            yAxis: {
+                title: {
+                    align: 'high',
+                    offset: 0,
+                    text: 'm/s',
+                    rotation: 0,
+                    y: -14,
+                    x: -10
+                },
+                min: 0,
+                // startOnTick: false,
+                // endOnTick: false,
+                labels: {
+                    style: {
+                        color: 'black',
+                        font: '12px Roboto, sans-serif'
+                    }
+                },
+                tickInterval: 2,
+                labels: {
+                    style: {
+                        color: 'black',
+                        font: '12px Roboto, sans-serif'
+                    }
+                },
+                minorTickInterval: 2,
+                minorTickColor: '#f2f2f2'
+            },
+            tooltip: {
+                crosshairs: true,
+                shared: true,
+                labels: {
+                    style: {
+                        color: 'black',
+                        font: '12px Roboto, sans-serif'
+                    }
+                }
+            },
+            exporting: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                type: 'columnrange',
+                name: 'Keskituuli - maksimipuuska',
+                data: data.obs.wind,
+                xAxis: 0,
+                tooltip: {
+                    valueSuffix: ' m/s'
+                }
+            },
+            {
+                type: 'windbarb',
+                data: data.obs.dir,
+                name: 'Tuulen suunta',
+                // enableMouseTracking: false,
+                tooltip: {
+                    valueSuffix: ' °'
+                }
+            }],
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxHeight: 150
+                    },
+                    chartOptions: {
+                        legend: {
+                            enabled: true
+                        }
+                    }
+                }]
+            }
+
+        });
+
+
+        var chart2 = Highcharts.chart(`weather-chart-${fmisid}_alt`, {
+
+            chart: {
+                spacingTop: 0,
+                // spacingRight: 0,
+                spacingBottom: 0,
+                spacingLeft: 0,
+                // plotBorderWidth: 0,
+                marginLeft: 40,
+                // marginRight: 10,
+                marginBottom: 30,
+                height: '300px'
+            },
+            title: {
+                text: null
+            },
+            time: {
+                timezoneOffset: weatherGraph.getTimeZoneDirrerence()
+            },
+            rangeSelector: {
+                selected: 1
+            },
+            subtitle: {
+                text: 'Säätila havaintoasemalla',
                 style: {
                     color: 'black',
                     font: '12px Roboto, sans-serif'
@@ -176,27 +316,58 @@ var saa = saa || {};
                 style: {
                     color: 'black',
                     font: '12px Roboto, sans-serif'
-                }
-            },
-            yAxis: {
-                // title: {
-                //     text: 'Tuulen nopeus [m/s]'
-                // },
-                title: {
-                    text: null
                 },
-                min: 0,
-                labels: {
-                    style: {
-                        color: 'black',
-                        font: '12px Roboto, sans-serif'
-                    }
-                }
+                minorTickInterval: 'auto',
+                minorTickColor: '#f2f2f2'
             },
+            yAxis: [
+                {
+                    title: {
+                        align: 'high',
+                        offset: 0,
+                        text: '°C',
+                        rotation: 0,
+                        y: -14,
+                        x: -10
+                    },
+                    tickInterval: 2,
+                    labels: {
+                        style: {
+                            color: 'black',
+                            font: '12px Roboto, sans-serif'
+                        }
+                    },
+                    minorTickInterval: 'auto',
+                    minorTickColor: '#f2f2f2',
+                    plotLines: [{
+                        color: '#7f7e7e',
+                        value: 0,
+                        width: 2    
+                    }]
+                },
+                {
+                    title: {
+                        align: 'high',
+                        offset: 0,
+                        text: 'mm',
+                        rotation: 0,
+                        y: -14,
+                        x: -10
+                    },
+                    opposite: true,
+                    tickInterval: 2,
+                    labels: {
+                        style: {
+                            color: 'black',
+                            font: '12px Roboto, sans-serif'
+                        }
+                    },
+                    min: 0
+                }
+            ],
             tooltip: {
                 crosshairs: true,
                 shared: true,
-                valueSuffix: ' m/s',
                 labels: {
                     style: {
                         color: 'black',
@@ -213,18 +384,31 @@ var saa = saa || {};
             credits: {
                 enabled: false
             },
-            series: [{
-                type: 'columnrange',
-                name: 'Keskituuli - maksimipuuska',
-                data: data.obs.wind
-            }]
-            // {
-            //     type: 'columnrange',
-            //     name: 'Ennustettu: keskituuli - maksimipuuska',
-            //     data: data.for.wind,
-            //     color: '#a6a6a6'
-            // }]
-            ,
+            series: [
+            {
+                type: 'spline',
+                name: 'Ilmanlämpötila',
+                color: '#FF0000',
+                negativeColor: '#0088FF',
+                data: data.obs.temp,
+                tooltip: {
+                    valueSuffix: ' °C'
+                },
+                yAxis: 0
+            },
+            {
+                type: 'column',
+                name: 'Tunnin sademäärä',
+                data: data.obs.rr1h,
+                tooltip: {
+                    valueSuffix: ' mm'
+                },
+                yAxis: 1,
+                pointWidth: 20,
+                dataLabels: {
+                    enabled: true
+                }
+            }],
             responsive: {
                 rules: [{
                     condition: {
@@ -239,6 +423,7 @@ var saa = saa || {};
             }
 
         });
+        // saa.Tuulikartta.graphIds = {chart1,chart2}
     }
 
 

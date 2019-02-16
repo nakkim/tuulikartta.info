@@ -9,11 +9,13 @@ var saa = saa || {};
   'use strict'
 
   saa.Tuulikartta.data = []
-  saa.Tuulikartta.debugvalue = true
+  saa.Tuulikartta.debugvalue = false
   saa.Tuulikartta.timestamp = 'now'
   saa.Tuulikartta.markerGroupSynop = L.layerGroup()
   saa.Tuulikartta.markerGroupRoad = L.layerGroup()
   var emptymarker = []
+
+  saa.Tuulikartta.graphIds = ""
 
   // observation update interval in ms
   var interval = 60000
@@ -32,6 +34,7 @@ var saa = saa || {};
 
   // popup max width
   var maxWidth = 650
+  var maxheight = 320
 
   Tuulikartta.debug = function (par) {
     if (Tuulikartta.debugvalue === true) {
@@ -103,6 +106,33 @@ var saa = saa || {};
     // close graph box
     $('#close-gr').on('click', function () {
       saa.weatherGraph.opengraphbox()
+    })
+
+    saa.Tuulikartta.map.on('popupopen', function(e) {
+      Tuulikartta.debug('............................')
+
+      var fmisid = e.popup._source.fmisid
+      var type = e.popup._source.type
+      Tuulikartta.debug('fmisid: '+e.popup._source.fmisid+', type: '+e.popup._source.type)
+      if(type === 'Synop-asema') type = 'synop'
+      if(type === 'Tiesääasema') type = 'road'
+      saa.Tuulikartta.timestamp = "graph" // to avoid data reload
+      saa.weatherGraph.getObservationGraph(fmisid,type,saa.Tuulikartta.timestamp)
+      $(".owl-carousel").owlCarousel({
+        navigation: true, // Show next and prev buttons
+        slideSpeed: 300,
+        paginationSpeed: 400,
+        items: 1,
+        pagination: false
+        // itemsDesktop : false,
+        // itemsDesktopSmall : false,
+        // itemsTablet: false,
+        // itemsMobile : false
+      });
+    })
+    
+    saa.Tuulikartta.map.on('popupclose', function(e){
+      saa.Tuulikartta.timestamp = "now"
     })
 
     // select observations dialog
@@ -811,23 +841,6 @@ var saa = saa || {};
         }
       }
     }
-
-    saa.Tuulikartta.map.on('popupopen', function(e) {
-      Tuulikartta.debug('............................')
-      var fmisid = e.popup._source.fmisid
-      var type = e.popup._source.type
-      Tuulikartta.debug('fmisid: '+e.popup._source.fmisid+', type: '+e.popup._source.type)
-      if(type === 'Synop-asema') type = 'synop'
-      if(type === 'Tiesääasema') type = 'road'
-      console.log(type)
-      saa.Tuulikartta.timestamp = "graph" // to avoid data reload
-      saa.weatherGraph.getObservationGraph(fmisid,type)
-    })
-    
-    saa.Tuulikartta.map.on('popupclose', function(e){
-      saa.Tuulikartta.timestamp = "now"
-    })
-
   }
 
   // ---------------------------------------------------------
@@ -841,6 +854,7 @@ var saa = saa || {};
 
     if (L.Browser.mobile) {
       maxWidth = 250
+      maxHeight = 320
     }
 
     // var wind = data['ws_10min'] + ' m/s'
@@ -874,7 +888,13 @@ var saa = saa || {};
       output += '<b>Havaintoaika: </b>' + time + '<br>' 
     }
     output += '</div>'
-    output += `<div id="graph-box" style="width:${maxWidth}px;"></div><div id="weather-chart-${fmisid}"/></div>`
+    
+    output += `<div id="graph-box" style="width:${maxWidth}px;">`
+    output += `<div id="owl-carousel-chart-${fmisid}" class="owl-carousel owl-theme">`
+    output += `<div id="weather-chart-${fmisid}"></div>`
+    output += `<div id="weather-chart-${fmisid}_alt"></div>`
+    output += '</div>'
+    output += `</div>`
 
     // output += '<b>Keskituuli: </b>' + wind + ' <br>'
     // output += '<b>Puuska: </b>' + gust + ' <br>'

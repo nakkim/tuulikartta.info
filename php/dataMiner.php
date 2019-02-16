@@ -375,9 +375,9 @@ class DataMiner{
         $url .= "&producer=road";
         $url .= "&fmisid={$fmisid}";
         $url .= "&precision=double";
-        $url .= "&param=name,time,wg,ws,wd";
-        $url .= "&missingtext=-";
-        $url .= "&starttime=-12h";
+        $url .= "&param=name,time,wg,ws,wd,rr1h";
+        $url .= "&missingtext=null";
+        $url .= "&starttime=-18h";
         $url .= "&maxlocations=1";
         
         $data = file_get_contents($url) or die('Unable to get data from {$url}');
@@ -406,7 +406,7 @@ class DataMiner{
     *
     */
 
-    public function synopObservation($fmisid) {
+    public function synopObservation($fmisid,$timestamp) {
         
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
@@ -414,12 +414,16 @@ class DataMiner{
         $url .= "&producer=fmi";
         $url .= "&fmisid={$fmisid}";
         $url .= "&precision=double";
-        $url .= "&param=name,time,ws_10min,wg_10min,wd_10min";
-        $url .= "&missingtext=-";
-        $url .= "&starttime=-12h";
+        $url .= "&param=name,time,ws_10min,wg_10min,wd_10min,t2m,n_man,rr1h";
+        $url .= "&missingtext=null";
+        $url .= "&starttime=-18h";
         $url .= "&maxlocations=1";
 
-        $data = file_get_contents($url) or die('Unable to get data from {$url}');
+        // if ($timespamp !== "now") {
+        //     $url .= "&endtime=${timestamp}";
+        // }
+
+        $data = file_get_contents($url) or die('Unable to get data');
         $data = json_decode($data, true);
 
         /* add datatype, station and epoch time information to each observation */
