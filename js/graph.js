@@ -126,8 +126,6 @@ var saa = saa || {};
 
     weatherGraph.drawGraph = function(data,fmisid) {
 
-        console.log(fmisid,document.getElementById(`weather-chart-${fmisid}`),data)
-
         var chart1 = Highcharts.chart(`weather-chart-${fmisid}`, {
 
             chart: {
