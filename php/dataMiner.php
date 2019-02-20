@@ -47,14 +47,13 @@ class DataMiner{
         $url .= "&producer=road";
         $url .= "&keyword=road_weather_stations_master";
         $url .= "&precision=double";
-        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,vsaa%20as%20wawa,temperature,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min,sum_t(pri:60m:60m)%20as%20ri_1h";
+        $url .= "&param=name%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,vsaa%20as%20wawa,temperature,wg%20as%20wg_10min,ws%20as%20ws_10min,wd%20as%20wd_10min,pri%20as%20ri_10min";
         $url .= "&missingtext=nan";
-        $url .= "&maxlocations=10";
 
         if($timestamp == "now") {
-            $url .= "&endtime=now";
+            $url .= "&starttime=-1h";
         } else {
-            $url .= "&starttime={$timestamp}&endtime={$timestamp}&timestep=10";
+            $url .= "&starttime=-1h&endtime=${timestamp}&timestep=10";
         }
         
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
@@ -309,6 +308,62 @@ class DataMiner{
         return $result;
     }
 
+    /**
+    *
+    * @param    data observation data 
+    * @return   data as an array
+    *
+    */
+
+    public function serializeData($data) {
+
+        $outputArray = array();
+        $tmp = array();
+
+        $ws_1h = -0.1;
+        $wg_1h = -0.1;
+        $wg_max_dir = "";
+        $ws_max_dir = "";
+
+        for ($i = 0; $i <= count($data)-2; $i++) {
+            # check if fmisid value is the same as the next one (ie its the same station)
+            if($data[$i]["fmisid"] === $data[$i+1]["fmisid"]) {
+                # check if observations are valid
+                if($data[$i]["ws_10min"] !== "nan") {
+                    # check if observation values are greater that previous one
+                    if($ws_1h < floatval($data[$i]["ws_10min"])) {
+                        $ws_1h = $data[$i]["ws_10min"];
+                        $ws_max_dir = $data[$i]["wg_10min"];
+                    }
+                }
+                # check if observations are valid
+                if($data[$i]["wg_10min"] !== "nan") {
+                    # check if observation values are greater that previous one
+                    if($wg_1h < floatval($data[$i]["wg_10min"])) {
+                        $wg_1h = $data[$i]["wg_10min"];
+                        $wg_max_dir = $data[$i]["wg_10min"];
+                    }
+                }
+            } else {
+                if($ws_1h === -0.1){ $ws_1h = "null"; }
+                if($wg_1h === -0.1){ $wg_1h = "null"; }
+                if($ws_max_dir === ""){ $ws_max_dir = "null"; }
+                if($wg_max_dir === ""){ $wg_max_dir = "null"; }
+                $data[$i]["ws_1h"] = $ws_1h;
+                $data[$i]["wg_1h"] = $wg_1h;
+                $data[$i]["wg_max_dir"] = $wg_max_dir;
+                $data[$i]["ws_max_dir"] = $ws_max_dir;                
+                array_push($outputArray, $data[$i]);
+                $ws_1h = -0.1;
+                $wg_1h = -0.1;
+                $wg_max_dir = "";
+                $ws_max_dir = "";
+            }
+
+        }
+        return $outputArray;
+    }
+
 
     /**
     *
@@ -324,19 +379,17 @@ class DataMiner{
         $url .= "&producer=fmi";
         $url .= "&keyword=synop_fi";
         $url .= "&precision=double";
-        $url .= "&param=stationname%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,wawa,temperature,wg_10min,ws_10min,wd_10min,ri_10min,sum_t(ri_10min:1h:0)%20as%20ri_1h";
+        $url .= "&param=stationname%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,wawa,temperature,wg_10min,ws_10min,wd_10min,ri_10min";
         $url .= "&missingvtext=nan";
-        $url .= "&maxlocations=1";
 
         if($timestamp == "now") {
-            $url .= "&endtime=now";
+            $url .= "&starttime=-1h";
         } else {
-            $url .= "&starttime=${timestamp}&endtime=${timestamp}&timestep=10";
+            $url .= "&starttime=-1h&endtime=${timestamp}";
         }
 
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
-
 
         /* add datatype, station and epoch time information to each observation */
         $observationData = [];
@@ -358,7 +411,7 @@ class DataMiner{
 
         return $observationData;
     }
-
+ 
     /**
     *
     * Get road observation data from timeseries

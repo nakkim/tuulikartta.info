@@ -9,8 +9,10 @@ $dataMiner = new DataMiner();
 $synopdata = $dataMiner->synopdata($timestamp);
 $roaddata = $dataMiner->roaddata($timestamp);
 
+
 foreach($roaddata as $key => $data) {
 	array_push($synopdata,$data);
 }
 
+$synopdata = $dataMiner->serializeData($synopdata);
 print json_encode($synopdata);

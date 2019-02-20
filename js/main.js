@@ -77,6 +77,7 @@ var saa = saa || {};
       },
       error: function () {
         document.body.style.cursor = 'default'
+        document.getElementById('data-loader').innerHTML = "Havaintoja ei saatu ladattua"
         Tuulikartta.debug('An error has occurred')
       },
       success: function (data) {
@@ -602,7 +603,7 @@ var saa = saa || {};
       var latlon = saa.Tuulikartta.data[i]['lat'] + ',' + saa.Tuulikartta.data[i]['lon']
 
       if (param == 'ws_10min' || param === 'wg_10min') {
-        if (saa.Tuulikartta.data[i]['ws_10min'] !== null && saa.Tuulikartta.data[i]['wd_10min'] !== null &&
+        if (saa.Tuulikartta.data[i]['ws_10min'] !== null && saa.Tuulikartta.data[i]['wd_10min'] !== null && 
                         saa.Tuulikartta.data[i]['wg_10min'] !== null) {
 
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
@@ -621,6 +622,64 @@ var saa = saa || {};
               rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wd_10min']),
               rotationOrigin: 'center center'
             })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i])
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+
+          //marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+                    saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
+          
+          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+            {
+              interactive: false,
+              keyboard: false,
+              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+            })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+        }
+      }
+
+      if (param == 'ws_1h' || param === 'wg_1h') {
+        if (saa.Tuulikartta.data[i]['ws_1h'] !== null && saa.Tuulikartta.data[i]['ws_max_dir'] !== null && saa.Tuulikartta.data[i]['wg_max_dir'] !== null &&  saa.Tuulikartta.data[i]['wg_1h'] !== null) {
+
+          if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
+          if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
+
+          var icon = L.icon({
+            iconUrl: '../symbols/wind/' + saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param]) + '.svg',
+            iconSize: [60, 60], // size of the icon
+            iconAnchor: iconAnchor, // point of the icon which will correspond to marker's location
+            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+          })
+
+          if (param == 'ws_1h') {
+            var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+              {
+                icon: icon,
+                rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['ws_max_dir']),
+                rotationOrigin: 'center center'
+              })
+          } else {
+            var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+              {
+                icon: icon,
+                rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wg_max_dir']),
+                rotationOrigin: 'center center'
+              })
+          }
 
           if (saa.Tuulikartta.data[i]['type'] === 'road') {
             marker.addTo(saa.Tuulikartta.markerGroupRoad)
@@ -854,7 +913,7 @@ var saa = saa || {};
 
     if (L.Browser.mobile) {
       maxWidth = 250
-      maxHeight = 320
+      // maxHeight = 320
     }
 
     // var wind = data['ws_10min'] + ' m/s'
