@@ -1,5 +1,6 @@
 <?php
 require_once("dataMiner.php");
+header('Content-Type: application/json');
 
 $latlon      = filter_input(INPUT_GET, 'latlon', FILTER_SANITIZE_STRING);
 $fmisid      = filter_input(INPUT_GET, 'fmisid', FILTER_SANITIZE_STRING);

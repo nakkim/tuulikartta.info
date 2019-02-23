@@ -2,6 +2,8 @@
 require_once("dataMiner.php");
 date_default_timezone_set('Europe/Helsinki');
 
+header('Content-Type: application/json');
+
 $timestamp = $_GET["time"];
 
 $dataMiner = new DataMiner();
