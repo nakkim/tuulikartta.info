@@ -67,7 +67,7 @@ var saa = saa || {};
 
   Tuulikartta.callData = function () {
     Tuulikartta.debug('Getting data... ')
-    document.getElementById('data-loader').innerHTML = "Ladataan havaintoja... <img href='url(../symbols/default.gif)'></img>"
+    document.getElementById('data-loader').innerHTML = "Ladataan havaintoja... <img src='symbols/default.gif' style='width:20px;'></img>"
     document.body.style.cursor = 'wait'
     $.ajax({
       dataType: 'json',
@@ -135,34 +135,6 @@ var saa = saa || {};
     saa.Tuulikartta.map.on('popupclose', function(e){
       saa.Tuulikartta.timestamp = "now"
     })
-
-    // select observations dialog
-    // var obsValues = !!Tuulikartta.readCookie('observation_values_hidden');
-    // $("#data-content-select").dialog({
-    //     //position: { my: 'bottom+90', at: 'rleft+182' },
-    //     position: {
-    //         of: $("body"),
-    //         my: 'left top+60',
-    //         at: 'left+54 top'
-    //     },
-    //     autoOpen: !obsValues,
-    //     close: function () {
-    //         Tuulikartta.createCookie('observation_values_hidden', 'true', 7);
-    //     }
-    // });
-
-    // $("#dialog-opener").click(function () {
-    //     if (!$("#data-content-select").dialog("isOpen")) {
-    //         $("#data-content-select").dialog("open");
-    //     } else {
-    //         $("#data-content-select").dialog("close");
-    //     }yyyy + ''
-    // });
-
-    // // draw radar layer again when selected radar layer changes
-    // $("#select-radar-parameter").change(function () {
-    //     Tuulikartta.updateRadarData(saa.Tuulikartta.map);
-    // });
 
     // ---------------------------------------------------------
     // Get and save user location to localstorage
@@ -916,26 +888,11 @@ var saa = saa || {};
       // maxHeight = 320
     }
 
-    // var wind = data['ws_10min'] + ' m/s'
-    // var gust = data['wg_10min'] + ' m/s'
-    // var dir = data['wd_10min'] + '&deg;'
-    // var temp = data['temperature'] + '&degC'
-    // var vis = data['visibility'] + ' m'
-
-    // if (wind === 'null m/s') wind = '-'
-    // if (gust === 'null m/s') gust = '-'
-    // if (dir === 'null&deg;') dir = '-'
-    // if (temp === 'null&degC') temp = '-'
-    // if (vis === 'null m') vis = '-'
-
     if (data['type'] === 'synop') {
       var stationType = '<b>Aseman tyyppi:</b> <span id="station-type">Synop-asema</span> <br>'
     } else {
       var stationType = '<b>Aseman tyyppi:</b> <span id="station-type">Tiesääasema</span> <br>'
     }
-
-    // if (data['wg_10min'] === null) {
-    // }
 
     var output = '<div style="text-align:center;">'
     output += '<b>Havaintoasema: </b>' + data['station'] + '<br>'
@@ -954,13 +911,6 @@ var saa = saa || {};
     output += `<div id="weather-chart-${fmisid}_alt"></div>`
     output += '</div>'
     output += `</div>`
-
-    // output += '<b>Keskituuli: </b>' + wind + ' <br>'
-    // output += '<b>Puuska: </b>' + gust + ' <br>'
-    // output += '<b>Tuulen suunta: </b>' + dir + ' <br>'
-    // output += '<b>Lämpötila: </b>' + temp + ' <br>'
-    // output += '<b>Näkyvyys: </b>' + vis + ' <br>'
-    // if (saa.Tuulikartta.timestamp === 'now') { output += 'Data nähtävissä kuvaajana <a id=\"wslink\" type=\"' + data['type'] + '\" fmisid=\"' + data['fmisid'] + '\" latlon=\"' + latlon + '\" href="#" onclick=\"saa.weatherGraph.expandGraph(' + data['fmisid'] + ',' + latlon + ',\'' + data['type'] + '\')">täällä</a>' }
 
     return output
   }
