@@ -333,7 +333,7 @@ class DataMiner{
                     # check if observation values are greater that previous one
                     if($ws_1h < floatval($data[$i]["ws_10min"])) {
                         $ws_1h = $data[$i]["ws_10min"];
-                        $ws_max_dir = $data[$i]["wg_10min"];
+                        $ws_max_dir = $data[$i]["wd_10min"];
                     }
                 }
                 # check if observations are valid
@@ -341,7 +341,7 @@ class DataMiner{
                     # check if observation values are greater that previous one
                     if($wg_1h < floatval($data[$i]["wg_10min"])) {
                         $wg_1h = $data[$i]["wg_10min"];
-                        $wg_max_dir = $data[$i]["wg_10min"];
+                        $wg_max_dir = $data[$i]["wd_10min"];
                     }
                 }
             } else {
