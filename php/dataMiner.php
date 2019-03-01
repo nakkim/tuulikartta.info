@@ -72,6 +72,7 @@ class DataMiner{
             $tmp["time"] = date('Y-m-d\TH:i:s\Z',$time);
 
             $tmp["type"] = "road";
+            $tmp['n_man'] = null;
             
             $date = new DateTime($observation["time"]);
             $tmp["epoctime"] = intVal($date->format('U'));
@@ -381,7 +382,7 @@ class DataMiner{
         $url .= "&producer=fmi";
         $url .= "&keyword=synop_fi";
         $url .= "&precision=double";
-        $url .= "&param=stationname%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,wawa,temperature,wg_10min,ws_10min,wd_10min,ri_10min";
+        $url .= "&param=stationname%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,wawa,temperature,wg_10min,ws_10min,wd_10min,ri_10min,n_man";
         $url .= "&missingvtext=nan";
 
         if($timestamp == "now") {

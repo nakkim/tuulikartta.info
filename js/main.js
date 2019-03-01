@@ -786,6 +786,51 @@ var saa = saa || {};
         }
       }
 
+      if (param === 'n_man') {
+
+        if (saa.Tuulikartta.data[i]['n_man'] !== null) {
+          var icon = L.icon({
+            iconUrl: '../symbols/nn/' + saa.Tuulikartta.data[i][param] + '.svg',
+            iconSize: [30, 30], // size of the icon
+            iconAnchor: [15,15], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+          })
+
+          var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+            {
+              icon: icon
+            })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+
+          // marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
+
+          // var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+          //   {
+          //     interactive: false,
+          //     keyboard: false,
+          //     icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+          //   })
+
+          // if (saa.Tuulikartta.data[i]['type'] === 'road') {
+          //   marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          // } else {
+          //   marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          // }
+        }
+      }
+
+
       if (param === 'visibility') {
         if (saa.Tuulikartta.data[i]['visibility'] !== null) {
           var labelClass = 'textLabelclassGrey'
