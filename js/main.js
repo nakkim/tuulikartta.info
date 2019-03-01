@@ -18,7 +18,7 @@ var saa = saa || {};
   saa.Tuulikartta.graphIds = ""
 
   // observation update interval in ms
-  var interval = 60000
+  var interval = 5*60000
 
   // geolocation
   var geoLocation
@@ -127,7 +127,7 @@ var saa = saa || {};
       Tuulikartta.debug('fmisid: '+e.popup._source.fmisid+', type: '+e.popup._source.type)
       if(type === 'Synop-asema') type = 'synop'
       if(type === 'Tiesääasema') type = 'road'
-      saa.Tuulikartta.timestamp = "graph" // to avoid data reload
+      // saa.Tuulikartta.timestamp = "graph" // to avoid data reload
       saa.weatherGraph.getObservationGraph(fmisid,type,saa.Tuulikartta.timestamp)
       $(".owl-carousel").owlCarousel({
         navigation: true, // Show next and prev buttons
