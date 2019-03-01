@@ -5,13 +5,12 @@ header('Content-Type: application/json');
 $latlon      = filter_input(INPUT_GET, 'latlon', FILTER_SANITIZE_STRING);
 $fmisid      = filter_input(INPUT_GET, 'fmisid', FILTER_SANITIZE_STRING);
 $type        = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
-$timestamp   = filter_input(INPUT_GET, 'timestap', FILTER_SANITIZE_STRING);
+$timestamp   = filter_input(INPUT_GET, 'timestamp', FILTER_SANITIZE_STRING);
 
 $dataMiner = new DataMiner();
 $data = [];
-
 if ($type == 'road') {
-    $obs = $dataMiner->roadObservation($fmisid);
+    $obs = $dataMiner->roadObservation($fmisid,$timestamp);
     // $for = $dataMiner->HarmonieForecast($latlon);
     //$data = $dataMiner->combineData($obs, $for);
 }

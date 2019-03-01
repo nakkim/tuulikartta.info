@@ -53,9 +53,11 @@ class DataMiner{
         if($timestamp == "now") {
             $url .= "&starttime=-1h";
         } else {
-            $url .= "&starttime=-1h&endtime=${timestamp}&timestep=10";
+            date_default_timezone_set("UTC");
+            $time = strtotime($timestamp);
+            $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
+            $url .= "&starttime=${starttime}&endtime=${timestamp}";
         }
-        
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
 
@@ -385,9 +387,11 @@ class DataMiner{
         if($timestamp == "now") {
             $url .= "&starttime=-1h";
         } else {
-            $url .= "&starttime=-1h&endtime=${timestamp}";
+            date_default_timezone_set("UTC");
+            $time = strtotime($timestamp);
+            $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
+            $url .= "&starttime=${starttime}&endtime=${timestamp}";
         }
-
         $data = file_get_contents($url) or die("Unable to get data from {$url}");
         $data = json_decode($data, true);
 
@@ -420,7 +424,7 @@ class DataMiner{
     *
     */
 
-    public function roadObservation($fmisid) {
+    public function roadObservation($fmisid,$timestamp) {
         
         $url = "";
         $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
@@ -430,9 +434,16 @@ class DataMiner{
         $url .= "&precision=double";
         $url .= "&param=name,time,wg,ws,wd,rr1h,t2m";
         $url .= "&missingtext=null";
-        $url .= "&starttime=-18h";
         $url .= "&maxlocations=1";
-        
+
+        if($timestamp == "now") {
+            $url .= "&starttime=-18h";
+        } else {
+            date_default_timezone_set("UTC");
+            $time = strtotime($timestamp);
+            $starttime = date('Y-m-d\TH:i:s\Z',$time - 18*3600);
+            $url .= "&starttime=${starttime}&endtime=${timestamp}";
+        }
         $data = file_get_contents($url) or die('Unable to get data from {$url}');
         $data = json_decode($data, true);
 
@@ -469,12 +480,16 @@ class DataMiner{
         $url .= "&precision=double";
         $url .= "&param=name,time,ws_10min,wg_10min,wd_10min,t2m,n_man,rr1h";
         $url .= "&missingtext=null";
-        $url .= "&starttime=-18h";
         $url .= "&maxlocations=1";
 
-        // if ($timespamp !== "now") {
-        //     $url .= "&endtime=${timestamp}";
-        // }
+        if($timestamp === "now") {
+            $url .= "&starttime=-18h";
+        } else {
+            date_default_timezone_set("UTC");
+            $time = strtotime($timestamp);
+            $starttime = date('Y-m-d\TH:i:s\Z',$time - 18*3600);
+            $url .= "&starttime=${starttime}&endtime=${timestamp}";
+        }
 
         $data = file_get_contents($url) or die('Unable to get data');
         $data = json_decode($data, true);
