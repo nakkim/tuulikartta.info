@@ -947,8 +947,8 @@ var saa = saa || {};
             {
               icon: L.divIcon({
                 iconAnchor: [-17, 17],
-                labelAnchor: [-15, 0],
-                popupAnchor: [-15, 0],
+                labelAnchor: [0, 0],
+                popupAnchor: [0, 0],
                 html: `<span style="${markerHtmlStyles}" >${code.short}</span>`,
                 className: null
               })
