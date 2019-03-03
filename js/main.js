@@ -101,7 +101,6 @@ var saa = saa || {};
 
     
     var height = $('#gui-box').height();
-    console.log(height);
     $('.leaflet-top').css({'margin-top': height + 20 + 'px'});
     window.addEventListener('resize', function(event){
         height = $('#gui-box').height() + 20;            
@@ -444,55 +443,55 @@ var saa = saa || {};
 
   Tuulikartta.resolveWawaCode = function (wawa) {
     wawa = parseInt(wawa)
-    if (wawa === 0) return {short:'Poutaa',long:'',class:'textLabelclassGrey'}
-    if (wawa === 10) return {short:'Utu',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 20) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 21) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 22) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
-    if (wawa === 23) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 24) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 25) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 30) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 31) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 32) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 33) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 40) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 41) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 42) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite'}
-    if (wawa === 50) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
-    if (wawa === 51) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
-    if (wawa === 52) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
-    if (wawa === 53) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow'}
-    if (wawa === 54) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 55) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 56) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 60) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 61) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 62) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 63) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 64) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 65) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 66) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 67) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple'}
-    if (wawa === 68) return {short:'Räntä',long:'',class:'textLabelclassBlackBackgroundOrange'}
-    if (wawa === 70) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 71) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 72) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 73) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 74) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 75) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 76) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 77) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 78) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 80) return {short:'Sadekuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'} 
-    if (wawa === 81) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'} 
-    if (wawa === 82) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 83) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 84) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen'}
-    if (wawa === 85) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 86) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 87) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue'}
-    if (wawa === 89) return {short:'Raesadetta',long:'',class:'textLabelclassBlackBackgroundYellow'}
+    if (wawa === 0) return {short:'Poutaa',long:'',class:'textLabelclassGrey', hex:'#7e7e7e'}
+    if (wawa === 10) return {short:'Utu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 20) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 21) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 22) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow', hex:'#ffffb3'}
+    if (wawa === 23) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 24) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 25) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 30) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 31) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 32) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 33) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 40) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 41) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 42) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
+    if (wawa === 50) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow', hex:'#ffffb3'}
+    if (wawa === 51) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow', hex:'#ffffb3'}
+    if (wawa === 52) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow', hex:'#ffffb3'}
+    if (wawa === 53) return {short:'Tihku',long:'',class:'textLabelclassBlackBackgroundYellow', hex:'#ffffb3'}
+    if (wawa === 54) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 55) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 56) return {short:'Jäättihku',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 60) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 61) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 62) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 63) return {short:'Vesisade',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 64) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 65) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 66) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 67) return {short:'Jäätsade',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+    if (wawa === 68) return {short:'Räntä',long:'',class:'textLabelclassBlackBackgroundOrange', hex:'#ffbf80'}
+    if (wawa === 70) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 71) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 72) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 73) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 74) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 75) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 76) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 77) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 78) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 80) return {short:'Sadekuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'} 
+    if (wawa === 81) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'} 
+    if (wawa === 82) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 83) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 84) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
+    if (wawa === 85) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 86) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 87) return {short:'Lumikuuroja',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#80b3ff'}
+    if (wawa === 89) return {short:'Raesadetta',long:'',class:'textLabelclassBlackBackgroundYellow', hex:'#ffffb3'}
     else return null
 
   }
@@ -892,12 +891,67 @@ var saa = saa || {};
       if (param === 'wawa') {
         if (saa.Tuulikartta.data[i]['wawa'] !== null && Tuulikartta.resolveWawaCode(saa.Tuulikartta.data[i]['wawa']) !== null) {
           var code = Tuulikartta.resolveWawaCode(saa.Tuulikartta.data[i]['wawa'])
-          var labelClass = code.class
+
+          var svgicon = ''
+          if(code.short === 'Poutaa') {
+            svgicon = svgicon + '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" enable-background="new 0 0 50 50" xml:space="preserve">'
+            svgicon = svgicon + `<circle r="5" cx="10" cy="10" stroke="black" stroke-width="2" fill="#ffffff"></circle>`
+            svgicon = svgicon + `</svg>`
+          } else {
+            svgicon = svgicon + '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" enable-background="new 0 0 50 50" xml:space="preserve">'
+            svgicon = svgicon + `<circle r="5" cx="10" cy="10" stroke="black" stroke-width="2" fill="${code.hex}"></circle>`
+            svgicon = svgicon + `</svg>`
+          }
+
+          var icon = encodeURI('data:image/svg+xml,' + svgicon).replace('#', '%23')
+
+          var icon = L.icon({
+            iconUrl: icon,
+            iconSize: [50, 50],
+            iconAnchor: [0, 0],
+            popupAnchor: [0, 0]
+          })
+
+          // dot
+          var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+            {
+              icon: icon
+            })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+
+          var markerHtmlStyles = `
+              font-weight: bold;
+              color: ${code.hex};
+              margin: 10px 0 30px 0;
+              font-size: 12px;
+              background-color: black;
+              border: 1px solid black;
+              padding: 5px 5px 5px 5px;`
+
+          if(code.short === 'Poutaa') {
+            markerHtmlStyles = `
+              ffont-weight: bold;
+              color: rgb(130, 129, 129);
+              font-size: 11px;
+              background-color: rgba(255,255,255,0.2);
+              border: 1px solid black;
+              padding: 5px 5px 5px 5px;`
+          }
+
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
-              interactive: true,
-              keyboard: false,
-              icon: Tuulikartta.createLabelIcon(labelClass, code.short)
+              icon: L.divIcon({
+                iconAnchor: [-17, 17],
+                labelAnchor: [-15, 0],
+                popupAnchor: [-15, 0],
+                html: `<span style="${markerHtmlStyles}" >${code.short}</span>`,
+                className: null
+              })
             })
 
           if (saa.Tuulikartta.data[i]['type'] === 'road') {
