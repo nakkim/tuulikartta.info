@@ -98,7 +98,6 @@ var saa = saa || {};
   // ---------------------------------------------------------
 
   $(function bunttonFunctionalities () {
-
     
     var height = $('#gui-box').height();
     $('.leaflet-top').css({'margin-top': height + 20 + 'px'});
@@ -180,6 +179,7 @@ var saa = saa || {};
           layer.setParams({time: saa.Tuulikartta.timestamp})
         }
       })
+      saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.callData()
     })
 
@@ -198,6 +198,7 @@ var saa = saa || {};
           layer.setParams({time: ''})
         }
       })
+      saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.debug('Done')
     })
 
@@ -238,6 +239,7 @@ var saa = saa || {};
           layer.setParams({time: saa.Tuulikartta.timestamp})
         }
       })
+      saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.debug('Done')
     })
 
@@ -274,6 +276,7 @@ var saa = saa || {};
           layer.setParams({time: saa.Tuulikartta.timestamp})
         }
       })
+      saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.debug('Done')
     })
   })
@@ -315,8 +318,11 @@ var saa = saa || {};
       attribution: 'Tuulikartta.info'
     })
 
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    saa.Tuulikartta.baselayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
+    }).addTo(map)
+
+    saa.Tuulikartta.namelayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
     }).addTo(map)
 
     saa.Tuulikartta.map = map
@@ -325,6 +331,11 @@ var saa = saa || {};
     map.locate({ setView: false, maxZoom: 18 })
     map.on('locationfound', onLocationFound)
     map.on('locationerror', onLocationError)
+
+    saa.Tuulikartta.map.on('overlayadd', function(e) {
+      console.log(e)
+      saa.Tuulikartta.namelayer.bringToFront()
+    })
   }
 
   function onLocationFound (e) {
@@ -359,29 +370,15 @@ var saa = saa || {};
     var dataWMS = 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms'
     var geosrvWMS = 'http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Radar/wms'
 
-    var radar5min = L.tileLayer.wms(dataWMS, {
-      layers: 'fmi:observation:radar:PrecipitationRate5min',
-      format: 'image/png',
-      tileSize: 2048,
-      transparent: true,
-      interval_start: 60,
-      opacity: 0.7,
-      version: '1.3.0',
-      crs: L.CRS.EPSG3857,
-      attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
-      // preventCache: Date.now()
-    })
-
     var radar = L.tileLayer.wms(geosrvWMS, {
       layers: 'suomi_dbz_eureffin',
       format: 'image/png',
       tileSize: 2048,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.7,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
-      // preventCache: Date.now()
     })
 
     var flash5min = L.tileLayer.wms(dataWMS, {
@@ -395,33 +392,12 @@ var saa = saa || {};
       interval_start: 5,
       timestep: 5,
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
-      // preventCache: Date.now()
-    })
-
-    var cloudiness = L.tileLayer.wms(geosrvWMS, {
-      layers: 'cloudiness-forecast',
-      format: 'image/png',
-      tileSize: 1024,
-      transparent: true,
-      opacity: 1.0,
-      version: '1.3.0',
-      crs: L.CRS.EPSG3857,
-      time: time
     })
 
     var overlayMaps = {
-      // "Kokonaispilvisyys": cloudiness,
       'Tutka - Sateen intensiteetti': radar,
-      // 'Tutka - 5min sadekertymä': radar5min,
       '5min salamahavainnot': flash5min
     }
-
-    saa.Tuulikartta.map.on('overlayadd', function (eventLayer) {
-      if (eventLayer.name === 'Tutka - Sateen intensiteetti') {
-        saa.Tuulikartta.activeLayer = radar
-        // Tuulikartta.updateRadarTime();
-      }
-    })
 
     L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map)
   }
@@ -1083,6 +1059,7 @@ var saa = saa || {};
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
           layer.wmsParams.preventCache = Date.now()
           layer.setParams({})
+          saa.Tuulikartta.namelayer.bringToFront()
         }
       })
     }
