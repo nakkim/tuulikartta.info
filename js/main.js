@@ -174,6 +174,12 @@ var saa = saa || {};
       Tuulikartta.debug('............................')
       Tuulikartta.debug(`Find observations from ${timestring}`)
       Tuulikartta.clearMarkers()
+      saa.Tuulikartta.map.eachLayer(function (layer) {
+        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
+          layer.wmsParams.preventCache = Date.now()
+          layer.setParams({time: saa.Tuulikartta.timestamp})
+        }
+      })
       Tuulikartta.callData()
     })
 
@@ -183,7 +189,6 @@ var saa = saa || {};
       Tuulikartta.debug('............................')
       Tuulikartta.debug('Get latest observations')
       Tuulikartta.clearMarkers()
-      Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
 
       Tuulikartta.debug(`Load latest radar data`)
@@ -224,7 +229,6 @@ var saa = saa || {};
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
       saa.Tuulikartta.timestamp = timestring
-      Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
 
       Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timestamp}`)
@@ -261,7 +265,6 @@ var saa = saa || {};
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
       saa.Tuulikartta.timestamp = timestring
-      Tuulikartta.updateRadarData(saa.Tuulikartta.map)
       Tuulikartta.callData()
 
       Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timestamp}`)
@@ -1022,36 +1025,6 @@ var saa = saa || {};
     output += `</div>`
 
     return output
-  }
-
-  // ---------------------------------------------------------
-  // Draw radar data on map
-  // ---------------------------------------------------------
-
-  Tuulikartta.updateRadarData = function (map) {
-
-    // map.eachLayer(function (layer) {
-    //   map.removeLayer(layer);
-    // });
-  
-    // var customParams = [
-    //   'format=image/png',
-    //   'layers=skandinavia_dbz_eureffin',
-    //   'styles=',
-    //   `time=${Tuulikartta.timestamp}`
-    // ]
-
-    // if(Tuulikartta.timestamp === 'now')
-    // var customParams = [
-    //   'format=image/png',
-    //   'layers=skandinavia_dbz_eureffin',
-    //   'styles='
-    // ]
-
-    // // draw radar layer
-    // map.overlayMapTypes.clear()
-    // loadWMS(map, 'http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Radar/wms?', customParams)
-
   }
 
   // ---------------------------------------------------------
