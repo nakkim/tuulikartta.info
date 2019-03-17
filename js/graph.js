@@ -389,6 +389,7 @@ var saa = saa || {};
                 color: '#FF0000',
                 negativeColor: '#0088FF',
                 data: data.obs.temp,
+                zIndex: 10,
                 tooltip: {
                     valueSuffix: ' °C'
                 },
@@ -397,6 +398,7 @@ var saa = saa || {};
             {
                 type: 'column',
                 name: 'Tunnin sademäärä',
+                zIndex: 9,
                 data: data.obs.rr1h,
                 tooltip: {
                     valueSuffix: ' mm'
