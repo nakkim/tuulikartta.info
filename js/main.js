@@ -389,8 +389,8 @@ var saa = saa || {};
       opacity: 0.8,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
-      interval_start: 5,
-      timestep: 5,
+      interval_start: 60,
+      // timestep: 1,
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
 
