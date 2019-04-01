@@ -24,6 +24,21 @@ body {
     margin-top: 50px;
 }
 
+.leaflet-control-select-source {
+    background-image: url(../symbols/windsock.svg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: white;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+	pointer-events: auto;
+}
+
+.leaflet-control-select-source:hover {
+	background-color: #f4f4f4;
+}
+
 .data-info {
     /*height: 89px;*/
     z-index: 1000;

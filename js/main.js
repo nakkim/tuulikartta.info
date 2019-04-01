@@ -27,7 +27,8 @@ var saa = saa || {};
   var latitude = localStorage.getItem('latitude') ? localStorage.getItem('latitude') : 60.630556
   var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 24.859726
   var zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 8
-
+  var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä kaikki asematyypit'
+  var observationValue = parseInt(localStorage.getItem('observationValue')) ? parseInt(localStorage.getItem('observationValue')) : 0
   var selectedparameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
@@ -41,6 +42,8 @@ var saa = saa || {};
       console.log(par)
     }
   }
+
+  Tuulikartta.debug(observationSource, observationValue)
 
   // ---------------------------------------------------------
   // Convert epoch time to properly formatted time string
@@ -336,6 +339,44 @@ var saa = saa || {};
       console.log(e)
       saa.Tuulikartta.namelayer.bringToFront()
     })
+
+    var customControl = L.Control.extend({
+      options: {
+        position: 'topright' 
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-source'
+        )
+        container.onclick = function(){
+          if(observationValue === parseInt(0)) {
+            observationValue = observationValue + 1
+            document.getElementById('data-loader').innerHTML = 'Näytä vain synop-asemat'
+            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupSynop)
+            saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
+            localStorage.setItem('observationValue', 1)
+            localStorage.setItem('observationSource', 'Näytä vain synop-asemat')
+          } else if(observationValue === parseInt(1)) {
+            observationValue = observationValue + 1
+            document.getElementById('data-loader').innerHTML = 'Näytä vain tiesääasemat'
+            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
+            saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupSynop)
+            localStorage.setItem('observationValue', 2)
+            localStorage.setItem('observationSource', 'Näytä vain tiesääasemat')
+          } else {
+            observationValue = 0
+            document.getElementById('data-loader').innerHTML = 'Näytä kaikki asematyypit'
+            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupSynop)
+            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
+            localStorage.setItem('observationValue', 0)
+            localStorage.setItem('observationSource', 'Näytä kaikki asematyypit')
+          }
+        }
+        container.title = "Valitse näytettävät havaintoasemat"
+        return container
+      }
+    })		
+    map.addControl(new customControl());
   }
 
   function onLocationFound (e) {
@@ -389,8 +430,8 @@ var saa = saa || {};
       opacity: 0.8,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
-      interval_start: 60,
-      // timestep: 1,
+      interval_start: 5,
+      timestep: 5,
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
 
@@ -536,22 +577,17 @@ var saa = saa || {};
 
   Tuulikartta.drawData = function (param) {
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
-    saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
-    saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
-
-    // check zoom levels and hide road observations if needed
-    if (saa.Tuulikartta.map.getZoom() < minRoadZoomLevel) {
-      saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
-    } else {
-      saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
+    if(observationValue == 1) {
+      saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
+    } 
+    if(observationValue == 2) {
+      saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
+    } 
+    if(observationValue == 0) {
+      saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
+      saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
     }
-    saa.Tuulikartta.map.on('zoomend', function () {
-      if (saa.Tuulikartta.map.getZoom() < minRoadZoomLevel) {
-        saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
-      } else {
-        saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
-      }
-    })
+
 
     if (L.Browser.mobile) {
       maxWidth = 250
