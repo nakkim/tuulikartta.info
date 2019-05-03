@@ -51,7 +51,7 @@ class DataMiner{
         $url .= "&missingtext=nan";
 
         if($timestamp == "now") {
-            $url .= "&starttime=-1h";
+            // $url .= "&starttime=-1h";
         } else {
             date_default_timezone_set("UTC");
             $time = strtotime($timestamp);
@@ -85,231 +85,229 @@ class DataMiner{
 
     /**
     *
+    * Get latest synop observations 
+    * @return   data as php array
+    *
+    */
+
+    public function synopdata($timestamp) {
+        $url = "";
+        $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
+        $url .= "&format=json";
+        $url .= "&producer=fmi";
+        $url .= "&keyword=synop_fi";
+        $url .= "&precision=double";
+        $url .= "&param=stationname%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,wawa,temperature,wg_10min,ws_10min,wd_10min,ri_10min,n_man";
+        $url .= "&missingvtext=nan";
+
+        if($timestamp == "now") {
+            $url .= "&starttime=-1h";
+        } else {
+            date_default_timezone_set("UTC");
+            $time = strtotime($timestamp);
+            $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
+            $url .= "&starttime=${starttime}&endtime=${timestamp}";
+        }
+        $data = file_get_contents($url) or die("Unable to get data");
+        $data = json_decode($data, true);
+
+        /* add datatype, station and epoch time information to each observation */
+        $observationData = [];
+        foreach ( $data as $key => $observation ) {
+
+            $tmp = $observation;
+
+            date_default_timezone_set("UTC");
+            $time = strtotime($observation["time"]);
+            $tmp["time"] = date('Y-m-d\TH:i:s\Z',$time);
+
+            $tmp["type"] = "synop";
+
+            $date = new DateTime($observation["time"]);
+            $tmp["epoctime"] = intVal($date->format('U'));
+            array_push($observationData,$tmp);
+
+        }
+
+        return $observationData;
+    }
+
+    /**
+    *
     * Opendata synop observations
     * @return   data as php array
     *
     */
 
-    public function opensynop($timestapm) {
-        $starttime = date("Y-m-d\TH:i:s", time()-2*60*60-13*60);
-        $endtime = date("Y-m-d\TH:i:s", time()-2*60*60-3*60);
+    public function multipointcoverage($timestamp,$settings) {
+        date_default_timezone_set("UTC");
 
-        $settings = array();
-        $settings["parameter"]      = "ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,temperature";
-        $settings["storedQueryId"]  = "fmi::observations::weather::timevaluepair";
-        $settings["bbox"]           = "17.91,58.71,32.61,70.59";//"24.0364,60.8705,24.8762,61.1229";
-        $settings["timestep"]       = "10";
         $url = "";
         $url .= "http://opendata.fmi.fi/wfs?request=getFeature";
         $url .= "&storedquery_id={$settings["storedQueryId"]}";
-        $url .= "&timestep={$settings["timestep"]}";
         $url .= "&parameters={$settings["parameter"]}";
         $url .= "&bbox={$settings["bbox"]},epsg::4326&";
-        $url .= "&starttime=${starttime}&endtime=${endtime}";
+
+        if($timestamp == "now") {
+            $starttime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60-60*60);
+            $endtime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60);
+            $url .= "&starttime=${starttime}&endtime=${endtime}";
+        } else {
+            $time = strtotime($timestamp);
+            $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
+            $url .= "&starttime=${starttime}&endtime=${timestamp}";
+        }
 
         $xmlData = file_get_contents($url);
+        if($xmlData == false) {
+            return [];
+        }
+        if($xmlData == "") {
+            return [];
+        }
+
         $resultString = simplexml_load_string($xmlData);
 
         $result = array();
         $tmp = array();
+        $final = [];
 
         $data = $resultString->children("wfs", true);
         $params = explode(",", $settings["parameter"]);
 
-        $x = 0;
+        $result1 = [];
+        $result2 = [];
         foreach ($data->member as $key => $locations) {            
-            $station = (string)$locations
-                    -> children("omso", true)->PointTimeSeriesObservation
+            
+            // station names and fmisid's
+            $stations = $locations
+                    -> children("omso", true)->GridSeriesObservation
+                    -> children("om", true)->featureOfInterest
+                    -> children("sams", true)->SF_SpatialSamplingFeature
+                    -> children("sam", true)->sampledFeature
+                    -> children("target", true)->LocationCollection->member;
+
+            foreach ($stations as $station) {
+                $tmp = [];
+                $name = $station -> children ("target", true)->Location
+                                -> children ("gml", true)->name;
+                $fmisid = $station -> children ("target", true)->Location
+                                -> children ("gml", true)->identifier;
+
+                $tmp["station"] = (string)$name;
+                $tmp["fmisid"] = (int)$fmisid;
+                array_push($result1,$tmp);
+            }
+
+            // station names and coordinates
+            $stations = $locations
+                    -> children("omso", true)->GridSeriesObservation
                     -> children("om", true)->featureOfInterest
                     -> children("sams", true)->SF_SpatialSamplingFeature
                     -> children("sams", true)->shape
-                    -> children("gml", true)->Point
-                    -> children("gml", true)->name;
+                    -> children("gml", true)->MultiPoint;
 
-            $blop = $locations
-                ->children("omso", true)->PointTimeSeriesObservation
-                ->children("om", true)->result
-                ->children("wml2", true)->MeasurementTimeseries;
+            foreach ($stations->pointMember as $station) {
+                $tmp = [];
+                $name = $station -> children ("gml", true)->Point
+                                -> children ("gml", true)->name;
+                $pos = $station  -> children ("gml", true)->Point
+                                -> children ("gml", true)->pos;
 
-            $latlon = (string)$locations
-                    ->children("omso", true)->PointTimeSeriesObservation
-                    ->children("om", true)->featureOfInterest
-                    ->children("sams", true)->SF_SpatialSamplingFeature
-                    ->children("sams", true)->shape
-                    ->children("gml", true)->Point
-                    ->children("gml", true)->pos;
-            $latlon = explode(" ",$latlon);
-
-            $presum = 0;            
-            $index = 0;
-            foreach ($blop->point as $key => $measurement) {
-                
-                $value = (string)$measurement->MeasurementTVP->value;
-                $time = (string)$measurement->MeasurementTVP->time;
-                $epoctime = strtotime($time);
-
-                // calculate 1h precipitation sum
-                // if($x === 0) {
-                //     if($value === "NaN"){
-                //         $value = "0";
-                //     }
-                //     $presum = $presum + floatval($value);
-                //     $tmp[$params[$x]] = $presum;
-                // } else {
-                //     $tmp[$params[$x]] = $value; 
-                // }
-
-                if($value == "NaN"){
-                    $value = null;
-                }
-                $tmp[$params[$x]] = $value;
+                $tmp["station"] = (string)$name;
+                $tmp["pos"] = (string)$pos;
+                array_push($result2,$tmp);
+            }
             
-                $tmp["station"] = $station;
-                $tmp["lat"] = floatval($latlon[0]);
-                $tmp["lon"] = floatval($latlon[1]);
-                $tmp["time"] = $time;
-                $tmp["epoctime"] = intval($epoctime);
-                $tmp["type"] = "synop";
-                
-                $index = $index+1;
+            // merge station arrays
+            $stations = [];
+            foreach($result1 as $key => $station) {
+                $stations[$key] = array_merge($result1[$key],$result2[$key]);
+            }
 
+            // station coordinates and timestamps
+            $latlons = $locations
+                    -> children("omso", true)->GridSeriesObservation
+                    -> children("om", true)->result
+                    -> children("gmlcov", true)->MultiPointCoverage
+                    -> children("gml", true)->domainSet
+                    -> children("gmlcov", true)->SimpleMultiPoint
+                    -> children("gmlcov", true)->positions;
+
+            $latlons = explode("                ",(string)$latlons);
+            $numberOfStations = count($latlons);
+            $i = 0;
+            $timestamps = [];
+            foreach ($latlons as $latlon) {
+                $tmp = [];
+                if($i>0 && $i<($numberOfStations-1)) {
+                    $latlon = explode(" ",(string)$latlon);
+                    $tmp["lat"] = floatval($latlon[0]);
+                    $tmp["lon"] = floatval($latlon[1]);
+                    $epoch = str_replace("\n", "", $latlon[3]);
+                    $tmp["epoctime"] = floatval($epoch);
+
+                    // convert UNIX timestamp to time
+                    $tmp["time"] = date("Y-m-d\TH:i:s\Z", intval($latlon[3]));
+                    $tmp["type"] = $settings["stationtype"];
+                    array_push($timestamps,$tmp);
+                }
+                $i++;
             }
-            if ($x < count($params)-1) {
-                $x = $x+1;
-            } else {
-                array_push($result,$tmp);
-                $x = 0;
+
+            // combine station arrays as one
+            $i = 0;
+            $result = [];
+            foreach($timestamps as $measurement) {
+                $posstring = sprintf("%0.5f",$measurement["lat"])." ".sprintf("%0.5f",$measurement["lon"]). " ";
+                if($posstring == $stations[$i]["pos"]) {
+                    array_push($result,array_merge($stations[$i],$measurement));
+                } else {
+                    $i++;
+                    array_push($result,array_merge($stations[$i],$measurement));
+                }
             }
+
+            // actual observations
+            $parameters = explode(",",$settings["parameter"]);
+            $observations = $locations
+                    -> children("omso", true)->GridSeriesObservation
+                    -> children("om", true)->result
+                    -> children("gmlcov", true)->MultiPointCoverage
+                    -> children("gml", true)->rangeSet
+                    -> children("gml", true)->DataBlock
+                    -> children("gml", true)->doubleOrNilReasonTupleList;
+            
+            $observations = explode("                ",(string)$observations);
+
+            $tmp = [];
+            foreach($observations as $key => $observation) {
+                if($key > 0 and $key < (count($observations)-1))
+                $tmp[$key] = explode(" ",$observation);
+            }
+
+            $observations = [];
+            foreach($tmp as $observation) {
+                for($x=0; $x<count($parameters); $x++) {
+                    if(is_numeric($observation[$x]) === true) {
+                        $tmp2[$parameters[$x]] = floatval($observation[$x]);
+                    } else {
+                        $tmp2[$parameters[$x]] = null;
+                    }
+
+                }
+                array_push($observations,$tmp2);
+            }
+
+            // merge station data and observation arrays
+            foreach($observations as $key => $observation) {
+                array_push($final,array_merge($result[$key],$observations[$key]));
+            }
+
         }
-        return $result;
+        return $final;
     }
 
-
-       /**
-    *
-    * Opendata roadweather observations
-    * @return   data as php array
-    *
-    */
-
-    public function openroad($timestapm) {
-        $starttime = date("Y-m-d\TH:i:s", time()-2*60*60-13*60);
-        $endtime = date("Y-m-d\TH:i:s", time()-2*60*60-3*60);
-
-        $settings = array();
-        $settings["parameter"]      = "pri,ws,wg,wd,vis,prst1,ta";
-        $settings["storedQueryId"]  = "livi::observations::road::finland::timevaluepair";
-        $settings["bbox"]           = "17.91,58.71,32.61,70.59";
-        $settings["timestep"]       = "1";
-    
-        $url = "";
-        $url .= "http://opendata.fmi.fi/wfs?request=getFeature";
-        $url .= "&storedquery_id={$settings["storedQueryId"]}";
-        $url .= "&timestep={$settings["timestep"]}";
-        $url .= "&parameters={$settings["parameter"]}";
-        $url .= "&bbox={$settings["bbox"]},epsg::4326&";
-        //$url .= "&latlons={$settings["latlons"]}";
-        $url .= "&starttime=${starttime}&endtime=${endtime}";
-
-        $xmlData = file_get_contents($url);
-        $resultString = simplexml_load_string($xmlData);
-
-        $result = array();
-        $tmp = array();
-
-        $data = $resultString->children("wfs", true);
-        $params = explode(",", $settings["parameter"]);
-
-        $x = 0;
-
-        foreach ($data->member as $key => $locations) {
-
-            $presum = 0;
-            
-            $station = (string)$locations
-                    -> children("omso", true)->PointTimeSeriesObservation
-                    -> children("om", true)->featureOfInterest
-                    -> children("sams", true)->SF_SpatialSamplingFeature
-                    -> children("sams", true)->shape
-                    -> children("gml", true)->Point
-                    -> children("gml", true)->name;
-
-            $blop = $locations
-                ->children("omso", true)->PointTimeSeriesObservation
-                ->children("om", true)->result
-                ->children("wml2", true)->MeasurementTimeseries;
-
-            $latlon = (string)$locations
-                    ->children("omso", true)->PointTimeSeriesObservation
-                    ->children("om", true)->featureOfInterest
-                    ->children("sams", true)->SF_SpatialSamplingFeature
-                    ->children("sams", true)->shape
-                    ->children("gml", true)->Point
-                    ->children("gml", true)->pos;
-            $latlon = explode(" ",$latlon);
-            
-            $index = 0;
-            foreach ($blop->point as $key => $measurement) {
-                
-                $value = (string)$measurement->MeasurementTVP->value;
-                $time = (string)$measurement->MeasurementTVP->time;
-                $epoctime = strtotime($time);
-
-                // calculate 1h precipitation sum
-                // if($x === 0) {
-                //     if($value === "NaN"){$value = "0";}
-                //     $presum = $presum + floatval($value);
-                //     $tmp[$params[$x]] = $presum;
-                // } else {
-                //     $tmp[$params[$x]] = $value;
-                // }
-
-                if($value == "NaN"){
-                    $value = null;
-                }
-                $tmp[$params[$x]] = $value;
-
-            
-                $tmp["station"] = $station;
-
-                $tmp["lat"] = floatval($latlon[0]);
-                $tmp["lon"] = floatval($latlon[1]);
-                $tmp["time"] = $time;
-                $tmp["epoctime"] = intval($epoctime);
-                $tmp["type"] = "road";
-                
-                $index = $index+1;
-
-            }
-            if ($x < count($params)-1) {
-                $x = $x+1;
-            } else {
-                array_push($result,$tmp);
-                $x = 0;
-            }
-        }
-
-        $tmp = array();
-        foreach ($result as $data) {
-            $tmp1 = array();
-            $tmp1 = $data;            
-            $tmp1["rr_10min"] = $data["pri"];
-            $tmp1["temperature"] = $data["ta"];
-            $tmp1["ws_10min"] = $data["ws"];
-            $tmp1["wg_10min"] = $data["wg"];
-            $tmp1["wd_10min"] = $data["wd"];
-            $tmp1["wawa"] = $data["prst1"];
-            unset($tmp1["ws"]);
-            unset($tmp1["wg"]);
-            unset($tmp1["wd"]);
-            unset($tmp1["ta"]);
-            unset($tmp1["prst1"]);
-            unset($tmp1["pri"]);
-            array_push($tmp,$tmp1);
-        }
-        $result = $tmp;
-        return $result;
-    }
 
     /**
     *
@@ -366,56 +364,6 @@ class DataMiner{
         }
         return $outputArray;
     }
-
-
-    /**
-    *
-    * Get latest synop observations 
-    * @return   data as php array
-    *
-    */
-
-    public function synopdata($timestamp) {
-        $url = "";
-        $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
-        $url .= "&format=json";
-        $url .= "&producer=fmi";
-        $url .= "&keyword=synop_fi";
-        $url .= "&precision=double";
-        $url .= "&param=stationname%20as%20station,fmisid,utctime%20as%20time,lat,lon,visibility,wawa,temperature,wg_10min,ws_10min,wd_10min,ri_10min,n_man";
-        $url .= "&missingvtext=nan";
-
-        if($timestamp == "now") {
-            $url .= "&starttime=-1h";
-        } else {
-            date_default_timezone_set("UTC");
-            $time = strtotime($timestamp);
-            $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
-            $url .= "&starttime=${starttime}&endtime=${timestamp}";
-        }
-        $data = file_get_contents($url) or die("Unable to get data from {$url}");
-        $data = json_decode($data, true);
-
-        /* add datatype, station and epoch time information to each observation */
-        $observationData = [];
-        foreach ( $data as $key => $observation ) {
-
-            $tmp = $observation;
-
-            date_default_timezone_set("UTC");
-            $time = strtotime($observation["time"]);
-            $tmp["time"] = date('Y-m-d\TH:i:s\Z',$time);
-
-            $tmp["type"] = "synop";
-
-            $date = new DateTime($observation["time"]);
-            $tmp["epoctime"] = intVal($date->format('U'));
-            array_push($observationData,$tmp);
-
-        }
-
-        return $observationData;
-    }
  
     /**
     *
@@ -445,7 +393,7 @@ class DataMiner{
             $starttime = date('Y-m-d\TH:i:s\Z',$time - 18*3600);
             $url .= "&starttime=${starttime}&endtime=${timestamp}";
         }
-        $data = file_get_contents($url) or die('Unable to get data from {$url}');
+        $data = file_get_contents($url) or die('Unable to get data');
         $data = json_decode($data, true);
 
         /* add datatype, station and epoch time information to each observation */
@@ -519,58 +467,6 @@ class DataMiner{
 
     /**
     *
-    * Get Harmonie forecast data from timeseries
-    * @param    lat,lon coordinates 
-    * @return   data as an array
-    *
-    */
-
-    public function HarmonieForecast($latlon) {
-
-        $date = new DateTime();
-        $starttime = ($date->format('Y-m-d\TH:i:m'));
-        $endtime = $date->add(new DateInterval('PT12H'));
-        $endtime = ($endtime->format('Y-m-d\TH:i:m'));
-
-        $url = "";
-        $url .= "http://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/timeseries?";
-        $url .= "&format=json";
-        $url .= "&producer=harmonie_skandinavia_pinta";
-        $url .= "&latlon={$latlon}";
-        $url .= "&precision=double";
-        $url .= "&param=name,time,windspeedms,winddirection,windgust";
-        $url .= "&missingtext=-";
-        $url .= "&timestep=10";
-        $url .= "&starttime={$starttime}";
-        $url .= "&endtime={$endtime}";
-        $url .= "&maxlocations=1";
-
-        $data = file_get_contents($url) or die("Unable to get data from {$url}");
-        $data = json_decode($data, true);
-
-        /* add datatype, station and epoch time information to each observation */
-        /* parameter names must also be changed */
-        $forecastData = [];
-        foreach ( $data as $key => $forecast ) {
-
-            $tmp = $forecast;
-            $tmp["datatype"] = "forecast";
-            $tmp["ws"] = $forecast['windspeedms'];
-            $tmp["wg"] = $forecast['windgust'];
-            $tmp["wd"] = $forecast['winddirection'];
-            unset($tmp["windspeedms"]);
-            unset($tmp["windgust"]);
-            unset($tmp["winddirection"]);
-            $date = new DateTime($forecast["time"]);
-            $tmp["epoch"] = 1000*intVal($date->format('U'));
-            array_push($forecastData,$tmp);
-
-        }
-        return $forecastData;
-    }
-
-    /**
-    *
     * Combine array datasets as one array
     * @return   data as json string
     *
@@ -587,8 +483,7 @@ class DataMiner{
         }
 
         // return json_encode($data);
-        return $data;
-        
+        return $data;     
     }
 
     // end of class

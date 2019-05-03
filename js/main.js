@@ -740,7 +740,7 @@ var saa = saa || {};
         }
       }
 
-      if (param === 'temperature') {
+      if (param === 't2m') {
         var fillColor = Tuulikartta.resolveTemperature(saa.Tuulikartta.data[i][param])
         var hex = fillColor.substr(1)
         hex = 'hex' + hex
@@ -757,7 +757,7 @@ var saa = saa || {};
 
         var icon = encodeURI('data:image/svg+xml,' + svgicon).replace('#', '%23')
 
-        if (saa.Tuulikartta.data[i]['temperature'] !== null) {
+        if (saa.Tuulikartta.data[i]['t2m'] !== null) {
           var icon = L.icon({
             // iconUrl: '../symbols/temperature.svg',
             iconUrl: icon,
@@ -845,8 +845,8 @@ var saa = saa || {};
       }
 
 
-      if (param === 'visibility') {
-        if (saa.Tuulikartta.data[i]['visibility'] !== null) {
+      if (param === 'vis') {
+        if (saa.Tuulikartta.data[i]['vis'] !== null) {
           var labelClass = 'textLabelclassGrey'
           if (parseFloat(saa.Tuulikartta.data[i][param]) < 2000 && parseFloat(saa.Tuulikartta.data[i][param]) >= 1000) {
             labelClass = 'textLabelclassBlack'

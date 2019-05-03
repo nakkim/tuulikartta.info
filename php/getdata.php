@@ -8,13 +8,37 @@ $timestamp = $_GET["time"];
 
 $dataMiner = new DataMiner();
 
-$synopdata = $dataMiner->synopdata($timestamp);
-$roaddata = $dataMiner->roaddata($timestamp);
+// synop observations
+$settings = array();
+$settings["stationtype"]    = "synop";
+$settings["parameter"]      = "ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,t2m,n_man";
+$settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
+$settings["bbox"]           = "16.58,58.81,34.8,70.61";
+$synopdata = $dataMiner->multipointcoverage($timestamp,$settings);
 
+// synop observations
+$settings = array();
+$settings["stationtype"]    = "road";
+$settings["parameter"]      = "pri,ws,wg,wd,vis,prst1,ta";
+$settings["storedQueryId"]  = "livi::observations::road::default::multipointcoverage";
+$settings["bbox"]           = "16.58,58.81,34.8,70.61";
+$roaddata = $dataMiner->multipointcoverage($timestamp,$settings);
 
 foreach($roaddata as $key => $data) {
-	array_push($synopdata,$data);
+	$tmp = $data;
+	$tmp["ri_10min"] = $tmp["pri"];
+	$tmp["ws_10min"] = $tmp["ws"];
+	$tmp["wd_10min"] = $tmp["wd"];
+	$tmp["wg_10min"] = $tmp["wg"];
+	$tmp["visibility"] = $tmp["vis"];
+	$tmp["t2m"] = $tmp["ta"];
+	$tmp["wava"] = $tmp["prst1"];
+	$tmp["n_man"] = null;
+	array_push($synopdata,$tmp);
 }
+
+// $synopdata = $dataMiner->synopdata($timestamp);
+// $roaddata = $dataMiner->roaddata($timestamp);
 
 $synopdata = $dataMiner->serializeData($synopdata);
 print json_encode($synopdata);
