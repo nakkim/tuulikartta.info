@@ -409,7 +409,7 @@ var saa = saa || {};
     time = time.toISOString()
 
     var dataWMS = 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms'
-    var geosrvWMS = 'http://wms.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/geoserver/Radar/wms'
+    var geosrvWMS = 'http://openwms.fmi.fi/geoserver/Radar/wms'
 
     var radar = L.tileLayer.wms(geosrvWMS, {
       layers: 'suomi_dbz_eureffin',
@@ -1022,7 +1022,7 @@ var saa = saa || {};
     output += '<b>Havaintoasema: </b>' + data['station'] + '<br>'
     output += stationType
 
-    if (saa.Tuulikartta.timestamp === 'now') { 
+    if (saa.Tuulikartta.timestamp === 'now') {
       output += '<b>Viimeisin havainto: </b>' + time + '<br>' 
     } else { 
       output += '<b>Havaintoaika: </b>' + time + '<br>' 
