@@ -41,7 +41,6 @@ body {
 
 }
 
-
 /* https://stackoverflow.com/questions/202557/what-is-the-best-absolute-width-for-a-webpage 
    https://stackoverflow.com/questions/20039765/how-to-apply-a-css-3-blur-filter-to-a-background-image */
 
@@ -66,8 +65,20 @@ body {
     -webkit-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
     -moz-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
     box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
+}    
 
-}                                       
+#main-breadcrumb-wrapper {
+    overflow: auto;
+    z-index: 10;
+    /*height: 70px;*/
+    width: 90%;
+    max-width: 960px;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    margin-bottom: 3px;
+} 
 
 #main-content-wrapper {
     position: relative;
@@ -84,7 +95,7 @@ body {
     
     margin-left: auto;
     margin-right: auto;
-    margin-top: 10px;
+    margin-top: 1px;
     margin-bottom: 50px;
 
     border: 1px solid grey;
@@ -95,7 +106,6 @@ body {
     -webkit-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
     -moz-box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
     box-shadow: 6px 10px 34px 0px rgba(0,0,0,0.47);
-    
 }
 
 
@@ -227,82 +237,29 @@ footer p {
     transform: scale(1.2);
 }
 
-/* contact modal */
-.contact-modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
-    /* Add the blur effect */
-    z-index: 1000;
+
+/* Style the list */
+ul.breadcrumb {
+    margin-bottom: 0px;
+    list-style: none;
 }
-  
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-    max-width: 550px;
+
+ul.breadcrumb li {
+    display: inline;
 }
-  
-/* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-  
-.close:hover,
-.close:focus {
+
+ul.breadcrumb li+li:before {
+    padding: 8px;
     color: black;
+    content: "/\00a0";
+}
+
+ul.breadcrumb li a {
+    color: #0275d8;
     text-decoration: none;
-    cursor: pointer;
 }
 
-.contact-modal h1 {
-    padding-left: 20px;
-    padding-right: 20px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* contact form */
-.contact-modal input[type=text], select, textarea {
-    width: 100%; 
-    padding: 12px;  
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    box-sizing: border-box;
-    margin-top: 6px; 
-    margin-bottom: 16px; 
-    resize: vertical
-}
-
-.contact-modal input[type=submit] {
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.contact-modal input[type=submit]:hover {
-    background-color: #45a049;
-}
-  
-.contact-modal .container {
-    width:100%;
-    border-radius: 5px;
-    /* background-color: #f2f2f2; */
-    padding: 20px;
+ul.breadcrumb li a:hover {
+    color: #01447e;
+    text-decoration: underline;
 }
