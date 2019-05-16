@@ -5,7 +5,7 @@
     <title>tuulikartta.info - tietoa palvelusta</title>
     <meta name="description" content="tuulikartta.info - tietoa palvelusta, tietosuoja sekä evästeet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link href="../css/normalize.css" rel="stylesheet" media="all">
+    <!-- <link href="../css/normalize.css" rel="stylesheet" media="all"> -->
     <link href="../css/info.css" rel="stylesheet" media="all">
 
     <!-- bootstrap -->
@@ -48,7 +48,7 @@
         </p>
         <p>10 minuutin havainnoilla tarkoitetaan tyypillisesti 10 minuutin mittaisen havaintojakson keskiarvoa, tuulen puuska kuvaa 3 sekunnin mittaisten mittausjaksojen 10 minuutin maksimiarvoa.</p>
         <h2 style="font-size:18px; font-weight:bold;">Havaintoparametrit</h2>
-        <h3 style="font-size:16px; font-weight:bold;">Tuuliluokat</h3>
+        <h3 style="font-size:14px; font-weight:bold;">Tuuliluokat</h3>
         <div id="legend-wrapper" style="overflow:auto; margin-bottom:20px;">
           <img src="../symbols/legend.png" style="float:left;"></img>
           <p>Tuulen nopeudet on jaoteltu yhdeksään eri osaan ja ne piirretään oheisen taulukon mukaisin värein.</p>
@@ -70,7 +70,7 @@
         </p>
         <p>Lisätietoja voi lukea Ilmatieteen laitoksen <a href="http://ilmatieteenlaitos.fi/tuulet">teemasivuilta</a>.</p>
 
-        <h3 style="font-size:16px; font-weight:bold;">Näkyvyys ja vallitseva sää</h3>
+        <h3 style="font-size:14px; font-weight:bold;">Näkyvyys ja vallitseva sää</h3>
         <p>
           Vallitsevan sään ja näkyvyyden mittausten toiminta perustuu valon sironnan mittaamiseen. Tällaisessa optisessa mittarissa on lähi-infrapunavalon lähetin ja vastaanotin. 
           Mitä enemmän ilmassa on vesipisaroita, jääkiteitä tai muita hiukkasia (esim. vesi- tai lumisade, pöly, savu) sitä enemmän lähetteen valoa siroaa vastaanottimelle. Optinen mittari laskee siroavasta 
@@ -81,6 +81,77 @@
           (auer, pöly, savu) tai kostea sameus (utu, sumu, sade). Näkyvyyden ollessa hyvä, voi kohteita havaita yli 10 kilometrin, kohtalaisella näkyvyydellä 4-10 kilometrin ja huonolla näkyvyydellä 1-4 
           kilometrin päähän. Alle 1 kilometrin näkyvyys on erittäin huono.
         </p>
+        <h3 style="font-size:14px; font-weight:bold; display:inline-block">Kokonaispilvisyys</h3>
+        <div class="legend-row">
+          <div class="legend-column" style="padding-right:30px;">
+            <p>
+                Kokonaispilvisyyttä mitataan usein kahdeksasosina. Taivaankansi voidaan jakaa kahdeksaan osaan, jolloin kokonaispilvisyyden arviointi helpottuu.
+            </p>
+            <p>
+                Puhuttaessa vaihtelevasta pilvisyydesta tarkoitetaan useina tilannetta, jossa ennustusjakson aikana pilvisyys vaihtelee alle 3/8 ja yli 6/8 välillä. 
+                Vaihteleva pilvisyys on kesällä yleistä, mutta talvella selvästi harvinaisempaa.
+            </p>
+          </div>
+          <div class="legend-column">
+            <table>
+              <tr>
+                  <th>Selite</th>
+                  <th>Arvo</th>
+                  <th>Selite</th> 
+              </tr>
+              <tr>
+                  <td><img src="../symbols/nn/0.svg" style="width:15px;"/></td>
+                  <td>0/8</td>
+                  <td>Selkeää</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/1.svg" style="width:15px;"/></td>
+                <td>1/8</td>
+                <td>Melkein selkeää</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/2.svg" style="width:15px;"/></td>
+                <td>2/8</td>
+                <td>Verrattain selkeää</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/3.svg" style="width:15px;"/></td>
+                <td>3/8</td>
+                <td>Puolipilvistä</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/4.svg" style="width:15px;"/></td>
+                <td>4/8</td>
+                <td>Verrattain pilvistä</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/5.svg" style="width:15px;"/></td>
+                <td>5/8</td>
+                <td>Puolipilvistä</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/6.svg" style="width:15px;"/></td>
+                <td>6/8</td>
+                <td>Verrattain pilvistä</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/7.svg" style="width:15px;"/></td>
+                <td>7/8</td>
+                <td>Melkein pilvistä</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/8.svg" style="width:15px;"/></td>
+                <td>8/8</td>
+                <td>Pilvistä</td> 
+              </tr>
+              <tr>
+                <td><img src="../symbols/nn/9.svg" style="width:15px;"/></td>
+                <td>9/8</td>
+                <td>Pilvisyyttä ei voida määrittää</td> 
+              </tr>
+            </table>
+          </div>
+        </div>
         <h2 style="font-size:18px; font-weight:bold;">Käytetty aineisto</h2>
         <p>Havaintoaineisto on Ilmatieteen laitoksen tarjoamaa avointa dataa.</p>
         <p>Tulevia ominaisuuksia ovat mm. kattavammat tutkatuotteet, sekä jatkossa mahdollisesti myös lähialueiden (Ruotsi, Norja yms.) tuulihavainnot.</p>
