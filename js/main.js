@@ -27,8 +27,8 @@ var saa = saa || {};
   var latitude = localStorage.getItem('latitude') ? localStorage.getItem('latitude') : 60.630556
   var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 24.859726
   var zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 8
-  var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä kaikki asematyypit'
-  var observationValue = parseInt(localStorage.getItem('observationValue')) ? parseInt(localStorage.getItem('observationValue')) : 0
+  var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä vain synop-asemat'
+  var observationValue = parseInt(localStorage.getItem('observationValue')) ? parseInt(localStorage.getItem('observationValue')) : 1
   var selectedparameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
@@ -113,11 +113,6 @@ var saa = saa || {};
     $('#select-wind-parameter').change(function () {
       Tuulikartta.clearMarkers()
       Tuulikartta.drawData($(this).val())
-    })
-
-    // close graph box
-    $('#close-gr').on('click', function () {
-      saa.weatherGraph.opengraphbox()
     })
 
     saa.Tuulikartta.map.on('popupopen', function(e) {
@@ -289,35 +284,17 @@ var saa = saa || {};
   // ---------------------------------------------------------
 
   Tuulikartta.initMap = function () {
-    var endDate = new Date()
-    var minutes = Math.floor(endDate.getUTCMinutes() / 5) * 5
-    endDate.setUTCMinutes(minutes, 0, 0)
-    var startDate = endDate - 3600 * 1000
 
     var lat = parseFloat(latitude)
-
     var lon = parseFloat(longtitude)
-
     var zoom = parseInt(zoomlevel)
 
     var map = L.map('map', {
       zoom: zoom,
       minZoom: 5,
       maxZoom: 12,
-      fullscreenControl: true,
-      timeDimension: false,
-      timeDimensionControl: false,
       scrollWheelZoom: true,
       center: [lat, lon],
-      timeDimensionControlOptions: {
-        autoPlay: false,
-        speedSlider: false,
-        playerOptions: {
-          buffer: 10,
-          transitionTime: 2000,
-          loop: true
-        }
-      },
       attribution: 'Tuulikartta.info'
     })
 
@@ -336,7 +313,6 @@ var saa = saa || {};
     map.on('locationerror', onLocationError)
 
     saa.Tuulikartta.map.on('overlayadd', function(e) {
-      console.log(e)
       saa.Tuulikartta.namelayer.bringToFront()
     })
 
@@ -384,13 +360,12 @@ var saa = saa || {};
 
     var icon = L.icon({
       iconUrl: '../symbols/blue-pushpin.png',
-      iconSize: [32, 32], // size of the icon
-      iconAnchor: [10, 32], // point of the icon which will correspond to marker's location
-      popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+      iconSize: [32, 32],
+      iconAnchor: [10, 32],
+      popupAnchor: [0, 0]
     })
 
     L.marker(e.latlng, { icon: icon }).addTo(saa.Tuulikartta.map)
-    // L.circle(e.latlng, radius).addTo(saa.Tuulikartta.map);
     Tuulikartta.map.setView(e.latlng, 9, { animation: true })
   }
 
@@ -400,14 +375,6 @@ var saa = saa || {};
   }
 
   Tuulikartta.initWMS = function () {
-    var time = new Date()
-    time.setHours(time.getHours() + Math.round(time.getMinutes() / 60))
-    time.setMinutes(0)
-    time.setSeconds(0)
-    time.setMilliseconds(0)
-
-    time = time.toISOString()
-
     var dataWMS = 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms'
     var geosrvWMS = 'http://openwms.fmi.fi/geoserver/Radar/wms'
 
@@ -823,26 +790,12 @@ var saa = saa || {};
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
 
-          // marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
           marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
           saa.Tuulikartta.data[i]['fmisid']),{
             maxWidth: maxWidth
           })
           marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
           marker.type = saa.Tuulikartta.data[i]['type']
-
-          // var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
-          //   {
-          //     interactive: false,
-          //     keyboard: false,
-          //     icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-          //   })
-
-          // if (saa.Tuulikartta.data[i]['type'] === 'road') {
-          //   marker.addTo(saa.Tuulikartta.markerGroupRoad)
-          // } else {
-          //   marker.addTo(saa.Tuulikartta.markerGroupSynop)
-          // }
         }
       }
 
@@ -1070,18 +1023,6 @@ var saa = saa || {};
     mMinClass.createCookie(name, '', -1)
   }
 
-  Tuulikartta.updateRadarTime = function () {
-    $.getJSON('php/radartime.php?layer=fmi:observation:radar:PrecipitationRate5min', function (result) {
-      var starttime = result['starttime']
-      var endtime = result['endtime']
-
-      var time = new Date(endtime).getTime() / 1000
-      var time = Tuulikartta.timeTotime(time)
-
-      document.getElementById('available-radar').innerHTML = time
-    })
-  }
-
   // ---------------------------------------------------------
   // Update map icons and data with set interval
   // ---------------------------------------------------------
@@ -1092,7 +1033,6 @@ var saa = saa || {};
       Tuulikartta.debug('Update data and draw markers')
       Tuulikartta.debug('Time now: ' + (new Date()).toUTCString())
       Tuulikartta.callData()
-      // Tuulikartta.updateRadarTime();
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
           layer.wmsParams.preventCache = Date.now()
