@@ -419,6 +419,7 @@ var saa = saa || {};
       opacity: 0.7,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
+      preventCache: Date.now(),
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
 
@@ -430,14 +431,15 @@ var saa = saa || {};
       opacity: 0.8,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
-      interval_start: 60,
+      interval_start: 5,
       timestep: 5,
+      preventCache: Date.now(),
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
 
     var overlayMaps = {
       'Tutka - Sateen intensiteetti': radar,
-      '1h salamahavainnot': flash5min
+      '5min salamahavainnot': flash5min
     }
 
     L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map)
