@@ -310,6 +310,76 @@ class DataMiner{
 
 
     /**
+    * Get observation data from SMHI open data
+    * @param    data observation data 
+    * @return   data as an array
+    *
+    */
+
+    public function smhiOpenData() {
+        date_default_timezone_set('GMT');
+        $parameters = ["vis"=>12,"t2m"=>1,"wd_10min"=>3,"ws_10min"=>4,"wg_10min"=>21,"rh"=>6,"rr_1h"=>7,"n_man"=>16];
+
+        $result = [];
+
+        foreach($parameters as $keyvalue => $parameter) {
+        $url = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/${parameter}/station-set/all/period/latest-hour/data.xml";
+
+        $xmlData = file_get_contents($url);
+        $data = simplexml_load_string($xmlData);
+
+        foreach ($data->station as $key) {
+            $tmp = [];
+            $tmp["key"] = (int)$key->key;
+            $tmp["lat"] = (float)$key->latitude;
+            $tmp["lon"] = (float)$key->longitude;
+            $tmp["station"] = (string)$key->name;
+            $tmp["type"] = "synop";
+
+            if(isset($key->value)) {
+            if($keyvalue === "n_man")
+            $tmp["${keyvalue}"] = round(8*((float)$key->value->value / 100));
+            else
+            $tmp["${keyvalue}"] = (float)$key->value->value;
+            
+            $tmp["time"] = (string)$key->value->date;
+
+            } else {
+            $tmp["${keyvalue}"] = null;
+            $tmp["time"] = (string)$key->to;
+            }
+
+            if(array_key_exists($tmp["key"], $result)) {
+            $result[(string)$key->key][$keyvalue] = $tmp["${keyvalue}"];
+            } else {
+            $result[(string)$key->key] = $tmp;
+            }
+
+        }
+        }
+
+        $final = [];
+        foreach($result as $result) {
+        foreach($parameters as $keyvalue => $parameter){
+            if(array_key_exists($keyvalue,$result) === false) {
+            $result[$keyvalue] = null;
+            }
+        }
+        array_push($final,$result);
+        }
+
+        for($i=0; $i<count($final); $i++) {
+        $final[$i]["ws_1h"] = $final[$i]["ws_10min"];
+        $final[$i]["wg_1h"] = $final[$i]["wg_10min"];
+        $final[$i]["ws_max_dir"] = $final[$i]["wd_10min"];
+        $final[$i]["wg_max_dir"] = $final[$i]["wd_10min"];
+        }
+
+        return $final;
+    }
+
+
+    /**
     *
     * @param    data observation data 
     * @return   data as an array
@@ -325,7 +395,7 @@ class DataMiner{
         $wg_1h = -0.1;
         $wg_max_dir = "";
         $ws_max_dir = "";
-
+        $r_1h = null;
         for ($i = 0; $i <= count($data)-2; $i++) {
             # check if fmisid value is the same as the next one (ie its the same station)
             if($data[$i]["fmisid"] === $data[$i+1]["fmisid"]) {
@@ -345,6 +415,11 @@ class DataMiner{
                         $wg_max_dir = $data[$i]["wd_10min"];
                     }
                 }
+                # check if observations are valid
+                if($data[$i]["r_1h"] !== null) {
+                    # save observation values
+                    $r_1h = $data[$i]["r_1h"];
+                }
             } else {
                 if($ws_1h === -0.1){ $ws_1h = "null"; }
                 if($wg_1h === -0.1){ $wg_1h = "null"; }
@@ -353,8 +428,10 @@ class DataMiner{
                 $data[$i]["ws_1h"] = $ws_1h;
                 $data[$i]["wg_1h"] = $wg_1h;
                 $data[$i]["wg_max_dir"] = $wg_max_dir;
-                $data[$i]["ws_max_dir"] = $ws_max_dir;                
+                $data[$i]["ws_max_dir"] = $ws_max_dir;
+                $data[$i]["rr_1h"] = $r_1h;
                 array_push($outputArray, $data[$i]);
+                $r_1h = null;
                 $ws_1h = -0.1;
                 $wg_1h = -0.1;
                 $wg_max_dir = "";

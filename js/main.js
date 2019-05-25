@@ -430,6 +430,24 @@ var saa = saa || {};
     if (windspeed < 1) { return 'calm' } else if (windspeed >= 1 && windspeed < 2) { return 'light' } else if (windspeed >= 2 && windspeed < 7) { return 'moderate' } else if (windspeed >= 7 && windspeed < 14) { return 'brisk' } else if (windspeed >= 14 && windspeed < 21) { return 'hard' } else if (windspeed >= 21 && windspeed < 25) { return 'storm' } else if (windspeed >= 25 && windspeed < 28) { return 'severestorm' } else if (windspeed >= 28 && windspeed < 32) { return 'extremestorm' } else if (windspeed >= 32) { return 'hurricane' } else { return 'calm' }
   }
 
+  Tuulikartta.resolvePrecipitationAmount = function (rr_1h) {
+    if (rr_1h > 0 && rr_1h <= 0.1) return "#fff7fb";
+    if (rr_1h > 0.1 && rr_1h <= 0.2) return "#ece7f2";
+    if (rr_1h > 0.2 && rr_1h <= 0.3) return "#d0d1e6";
+    if (rr_1h > 0.3 && rr_1h <= 0.4) return "#a6bddb";
+    if (rr_1h > 0.4 && rr_1h <= 0.5) return "#74a9cf";
+    if (rr_1h > 0.5 && rr_1h <= 1.0) return "#3690c0";
+    if (rr_1h > 1.0 && rr_1h <= 1.5) return "#0570b0";
+    if (rr_1h > 1.5 && rr_1h <= 2.0) return "#045a8d";
+    if (rr_1h > 2.0 && rr_1h <= 3.0) return "#4575b4";
+    if (rr_1h > 3.0 && rr_1h <= 4.0) return "#91bfdb";
+    if (rr_1h > 4.0 && rr_1h <= 5.0) return "#e0f3f8";
+    if (rr_1h > 5.0 && rr_1h <= 10.0) return "#ffffbf";
+    if (rr_1h > 10.0 && rr_1h <= 20.0) return "#fee090";
+    if (rr_1h > 20.0 && rr_1h <= 30.0) return "#fc8d59";
+    if (rr_1h > 30.0) return "#d73027";
+  }
+
   Tuulikartta.resolveWawaCode = function (wawa) {
     wawa = parseInt(wawa)
     if (wawa === 0) return {short:'Poutaa',long:'',class:'textLabelclassGrey', hex:'#7e7e7e'}
@@ -679,7 +697,7 @@ var saa = saa || {};
         if (saa.Tuulikartta.data[i]['ri_10min'] !== null && parseFloat(saa.Tuulikartta.data[i]['ri_10min']) > 0) {
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
-              interactive: false,
+              interactive: true,
               keyboard: false,
               icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
             })
@@ -692,19 +710,24 @@ var saa = saa || {};
         }
       }
 
-      if (param === 'r_1h') {
-        if (saa.Tuulikartta.data[i]['r_1h'] !== null) {
-          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
-            {
-              interactive: false,
-              keyboard: false,
-              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-            })
+      if (param === 'rr_1h') {
+        if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) { 
+          var fillColor = Tuulikartta.resolvePrecipitationAmount(saa.Tuulikartta.data[i][param])
+          var hex = fillColor.substr(1)
+          hex = 'hex' + hex
+          if (saa.Tuulikartta.data[i]['rr_1h'] !== null && parseFloat(saa.Tuulikartta.data[i]['rr_1h']) > 0) {
+            var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+              {
+                interactive: true,
+                keyboard: false,
+                icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+              })
 
-          if (saa.Tuulikartta.data[i]['type'] === 'road') {
-            marker.addTo(saa.Tuulikartta.markerGroupRoad)
-          } else {
-            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+            if (saa.Tuulikartta.data[i]['type'] === 'road') {
+              marker.addTo(saa.Tuulikartta.markerGroupRoad)
+            } else {
+              marker.addTo(saa.Tuulikartta.markerGroupSynop)
+            }
           }
         }
       }
