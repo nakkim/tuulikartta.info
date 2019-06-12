@@ -1007,6 +1007,7 @@ var saa = saa || {};
     }
     output += '</div>'
     
+    output += `<div id="graph-box-loader" style="text-align: center;"></div>`;   
     output += `<div id="graph-box" style="width:${maxWidth}px;">`
     output += `<div id="owl-carousel-chart-${fmisid}" class="owl-carousel owl-theme">`
     output += `<div id="weather-chart-${fmisid}"></div>`

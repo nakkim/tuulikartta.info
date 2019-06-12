@@ -139,23 +139,39 @@ class DataMiner{
     *
     */
 
-    public function multipointcoverage($timestamp,$settings) {
+    public function multipointcoverage($timestamp,$settings,$graph) {
         date_default_timezone_set("UTC");
 
         $url = "";
         $url .= "http://opendata.fmi.fi/wfs?request=getFeature";
         $url .= "&storedquery_id={$settings["storedQueryId"]}";
         $url .= "&parameters={$settings["parameter"]}";
-        $url .= "&bbox={$settings["bbox"]},epsg::4326&";
+        if(isset($settings['fmisid'])) {
+            $url .= "&fmisid={$settings["fmisid"]}";
+        } else {
+            $url .= "&bbox={$settings["bbox"]},epsg::4326&";
+        }
 
         if($timestamp == "now") {
-            $starttime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60-60*60);
-            $endtime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60);
-            $url .= "&starttime=${starttime}&endtime=${endtime}";
+            if($graph) {
+                $starttime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60-18*60*60);
+                $endtime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60);
+                $url .= "&starttime=${starttime}&endtime=${endtime}";
+            } else {
+                $starttime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60-60*60);
+                $endtime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60);
+                $url .= "&starttime=${starttime}&endtime=${endtime}";
+            }
         } else {
-            $time = strtotime($timestamp);
-            $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
-            $url .= "&starttime=${starttime}&endtime=${timestamp}";
+            if($graph) {
+                $time = strtotime($timestamp);
+                $starttime = date('Y-m-d\TH:i:s\Z',$time - 18*3600);
+                $url .= "&starttime=${starttime}&endtime=${timestamp}";
+            } else {
+                $time = strtotime($timestamp);
+                $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
+                $url .= "&starttime=${starttime}&endtime=${timestamp}";
+            }
         }
 
         $xmlData = file_get_contents($url);
