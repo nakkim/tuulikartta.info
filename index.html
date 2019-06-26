@@ -80,9 +80,9 @@
             <div class="data-info-wrapper" align=center>
                 <div class="select-box">
 
-                    <a href="/tietoa-sivustosta">
-		      <button id="select-content-info" class="select-button"><img src="symbols/info.svg" style="height:16px;"></img></button>
-		    </a>
+                    <!-- <a href="/tietoa-sivustosta">
+		                <button id="select-content-info" class="select-button"><img src="symbols/info.svg" style="height:16px;"></img></button>
+		            </a> -->
 
                     <span class="select-content-wrapper">
                         <select id="select-wind-parameter" class="select-style" style="height:26px;">
@@ -91,7 +91,7 @@
                             <option value="ws_1h">Tunnin suurin keskituuli</option>
                             <option value="wg_1h">Tunnin maksimipuuska</option>
                             <option value="ri_10min">Sateen intensiteetti</option>
-                            <option value="rr_1h">Edellisen tunnin sadekertymä</option>
+                            <option value="rr_1h">Tunnin sadekertymä</option>
                             <option value="t2m">Lämpötila</option>
                             <option value="vis">Näkyvyys</option>
                             <option value="wawa">Vallitseva sää</option>
@@ -100,8 +100,8 @@
                     </span>
 
                     <span class="select-content-wrapper">
-                        <input id="datepicker-button" class="select-button" style="text-align:center;max-width:90px;">
-                        <input id="clockpicker-button" class="select-button" style="text-align:center; max-width:50px;">      
+                        <input id="datepicker-button" class="select-button" style="text-align:center;max-width:105px;">
+                        <input id="clockpicker-button" class="select-button" style="text-align:center; max-width:60px;">      
                         <span class="ph-float">
                             <a href='#' id="select-content-datasearch" class='ph-button ph-btn-blue'>Hae</a>
                         </span>
@@ -119,13 +119,6 @@
         </div>
 
         <div id="map" styles="z-index:1"></div>
-
-        <div id="graph-container" class="collapsed">
-            <div id="graph-header">
-                <div id="close-gr" class="reset-button"><i class="fa fa-times fa-2x" style="color: #0650B9;"></i></div>
-            </div>
-            <div id="graph-box"></div>
-        </div>
 
         <div id="data-loader" class="leaflet-bottom leaflet-left leaflet-control-attribution leaflet-control"></div>
 
