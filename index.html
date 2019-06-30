@@ -6,7 +6,7 @@
         <!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <title>Pintatuulihavainnot kartalla - tuulikartta.info</title>
-        <meta name="description" content="Pintatuulihavainnot Ilmatieteen laitoksen avoimen datan avulla."/>
+        <meta name="description" content="Säähavaintoja Ilmatieteen laitoksen avoimen datan avulla."/>
         <meta name="rating" content="Safe For Kids"/>
         <meta name="author" content="Ville Ilkka"/>
         <meta name="robots" content="index,follow"/>
@@ -118,9 +118,29 @@
             </div>
         </div>
 
+        <div class="leaflet-bottom leaflet-left leaflet-control-attribution leaflet-control">
+            <div id="data-loader" class="info-container-data">
+                Ladataan havaintoja... <img src='symbols/default.gif' style='width:20px;'></img>
+            </div>
+            <div id="site-info" class="info-container" style="display:none;">
+                <p style="line-height: 150%">
+                    <span style="color:#343434; font-weight:bold;">Tuulikartta.info</span> - säähavaintoja (lähes) reaaliajassa.</br>
+                    Säähavaintoaineistoa Ilmatieteen laitoksen havaintoasemilta sekä Liikenneviraston tiesääasemilta. </br>
+                    Lisätietoja havainnoista ja palvelusta voit lukea <a href="tietoa-sivustosta/">täältä</a>. Palvelu perustuu Ilmatieteen laitoksen <a href="https://ilmatieteenlaitos.fi/avoin-data">avoimeen dataan.</a>
+                </p>
+                <p>
+                    Seuraa sivuston kehitystä sekä kehittäjän edesottamuksia:
+                </p>
+                <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+        </div>
+
         <div id="map" styles="z-index:1"></div>
 
-        <div id="data-loader" class="leaflet-bottom leaflet-left leaflet-control-attribution leaflet-control"></div>
+        <!-- <footer role="contentinfo">
+            <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
+        </footer>  -->
 
     </body >
 
@@ -135,11 +155,6 @@
 
     </script>
     <script>
-
-        var d = new Date();
-        var n = d.getFullYear();
-        // document.getElementById("footer-year").innerHTML = n;
-
         saa.Tuulikartta.callData();
         saa.Tuulikartta.initMap();
 

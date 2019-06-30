@@ -70,7 +70,7 @@ var saa = saa || {};
 
   Tuulikartta.callData = function () {
     Tuulikartta.debug('Getting data... ')
-    document.getElementById('data-loader').innerHTML = "Ladataan havaintoja... <img src='symbols/default.gif' style='width:20px;'></img>"
+    document.getElementById('data-loader').style.display = 'block'
     document.body.style.cursor = 'wait'
     $.ajax({
       dataType: 'json',
@@ -91,7 +91,7 @@ var saa = saa || {};
         Tuulikartta.clearMarkers()
         Tuulikartta.drawData($('#select-wind-parameter').val())
         selectedparameter = $('#select-wind-parameter').val()
-        document.getElementById('data-loader').innerHTML = ''
+        document.getElementById('data-loader').style.display = 'none'
       }
     })
   }
@@ -353,6 +353,29 @@ var saa = saa || {};
       }
     })		
     map.addControl(new customControl());
+
+    var infoControl = L.Control.extend({
+      options: {
+        position: 'topleft' 
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-toggle-info'
+        )
+
+        container.onclick = function(){
+          var x = document.getElementById("site-info");
+          if (x.style.display === "none") {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+        }
+        container.title = "Näytä lisätietoja"
+        return container
+      }
+    })
+    map.addControl(new infoControl());
   }
 
   function onLocationFound (e) {

@@ -39,6 +39,48 @@ body {
 	background-color: #f4f4f4;
 }
 
+.leaflet-control-toggle-info {
+    background-image: url(../symbols/info.svg);
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    padding: 7px 7px 7px 7px;
+    background-size: 100%;
+    background-color: white;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+	pointer-events: auto;
+}
+
+.leaflet-bar button {
+    height: 40px;
+    width: 40px;
+}
+
+.info-container {
+    padding: 15px 15px 15px 15px;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.2);
+    background-clip: padding-box;
+    z-index: 1000;
+    margin: 0px 10px 25px 10px;
+    border-radius: 2px;
+    pointer-events: auto;
+}
+
+.info-container a {
+    color: #0A369D;
+}
+
+.info-container-data {
+    /* padding: 15px 15px 15px 15px; */
+    overflow: hidden;
+    z-index: 1000;
+    margin: 0px 10px 10px 10px;
+    border-radius: 2px;
+}
+
 .data-info {
     /*height: 89px;*/
     z-index: 1000;
@@ -209,6 +251,12 @@ body {
         width: 100%;
         height: 250px;
         /*height: calc(100% - 90px);*/
+    }
+}
+
+@media screen and (max-width: 385px) {
+    .select-box {
+        margin-left: 40px;
     }
 }
 
