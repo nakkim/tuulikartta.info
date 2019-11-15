@@ -480,6 +480,20 @@ var saa = saa || {};
     if (rr_1h > 30.0) return "#d73027";
   }
 
+  Tuulikartta.resolveSnowDepth = function (snow) {
+    if (snow > 0 && snow <= 10) return "#bfe6ff";
+    if (snow > 10 && snow <= 20) return "#8dcdff";
+    if (snow > 20 && snow <= 40) return "#3c9dde";
+    if (snow > 40 && snow <= 60) return "#3972bf";
+    if (snow > 60 && snow <= 80) return "#6185c0";
+    if (snow > 80 && snow <= 100) return "#8898c2";
+    if (snow > 100 && snow <= 125) return "#8e6bb0";
+    if (snow > 125 && snow <= 150) return "#863e97";
+    if (snow > 150 && snow <= 175) return "#7e117e";
+    if (snow > 175 && snow <= 200) return "#5b106f";
+    if (snow > 200) return "#ebdaf0";
+  }
+
   Tuulikartta.resolveWawaCode = function (wawa) {
     wawa = parseInt(wawa)
     if (wawa === 0) return {short:'Poutaa',long:'',class:'textLabelclassGrey', hex:'#7e7e7e'}
@@ -869,7 +883,6 @@ var saa = saa || {};
         }
       }
 
-
       if (param === 'vis') {
         if (saa.Tuulikartta.data[i]['vis'] !== null) {
           var labelClass = 'textLabelclassGrey'
@@ -1018,6 +1031,45 @@ var saa = saa || {};
           marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
           marker.type = saa.Tuulikartta.data[i]['type']
         } 
+      }
+
+      if (param === 'snow_aws') {
+        if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) { 
+          var fillColor = Tuulikartta.resolveSnowDepth(saa.Tuulikartta.data[i][param])
+          var hex = fillColor.substr(1)
+          hex = 'hex' + hex
+          if (saa.Tuulikartta.data[i][param] !== null && parseFloat(saa.Tuulikartta.data[i][param]) > 0) {
+            var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+              {
+                interactive: true,
+                keyboard: false,
+                icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+              })
+
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+            marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+            saa.Tuulikartta.data[i]['fmisid']),{
+              maxWidth: maxWidth
+            })
+            marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+            marker.type = saa.Tuulikartta.data[i]['type']
+          }
+        } 
+        if(parseFloat(saa.Tuulikartta.data[i][param]) == 0 && saa.Tuulikartta.data[i][param] !== 'NaN' ) {
+          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+            {
+              interactive: true,
+              keyboard: false,
+              icon: Tuulikartta.createLabelIcon('textLabelclass', '–')
+            })
+          marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
+        }
       }
     }
 
