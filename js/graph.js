@@ -61,6 +61,8 @@ var saa = saa || {};
 
     weatherGraph.getObservationGraph = function(fmisid,type,timestamp) {
         saa.Tuulikartta.debug('Getting data for graph... ');
+        $('#graph-box-loader').html(`<span align=center>Ladataan havaintoja... <img src='symbols/default.gif' style='width:20px;'></img></span>`);
+
         $.ajax({
             dataType: "json",
             url: 'php/weather-graph-ts.php',
@@ -74,6 +76,7 @@ var saa = saa || {};
             },
             success: function (data) {
                 saa.Tuulikartta.debug('Draw graph')
+                $('#graph-box-loader').html('');
                 weatherGraph.drawGraph(data,fmisid);
             }
         });

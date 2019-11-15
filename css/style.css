@@ -39,6 +39,48 @@ body {
 	background-color: #f4f4f4;
 }
 
+.leaflet-control-toggle-info {
+    background-image: url(../symbols/info.svg);
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    padding: 7px 7px 7px 7px;
+    background-size: 100%;
+    background-color: white;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+	pointer-events: auto;
+}
+
+.leaflet-bar button {
+    height: 40px;
+    width: 40px;
+}
+
+.info-container {
+    padding: 15px 15px 15px 15px;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.2);
+    background-clip: padding-box;
+    z-index: 1000;
+    margin: 0px 10px 25px 10px;
+    border-radius: 2px;
+    pointer-events: auto;
+}
+
+.info-container a {
+    color: #0A369D;
+}
+
+.info-container-data {
+    /* padding: 15px 15px 15px 15px; */
+    overflow: hidden;
+    z-index: 1000;
+    margin: 0px 10px 10px 10px;
+    border-radius: 2px;
+}
+
 .data-info {
     /*height: 89px;*/
     z-index: 1000;
@@ -76,10 +118,6 @@ body {
     left: 0;
     overflow: hidden;
 }
-
-/*.graph-container-text-wrapper{
-    margin: 20px 10% 20px 10%;
-}*/
 
 #graph-container.expanded p {
     font-family: 'Roboto', sans-serif;
@@ -132,15 +170,8 @@ body {
     margin: 10px 10px 10px 10px;
     cursor: pointer;
     cursor: hand;
-	
-    /* flip image */
-    /*-moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: "FlipH";*/
 }
+
 /* mobile devices and smaller screens */
 
 @media screen and (max-width: 1190px) {
@@ -156,60 +187,29 @@ body {
     }
 }
 
-/* @media screen and (max-width: 555px) {
-
-    .leaflet-top.leaflet-left, .leaflet-top.leaflet-right {
-        margin-top: 80px;
-    }
-}
-
-@media screen and (max-width: 372px) {
-    .leaflet-top.leaflet-left, .leaflet-top.leaflet-right {
-        margin-top: 105px;
-    }
-}
-
-@media screen and (max-width: 350px) {
-    .leaflet-top.leaflet-left, .leaflet-top.leaflet-right {
-        margin-top: 75px;
-    }
-} */
-
 @media screen and (max-width: 765px) {
 
     #main-text-area {
         min-height: 265px;
     }
-    
-    #info-container.expanded {
-	z-index: 1000;
-        height: 100%;
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        background-color: blue;
-        overflow: hidden;
-        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d4e4ef+14,86aecc+100 */
-        background-color: #F2F4F3;
-       /* transparent? */
-       /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d4e4ef+14,86aecc+100 */
+}
 
-    }
-	
-    #graph-container.expanded {
-        z-index: 1000;
-	    height: 100%;
-        width: 100%;
-        position: fixed;
-        top: 0;
-        right: 0;
-        background-color: white;
-        overflow: hidden;
+@media screen and (max-width: 390px) {
+
+    #timepicker-progress-time {
+        display: none;
     }
 
-    .select-content-wrapper {
-        margin: 0;
+    #timepicker-regress-time {
+        display: none;
+    }
+
+    #select-content-wrapper-timeselector {
+        margin: 0;   
+    }
+
+    #select-content-wrapper-time {
+        margin: 0;   
     }
 }
 
@@ -221,15 +221,9 @@ body {
         height: calc(100% - 50px);
     }
 
-    .select-content-wrapper {
-        margin: 0;
+    #select-wind-parameter {
+        max-width: 170px;
     }
-
-        
-    #select-content-wrapper-time {
-        display: none;
-    }
-    
 }
 
 @media screen and (max-width: 412px) {
@@ -256,6 +250,12 @@ body {
         width: 100%;
         height: 250px;
         /*height: calc(100% - 90px);*/
+    }
+}
+
+@media screen and (max-width: 385px) {
+    .select-box {
+        margin-left: 5px;
     }
 }
 
@@ -429,7 +429,6 @@ label {
 }
 
 .select-content-wrapper {
-    height: 25px;
     display: inline-block;
     margin: 0 10px 0 10px;
     height: 30px;
@@ -459,7 +458,7 @@ label {
     font-family: "Gotham Rounded A","Gotham Rounded B",Helvetica,Arial,sans-serif;
     font-weight: 700;	
     /* padding: 19px 39px 18px; */
-    padding: 3px 4px 3px 4px;    
+    padding: 5px 4px 3px 4px;    
     font-size: 16px;	
 }
 
@@ -483,4 +482,24 @@ label {
     /* padding: 10px;   */
     /* padding-top: 50px;   */
     /* text-align: center; */
-} 
+}
+
+.control-center {
+    padding-top: 10px;
+    padding-left: calc(50% - 110px);
+    pointer-events: auto;
+}
+
+div#select-wind-parameter {
+    margin: 0;
+}
+
+div.settings {
+    height: 25px;
+    width: 20px;
+    float: left;
+    /* margin-right: 12px;
+    padding-left: 15px !important; */
+    color: #777;
+    background: url(../symbols/params.png) left no-repeat;
+}

@@ -43,7 +43,12 @@ var saa = saa || {};
     }
   }
 
-  Tuulikartta.debug(observationSource, observationValue)
+  Tuulikartta.handleUrlParams = function(lat, lon, zoom, initParam) {
+    latitude = lat
+    longtitude = lon
+    zoomlevel = zoom
+    selectedparameter = initParam
+  }
 
   // ---------------------------------------------------------
   // Convert epoch time to properly formatted time string
@@ -70,7 +75,7 @@ var saa = saa || {};
 
   Tuulikartta.callData = function () {
     Tuulikartta.debug('Getting data... ')
-    document.getElementById('data-loader').innerHTML = "Ladataan havaintoja... <img src='symbols/default.gif' style='width:20px;'></img>"
+    document.getElementById('data-loader').style.display = 'block'
     document.body.style.cursor = 'wait'
     $.ajax({
       dataType: 'json',
@@ -89,9 +94,9 @@ var saa = saa || {};
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
         Tuulikartta.clearMarkers()
-        Tuulikartta.drawData($('#select-wind-parameter').val())
+        Tuulikartta.drawData(selectedparameter)
         selectedparameter = $('#select-wind-parameter').val()
-        document.getElementById('data-loader').innerHTML = ''
+        document.getElementById('data-loader').style.display = 'none'
       }
     })
   }
@@ -102,17 +107,18 @@ var saa = saa || {};
 
   $(function bunttonFunctionalities () {
     
-    var height = $('#gui-box').height();
-    $('.leaflet-top').css({'margin-top': height + 20 + 'px'});
-    window.addEventListener('resize', function(event){
-        height = $('#gui-box').height() + 20;            
-        $('.leaflet-top').css({'margin-top': height + 'px'});
-    })
-
     // select wind parameter
     $('#select-wind-parameter').change(function () {
       Tuulikartta.clearMarkers()
       Tuulikartta.drawData($(this).val())
+      
+      selectedparameter = $(this).val()
+
+      var lat = saa.Tuulikartta.map.getCenter().lat
+      var lon = saa.Tuulikartta.map.getCenter().lng
+      var zoom = saa.Tuulikartta.map.getZoom()
+      window.location.replace('#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+'#zoom='+zoom+'#parameter='+$(this).val())
+
     })
 
     saa.Tuulikartta.map.on('popupopen', function(e) {
@@ -153,6 +159,9 @@ var saa = saa || {};
       localStorage.setItem('latitude', lat)
       localStorage.setItem('longitude', lon)
       localStorage.setItem('zoomlevel', zoom)
+
+      window.location.replace('#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+'#zoom='+zoom+'#parameter='+selectedparameter)
+
     })
 
     // ---------------------------------------------------------
@@ -353,6 +362,29 @@ var saa = saa || {};
       }
     })		
     map.addControl(new customControl());
+
+    var infoControl = L.Control.extend({
+      options: {
+        position: 'topleft' 
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-toggle-info'
+        )
+
+        container.onclick = function(){
+          var x = document.getElementById("site-info");
+          if (x.style.display === "none") {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+        }
+        container.title = "Näytä lisätietoja"
+        return container
+      }
+    })
+    map.addControl(new infoControl());
   }
 
   function onLocationFound (e) {
@@ -428,6 +460,24 @@ var saa = saa || {};
   Tuulikartta.resolveWindSpeed = function (windspeed) {
     windspeed = parseFloat(windspeed)
     if (windspeed < 1) { return 'calm' } else if (windspeed >= 1 && windspeed < 2) { return 'light' } else if (windspeed >= 2 && windspeed < 7) { return 'moderate' } else if (windspeed >= 7 && windspeed < 14) { return 'brisk' } else if (windspeed >= 14 && windspeed < 21) { return 'hard' } else if (windspeed >= 21 && windspeed < 25) { return 'storm' } else if (windspeed >= 25 && windspeed < 28) { return 'severestorm' } else if (windspeed >= 28 && windspeed < 32) { return 'extremestorm' } else if (windspeed >= 32) { return 'hurricane' } else { return 'calm' }
+  }
+
+  Tuulikartta.resolvePrecipitationAmount = function (rr_1h) {
+    if (rr_1h > 0 && rr_1h <= 0.1) return "#fff7fb";
+    if (rr_1h > 0.1 && rr_1h <= 0.2) return "#ece7f2";
+    if (rr_1h > 0.2 && rr_1h <= 0.3) return "#d0d1e6";
+    if (rr_1h > 0.3 && rr_1h <= 0.4) return "#a6bddb";
+    if (rr_1h > 0.4 && rr_1h <= 0.5) return "#74a9cf";
+    if (rr_1h > 0.5 && rr_1h <= 1.0) return "#3690c0";
+    if (rr_1h > 1.0 && rr_1h <= 1.5) return "#0570b0";
+    if (rr_1h > 1.5 && rr_1h <= 2.0) return "#045a8d";
+    if (rr_1h > 2.0 && rr_1h <= 3.0) return "#4575b4";
+    if (rr_1h > 3.0 && rr_1h <= 4.0) return "#91bfdb";
+    if (rr_1h > 4.0 && rr_1h <= 5.0) return "#e0f3f8";
+    if (rr_1h > 5.0 && rr_1h <= 10.0) return "#ffffbf";
+    if (rr_1h > 10.0 && rr_1h <= 20.0) return "#fee090";
+    if (rr_1h > 20.0 && rr_1h <= 30.0) return "#fc8d59";
+    if (rr_1h > 30.0) return "#d73027";
   }
 
   Tuulikartta.resolveWawaCode = function (wawa) {
@@ -617,7 +667,7 @@ var saa = saa || {};
         }
       }
 
-      if (param == 'ws_1h' || param === 'wg_1h') {
+      if (param === 'ws_1h' || param === 'wg_1h') {
         if (saa.Tuulikartta.data[i]['ws_1h'] !== null && saa.Tuulikartta.data[i]['ws_max_dir'] !== null && saa.Tuulikartta.data[i]['wg_max_dir'] !== null &&  saa.Tuulikartta.data[i]['wg_1h'] !== null) {
 
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
@@ -675,13 +725,39 @@ var saa = saa || {};
         }
       }
 
-      if (param === 'ri_10min') {
-        if (saa.Tuulikartta.data[i]['ri_10min'] !== null && parseFloat(saa.Tuulikartta.data[i]['ri_10min']) > 0) {
+      if (param === 'rr_1h' || param === 'ri_10min' ) {
+        if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) { 
+          var fillColor = Tuulikartta.resolvePrecipitationAmount(saa.Tuulikartta.data[i][param])
+          var hex = fillColor.substr(1)
+          hex = 'hex' + hex
+          if (saa.Tuulikartta.data[i][param] !== null && parseFloat(saa.Tuulikartta.data[i][param]) > 0) {
+            var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+              {
+                interactive: true,
+                keyboard: false,
+                icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+              })
+
+            if (saa.Tuulikartta.data[i]['type'] === 'road') {
+              marker.addTo(saa.Tuulikartta.markerGroupRoad)
+            } else {
+              marker.addTo(saa.Tuulikartta.markerGroupSynop)
+            }
+            marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+            saa.Tuulikartta.data[i]['fmisid']),{
+              maxWidth: maxWidth
+            })
+            marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+            marker.type = saa.Tuulikartta.data[i]['type']
+          }
+        } 
+        // draw '–' if theres no precipitation
+        if(parseFloat(saa.Tuulikartta.data[i][param]) == 0 && saa.Tuulikartta.data[i][param] !== 'NaN' ) {
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
-              interactive: false,
+              interactive: true,
               keyboard: false,
-              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+              icon: Tuulikartta.createLabelIcon('textLabelclass', '–')
             })
 
           if (saa.Tuulikartta.data[i]['type'] === 'road') {
@@ -689,27 +765,17 @@ var saa = saa || {};
           } else {
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
-        }
-      }
-
-      if (param === 'r_1h') {
-        if (saa.Tuulikartta.data[i]['r_1h'] !== null) {
-          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
-            {
-              interactive: false,
-              keyboard: false,
-              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
-            })
-
-          if (saa.Tuulikartta.data[i]['type'] === 'road') {
-            marker.addTo(saa.Tuulikartta.markerGroupRoad)
-          } else {
-            marker.addTo(saa.Tuulikartta.markerGroupSynop)
-          }
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
         }
       }
 
       if (param === 't2m') {
+
         var fillColor = Tuulikartta.resolveTemperature(saa.Tuulikartta.data[i][param])
         var hex = fillColor.substr(1)
         hex = 'hex' + hex
@@ -724,20 +790,25 @@ var saa = saa || {};
         svgicon = svgicon + '</g>'
         svgicon = svgicon + '</svg>'
 
-        var icon = encodeURI('data:image/svg+xml,' + svgicon).replace('#', '%23')
+        var svgicon = encodeURI('data:image/svg+xml,' + svgicon).replace('#', '%23')
 
         if (saa.Tuulikartta.data[i]['t2m'] !== null) {
+          // add trash symbol to enable bigger popup activation area
+          // trashSymbol(saa.Tuulikartta.data[i])
+
+          // symbol
           var icon = L.icon({
-            // iconUrl: '../symbols/temperature.svg',
-            iconUrl: icon,
+            iconUrl: svgicon,
             iconSize: [30, 30],
             iconAnchor: [40, 10],
             popupAnchor: [0, 0]
           })
 
-          var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+          marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
             {
-              icon: icon
+              icon: icon,
+              interactive: false,
+              keyboard: false
             })
 
           if (saa.Tuulikartta.data[i]['type'] === 'road') {
@@ -746,18 +817,11 @@ var saa = saa || {};
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
 
-          // marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
-          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
-          saa.Tuulikartta.data[i]['fmisid']),{
-            maxWidth: maxWidth
-          })
-          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
-          marker.type = saa.Tuulikartta.data[i]['type']
-
-          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+          // text field
+          marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
             {
-              interactive: false,
-              keyboard: false,
+              interactive: true,
+              keyboard: true,
               icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
             })
 
@@ -766,6 +830,12 @@ var saa = saa || {};
           } else {
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
         }
       }
 
@@ -803,38 +873,50 @@ var saa = saa || {};
       if (param === 'vis') {
         if (saa.Tuulikartta.data[i]['vis'] !== null) {
           var labelClass = 'textLabelclassGrey'
+          
+          // 1000 <= visibility < 2000 
           if (parseFloat(saa.Tuulikartta.data[i][param]) < 2000 && parseFloat(saa.Tuulikartta.data[i][param]) >= 1000) {
             labelClass = 'textLabelclassBlack'
-
             var icon = L.icon({
               iconUrl: '../symbols/mist.svg',
               iconSize: [60, 60],
               iconAnchor: [66, 25],
               popupAnchor: [0, 0]
             })
-
             var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
               {
                 icon: icon
-              }).addTo(saa.Tuulikartta.markerGroupSynop)
+              })
+            
+            if (saa.Tuulikartta.data[i]['type'] === 'road') {
+              marker.addTo(saa.Tuulikartta.markerGroupRoad)
+            } else {
+              marker.addTo(saa.Tuulikartta.markerGroupSynop)
+            }
           }
 
+          // visibility < 1000
           if (parseFloat(saa.Tuulikartta.data[i][param]) < 1000) {
             labelClass = 'textLabelclassRed'
-
             var icon = L.icon({
               iconUrl: '../symbols/fog.svg',
               iconSize: [60, 60],
               iconAnchor: [66, 25],
               popupAnchor: [0, 0]
             })
-
             var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
               {
                 icon: icon
-              }).addTo(saa.Tuulikartta.markerGroupSynop)
+              })
+
+            if (saa.Tuulikartta.data[i]['type'] === 'road') {
+              marker.addTo(saa.Tuulikartta.markerGroupRoad)
+            } else {
+              marker.addTo(saa.Tuulikartta.markerGroupSynop)
+            }
           }
 
+          // visibility > 2000
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
               interactive: true,
@@ -929,7 +1011,6 @@ var saa = saa || {};
           } else {
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
-          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
           marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
           saa.Tuulikartta.data[i]['fmisid']),{
             maxWidth: maxWidth
@@ -984,6 +1065,7 @@ var saa = saa || {};
     }
     output += '</div>'
     
+    output += `<div id="graph-box-loader" style="text-align: center;"></div>`;   
     output += `<div id="graph-box" style="width:${maxWidth}px;">`
     output += `<div id="owl-carousel-chart-${fmisid}" class="owl-carousel owl-theme">`
     output += `<div id="weather-chart-${fmisid}"></div>`

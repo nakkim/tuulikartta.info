@@ -274,6 +274,18 @@
     padding-right: 5px; 
     font-size: 15px;
 }
+
+/* .hexf71707 {
+    font-weight: bold;
+    background-color: rgba(247,23,7,0.7);
+    border: 1px solid black;
+    color: rgba(7, 171, 247, 0.7);
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+} */
+
 .hexdb0a07 {
     font-weight: bold;
     background-color: rgba(219,10,7,0.7);
@@ -295,6 +307,144 @@
 .hex000000 {
     font-weight: bold;
     background-color: rgba(189,4,4,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+
+/* precipitation values */
+
+.hexfff7fb {
+    font-weight: bold;
+    background-color: rgba(255,247,251,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexece7f2 {
+    font-weight: bold;
+    background-color: rgba(236,231,242,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexd0d1e6 {
+    font-weight: bold;
+    background-color: rgba(208,209,230,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexa6bddb {
+    font-weight: bold;
+    background-color: rgba(166,189,219,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hex74a9cf {
+    font-weight: bold;
+    background-color: rgba(116,169,207,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hex3690c0 {
+    font-weight: bold;
+    background-color: rgba(54,144,192,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hex0570b0 {
+    font-weight: bold;
+    background-color: rgba(5,112,176,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hex045a8d {
+    font-weight: bold;
+    background-color: rgba(4,90,141,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hex4575b4 {
+    font-weight: bold;
+    background-color: rgba(69,117,180,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hex91bfdb {
+    font-weight: bold;
+    background-color: rgba(145,191,219,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexe0f3f8 {
+    font-weight: bold;
+    background-color: rgba(224,243,248,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexffffbf {
+    font-weight: bold;
+    background-color: rgba(255,255,191,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexfee090 {
+    font-weight: bold;
+    background-color: rgba(254,224,144,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexfc8d59 {
+    font-weight: bold;
+    background-color: rgba(252,141,89,0.7);
+    border: 1px solid black;
+    color: black;
+    padding-left: 5px; 
+    padding-right: 5px; 
+    font-size: 15px;
+}
+.hexd73027 {
+    font-weight: bold;
+    background-color: rgba(215,48,39,0.7);
     border: 1px solid black;
     color: black;
     padding-left: 5px; 
