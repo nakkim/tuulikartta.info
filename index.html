@@ -23,10 +23,11 @@
         <!-- <script src="https://use.fontawesome.com/fdf452f08e.js"></script> -->
 
         <!-- moment.js -->
-        <script src="js/vendor/moment.js"></script>   
+        <script src="js/vendor/moment.js"></script>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
 
         <!-- bootstrap datepicker -->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
         <link id="bs-css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
         <link id="bsdp-css" href="css/bootstrap-datepicker.min.css" rel="stylesheet">
         <script src="js/vendor/bootstrap-datepicker.min.js"></script>
@@ -176,6 +177,40 @@
 
     </script>
     <script>
+
+        var hash = window.location.hash.split('#')
+        var latitude = 60,
+            longitude = 25,
+            zoomlevel = 6, 
+            selectedParam = 'ws_10min'
+
+        var values = ['ws_10min','wg_10min','ws_1h','wg_1h','ri_10min','rr_1h','t2m','vis','wawa','n_man']
+
+        hash.forEach(function(element) { 
+            var param = element.split('=');
+            console.log(param)
+            if(param[0] === 'latlon') {
+                var lat = param[1].split(',')[0]
+                var lon = param[1].split(',')[1]
+
+                if(typeof(parseFloat(lat)) === 'number' && parseFloat(lat) >= -90 && parseFloat(lat) <= 90) latitude = lat
+                if(typeof(parseFloat(lon)) === 'number' && parseFloat(lon) >= -180 && parseFloat(lat) <= 180) longitude = lon
+
+            }
+            if(param[0] === 'zoom') {
+                var zoom = param[1]
+
+                if(typeof(parseInt(zoom)) === 'number' && parseInt(zoom) >= 5 && parseInt(zoom) <= 12) zoomlevel = zoom
+            }
+            if(param[0] === 'parameter') {
+                if(values.includes(param[1])) {
+                    selectedParam = param[1]
+                    document.getElementById('select-wind-parameter').value = selectedParam;
+                }
+            }
+        })
+        saa.Tuulikartta.handleUrlParams(latitude,longitude,zoomlevel,selectedParam)
+
         saa.Tuulikartta.callData();
         saa.Tuulikartta.initMap();
 

@@ -43,7 +43,14 @@ var saa = saa || {};
     }
   }
 
-  Tuulikartta.debug(observationSource, observationValue)
+  Tuulikartta.handleUrlParams = function(lat, lon, zoom, initParam) {
+    latitude = lat
+    longtitude = lon
+    zoomlevel = zoom
+    selectedparameter = initParam
+
+    console.log(latitude,longtitude,zoomlevel,selectedparameter)
+  }
 
   // ---------------------------------------------------------
   // Convert epoch time to properly formatted time string
@@ -89,7 +96,7 @@ var saa = saa || {};
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
         Tuulikartta.clearMarkers()
-        Tuulikartta.drawData($('#select-wind-parameter').val())
+        Tuulikartta.drawData(selectedparameter)
         selectedparameter = $('#select-wind-parameter').val()
         document.getElementById('data-loader').style.display = 'none'
       }
@@ -113,7 +120,14 @@ var saa = saa || {};
     $('#select-wind-parameter').change(function () {
       Tuulikartta.clearMarkers()
       Tuulikartta.drawData($(this).val())
-      console.log(saa.Tuulikartta.markerGroupSynop)
+      
+      selectedparameter = $(this).val()
+
+      var lat = saa.Tuulikartta.map.getCenter().lat
+      var lon = saa.Tuulikartta.map.getCenter().lng
+      var zoom = saa.Tuulikartta.map.getZoom()
+      window.location.replace('#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+'#zoom='+zoom+'#parameter='+$(this).val())
+
     })
 
     saa.Tuulikartta.map.on('popupopen', function(e) {
@@ -154,6 +168,9 @@ var saa = saa || {};
       localStorage.setItem('latitude', lat)
       localStorage.setItem('longitude', lon)
       localStorage.setItem('zoomlevel', zoom)
+
+      window.location.replace('#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+'#zoom='+zoom+'#parameter='+selectedparameter)
+
     })
 
     // ---------------------------------------------------------
