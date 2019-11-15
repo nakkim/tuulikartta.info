@@ -48,8 +48,6 @@ var saa = saa || {};
     longtitude = lon
     zoomlevel = zoom
     selectedparameter = initParam
-
-    console.log(latitude,longtitude,zoomlevel,selectedparameter)
   }
 
   // ---------------------------------------------------------
@@ -109,13 +107,6 @@ var saa = saa || {};
 
   $(function bunttonFunctionalities () {
     
-    // var height = $('#gui-box').height();
-    // $('.leaflet-top').css({'margin-top': height + 20 + 'px'});
-    // window.addEventListener('resize', function(event){
-    //     height = $('#gui-box').height() + 20;            
-    //     $('.leaflet-top').css({'margin-top': height + 'px'});
-    // })
-
     // select wind parameter
     $('#select-wind-parameter').change(function () {
       Tuulikartta.clearMarkers()
