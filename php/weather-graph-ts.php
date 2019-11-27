@@ -45,6 +45,8 @@ if ($type == 'synop') {
     $settings["parameter"]      = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h";
     $settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
     $settings["fmisid"]         = $fmisid;
+    $settings["timestep"]       = "10";
+    
     $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
 }
 
