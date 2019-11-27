@@ -24,8 +24,8 @@ var saa = saa || {};
   var geoLocation
 
   // Set parameters to localstorage to remember previous state
-  var latitude = localStorage.getItem('latitude') ? localStorage.getItem('latitude') : 60.630556
-  var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 24.859726
+  var latitude = localStorage.getItem('latitude') ? localStorage.getItem('latitude') : 65
+  var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 25
   var zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 8
   var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä vain synop-asemat'
   var observationValue = parseInt(localStorage.getItem('observationValue')) ? parseInt(localStorage.getItem('observationValue')) : 1
@@ -144,9 +144,9 @@ var saa = saa || {};
       });
     })
     
-    saa.Tuulikartta.map.on('popupclose', function(e){
-      saa.Tuulikartta.timestamp = "now"
-    })
+    // saa.Tuulikartta.map.on('popupclose', function(e){
+    //   saa.Tuulikartta.timestamp = "now"
+    // })
 
     // ---------------------------------------------------------
     // Get and save user location to localstorage
@@ -160,7 +160,7 @@ var saa = saa || {};
       localStorage.setItem('longitude', lon)
       localStorage.setItem('zoomlevel', zoom)
 
-      window.location.replace('#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+'#zoom='+zoom+'#parameter='+selectedparameter)
+      window.location.replace('#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+','+zoom+'#parameter='+selectedparameter)
 
     })
 

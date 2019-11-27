@@ -178,9 +178,9 @@
     <script>
 
         var hash = window.location.hash.split('#')
-        var latitude = 60,
-            longitude = 25,
-            zoomlevel = 6, 
+        var latitude = localStorage.getItem('latitude') ? localStorage.getItem('latitude') : 65.69,
+            longitude = localStorage.getItem('longitude') ? localStorage.getItem('longitude') : 25.36,
+            zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 5,
             selectedParam = 'ws_10min'
 
         var values = ['ws_10min','wg_10min','ws_1h','wg_1h','ri_10min','rr_1h','t2m','vis','wawa','n_man','snow_aws']
@@ -190,9 +190,11 @@
             if(param[0] === 'latlon') {
                 var lat = param[1].split(',')[0]
                 var lon = param[1].split(',')[1]
+                var zoom = param[1].split(',')[2]
 
                 if(typeof(parseFloat(lat)) === 'number' && parseFloat(lat) >= -90 && parseFloat(lat) <= 90) latitude = lat
                 if(typeof(parseFloat(lon)) === 'number' && parseFloat(lon) >= -180 && parseFloat(lat) <= 180) longitude = lon
+                if(typeof(parseFloat(zoom)) === 'number' && parseFloat(zoom) >= 5 && parseFloat(zoom) <= 12) zoomlevel = zoom
 
             }
             if(param[0] === 'zoom') {
