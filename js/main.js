@@ -169,6 +169,9 @@ var saa = saa || {};
     // ---------------------------------------------------------
 
     $('#select-content-datasearch').click(function () {
+      $(this).removeClass('inactive')
+      $('#select-content-now').addClass('inactive')
+
       var date = document.getElementById('datepicker-button').value
       var time = document.getElementById('clockpicker-button').value
 
@@ -192,6 +195,8 @@ var saa = saa || {};
 
     $('#select-content-now').click(function () {
       saa.Tuulikartta.timestamp = 'now'
+      $(this).removeClass('inactive')
+      $('#select-content-datasearch').addClass('inactive')
 
       Tuulikartta.debug('............................')
       Tuulikartta.debug('Get latest observations')

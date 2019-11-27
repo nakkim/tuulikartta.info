@@ -468,6 +468,11 @@ label {
     text-decoration: none;
 }
 
+.inactive {
+    border-color: #808080;
+    background-color: #a9a9a9;
+}
+
 .ph-btn-blue:hover, .ph-btn-blue:focus, .ph-btn-blue:active {
     background-color: #397CAC;
     border-color: #326E99;
