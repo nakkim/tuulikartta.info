@@ -194,7 +194,7 @@ body {
     }
 }
 
-@media screen and (max-width: 390px) {
+@media screen and (max-width: 450px) {
 
     #timepicker-progress-time {
         display: none;
@@ -255,7 +255,7 @@ body {
 
 @media screen and (max-width: 385px) {
     .select-box {
-        margin-left: 5px;
+        margin-left: -50px;
     }
 }
 
@@ -508,3 +508,27 @@ div.settings {
     color: #777;
     background: url(../symbols/params.png) left no-repeat;
 }
+
+/* language selector */
+
+.language-selector {
+    padding: 10px 0 10px 0;
+    position: fixed;
+    top: 0;
+    right: 0;
+    float: right;
+    margin-right: 10px;
+}
+
+.language-selector .lang {
+    border: 1px solid #ccc;
+    /* width: 120px; */
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fafafa no-repeat 90% 50%;
+    font-size: 16px;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+  
