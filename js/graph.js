@@ -61,7 +61,7 @@ var saa = saa || {};
 
     weatherGraph.getObservationGraph = function(fmisid,type,timestamp) {
         saa.Tuulikartta.debug('Getting data for graph... ');
-        $('#graph-box-loader').html(`<span align=center>Ladataan havaintoja... <img src='symbols/default.gif' style='width:20px;'></img></span>`);
+        $('#graph-box-loader').html("<span align=center>"+translations[selectedLanguage]['loadObservations']+"... <img src='symbols/default.gif' style='width:20px;'></img></span>");
 
         $.ajax({
             dataType: "json",
@@ -116,8 +116,11 @@ var saa = saa || {};
     }
 
     weatherGraph.resolveWeekDay = function(value) {
+        if(selectedLanguage === 'en')
+        var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thorsday", "Friday", "Saturday"];
+        else
+        var weekday = ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"];
 
-        var weekday = ["Sunnuntai", "Maaanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"];
         var n = weekday[value];
         return n;
     }
@@ -128,7 +131,6 @@ var saa = saa || {};
     // ---------------------------------------------------------
 
     weatherGraph.drawGraph = function(data,fmisid) {
-
         var chart1 = Highcharts.chart(`weather-chart-${fmisid}`, {
 
             chart: {
@@ -152,7 +154,7 @@ var saa = saa || {};
                 selected: 1
             },
             subtitle: {
-                text: 'Keskituulen ja maksimipuuskan vaihteluväli [m/s]',
+                text: translations[selectedLanguage]['windTitle'],
                 style: {
                     color: 'black',
                     font: '12px Roboto, sans-serif'
@@ -234,7 +236,7 @@ var saa = saa || {};
             },
             series: [{
                 type: 'columnrange',
-                name: 'Keskituuli - maksimipuuska',
+                name: translations[selectedLanguage]['ws_10min']+' - '+translations[selectedLanguage]['wg_10min'],
                 data: data.obs.wind,
                 xAxis: 0,
                 tooltip: {
@@ -244,7 +246,7 @@ var saa = saa || {};
             {
                 type: 'windbarb',
                 data: data.obs.dir,
-                name: 'Tuulen suunta',
+                name: translations[selectedLanguage]['wd_10min'],
                 // enableMouseTracking: false,
                 tooltip: {
                     valueSuffix: ' °'
@@ -289,7 +291,7 @@ var saa = saa || {};
                 selected: 1
             },
             subtitle: {
-                text: 'Säätila havaintoasemalla',
+                text: translations[selectedLanguage]['weatherTitle'],
                 style: {
                     color: 'black',
                     font: '12px Roboto, sans-serif'
@@ -388,7 +390,7 @@ var saa = saa || {};
             series: [
             {
                 type: 'spline',
-                name: 'Ilmanlämpötila',
+                name: translations[selectedLanguage]['t2m'],
                 color: '#FF0000',
                 negativeColor: '#0088FF',
                 data: data.obs.temp,
@@ -400,7 +402,7 @@ var saa = saa || {};
             },
             {
                 type: 'column',
-                name: 'Tunnin sademäärä',
+                name: translations[selectedLanguage]['rr_1h'],
                 zIndex: 9,
                 data: data.obs.rr1h,
                 tooltip: {
