@@ -45,7 +45,13 @@ if ($type == 'synop') {
     $settings["parameter"]      = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h";
     $settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
     $settings["fmisid"]         = $fmisid;
+    
     $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
+    if(count($obs) > 200) {
+        $obs = [];
+        $settings["timestep"] = "10";
+        $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
+    }
 }
 
 $combinedData = [];
@@ -78,7 +84,7 @@ function formatWindData($data) {
         $i = 0;
         foreach($dataArray as $array) {
             $tmp = $array;
-            if(empty($tmp["t2m"])) {$tmp["t2m"] = "null";}
+            if(!is_numeric($tmp["t2m"])) {$tmp["t2m"] = "null";}
             if(empty($tmp['r_1h'])) {$tmp['r_1h'] = "null";}
             if(empty($tmp['ws_10min'])) {$tmp['ws_10min'] = "null";}
             if(empty($tmp['wg_10min'])) {$tmp['wg_10min'] = "null";}

@@ -5,7 +5,11 @@
         <meta http-equiv="x-ua-compatible" content="IE=edge">
         <!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
 	    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>Pintatuulihavainnot kartalla - tuulikartta.info</title>
+        <title>Tuulikartta</title>
+        
+        <link rel="alternate" hreflang="fi" href="https://www.tuulikartta.info/index.html"/>
+        <link rel="alternate" hreflang="en" href="https://www.tuulikartta.info/index.html#lang=en"/>
+
         <meta name="description" content="Säähavaintoja Ilmatieteen laitoksen avoimen datan avulla."/>
         <meta name="rating" content="Safe For Kids"/>
         <meta name="author" content="Ville Ilkka"/>
@@ -14,8 +18,6 @@
 
         <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
         <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
-
-        <title>tuulikartta.info - säähavainnot kartalla</title>
 
         <script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
         <link href="//fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -50,6 +52,7 @@
         <script src="js/vendor//highcharts-more.js"></script>
         <script src="js/vendor/windbarb.src.js"></script>
 
+        <script src="js/translations.js"></script>
         <script src="js/main.js"></script>
         <script src="js/graph.js"></script>
 
@@ -79,60 +82,31 @@
             <div class="data-info-wrapper" align=center>
                 <div class="select-box">
 
-                    <!-- <a href="/tietoa-sivustosta">
-		                <button id="select-content-info" class="select-button"><img src="symbols/info.svg" style="height:16px;"></img></button>
-		            </a> -->
-
-                    <!-- <span class="select-content-wrapper" id="main-navbar-param">
-                        <select id="select-wind-parameter" class="select-style" style="height:26px;">
-                            <option value="ws_10min">Keskituuli</option>
-                            <option value="wg_10min">Maksimipuuska</option>
-                            <option value="ws_1h">Tunnin suurin keskituuli</option>
-                            <option value="wg_1h">Tunnin maksimipuuska</option>
-                            <option value="ri_10min">Sateen intensiteetti</option>
-                            <option value="rr_1h">Tunnin sadekertymä</option>
-                            <option value="t2m">Lämpötila</option>
-                            <option value="vis">Näkyvyys</option>
-                            <option value="wawa">Vallitseva sää</option>
-                            <option value="n_man">Kokonaispilvisyys</option>
-                        </select>
-                    </span> -->
-
                     <span class="select-content-wrapper" id="select-content-wrapper-timeselector">
                         <input id="datepicker-button" class="select-button" style="text-align:center;max-width:105px;">
                         <input id="clockpicker-button" class="select-button" style="text-align:center; max-width:60px;">      
                         <span class="ph-float">
-                            <a href='#' id="select-content-datasearch" class='ph-button ph-btn-blue'>Hae</a>
+                            <a href='#' id="select-content-datasearch" class='ph-button ph-btn-blue inactive'></a>
                         </span>
                     </span>
 
                     <span id="select-content-wrapper-time" class="select-content-wrapper">
                         <button id="timepicker-regress-time" class="select-button">&laquo; 1h</button>
                         <span class="ph-float">
-                            <a href='#' id="select-content-now" class='ph-button ph-btn-blue'>Nyt</a>
+                            <a href='#' id="select-content-now" class='ph-button ph-btn-blue'></a>
                         </span>
                         <button id="timepicker-progress-time" class="select-button">1h &raquo;</button>  
                     </span>
                 </div>
+                <span class="language-selector">
+                    <button id="language-selector-value" class="select-button">FI</button>
+                </span>
             </div>
         </div>
 
         <div class="leaflet-top leaflet-left leaflet-control control-center" id="map-param">
             <div class="settings"></div>
-            <span class="select-content-wrapper" id="main-navbar-param">
-                <select id="select-wind-parameter" class="select-style" style="height:26px;">
-                    <option value="ws_10min">Keskituuli</option>
-                    <option value="wg_10min">Maksimipuuska</option>
-                    <option value="ws_1h">Tunnin suurin keskituuli</option>
-                    <option value="wg_1h">Tunnin maksimipuuska</option>
-                    <option value="ri_10min">Sateen intensiteetti</option>
-                    <option value="rr_1h">Tunnin sadekertymä</option>
-                    <option value="t2m">Lämpötila</option>
-                    <option value="vis">Näkyvyys</option>
-                    <option value="wawa">Vallitseva sää</option>
-                    <option value="n_man">Kokonaispilvisyys</option>
-                </select>
-            </span>
+            <span class="select-content-wrapper" id="main-navbar-param"></span>
         </div>
 
         <div class="leaflet-bottom leaflet-left leaflet-control-attribution leaflet-control">
@@ -140,27 +114,13 @@
                 Ladataan havaintoja... <img src='symbols/default.gif' style='width:20px;'></img>
             </div>
             <div id="site-info" class="info-container" style="display:none;">
-                <p style="line-height: 150%">
-                    <span style="color:#343434; font-weight:bold;">Tuulikartta.info</span> - säähavaintoja (lähes) reaaliajassa.</br>
-                    Säähavaintoaineistoa Ilmatieteen laitoksen havaintoasemilta sekä Liikenneviraston tiesääasemilta. </br>
-                    Lisätietoja havainnoista ja palvelusta voit lukea <a href="tietoa-sivustosta/">täältä</a>. Palvelu perustuu Ilmatieteen laitoksen <a href="https://ilmatieteenlaitos.fi/avoin-data">avoimeen dataan.</a>
-                </p>
-                <p>
-                    Seuraa sivuston kehitystä sekä kehittäjän edesottamuksia:
-                </p>
+                <div id="site-info-body"></div>
                 <a href="https://twitter.com/viilkka" class="twitter-follow-button" data-show-count="false">Follow</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <a href="https://twitter.com/intent/tweet?screen_name=viilkka" class="twitter-mention-button" data-show-count="false">Tweet to @viilkka</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
-        
-        
-        
         </div>
 
         <div id="map" styles="z-index:1"></div>
-
-        <!-- <footer role="contentinfo">
-            <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>
-        </footer>  -->
 
     </body >
 
@@ -177,21 +137,53 @@
     <script>
 
         var hash = window.location.hash.split('#')
-        var latitude = 60,
-            longitude = 25,
-            zoomlevel = 6, 
+        var latitude = localStorage.getItem('latitude') ? localStorage.getItem('latitude') : 65.69,
+            longitude = localStorage.getItem('longitude') ? localStorage.getItem('longitude') : 25.36,
+            zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 5,
+            selectedLanguage = localStorage.getItem('language') ? localStorage.getItem('language') : 'fi',
             selectedParam = 'ws_10min'
 
-        var values = ['ws_10min','wg_10min','ws_1h','wg_1h','ri_10min','rr_1h','t2m','vis','wawa','n_man']
+        if(selectedLanguage === 'fi')
+        $('#language-selector-value').html('EN')
+        if(selectedLanguage === 'en')
+        $('#language-selector-value').html('FI')
 
+
+        $('#select-content-datasearch').html(translations[selectedLanguage]['dataSearch'])
+        $('#select-content-now').html(translations[selectedLanguage]['dataNow'])
+
+        /* get language from url parameter */
+        hash.forEach(function(element) {
+            var param = element.split('=');
+            if(param[0] === 'lang') {
+                if(param[1] === 'en') {
+                    selectedLanguage = 'en'
+                    localStorage.setItem('language', 'en')
+                } else if(param[1] === 'fi') {
+                    selectedLanguage = 'fi'
+                    localStorage.setItem('language', 'fi')
+                } else {
+                    selectedLanguage = 'fi'
+                    localStorage.setItem('language', 'fi')
+                }
+            }
+        })
+
+        saa.Tuulikartta.buildObservationMenu()
+        saa.Tuulikartta.populateInfoContent()
+        var values = ['ws_10min','wg_10min','ws_1h','wg_1h','ri_10min','rr_1h','t2m','vis','wawa','n_man','snow_aws']
+
+        /* handle other url parameters */
         hash.forEach(function(element) { 
             var param = element.split('=');
             if(param[0] === 'latlon') {
                 var lat = param[1].split(',')[0]
                 var lon = param[1].split(',')[1]
+                var zoom = param[1].split(',')[2]
 
                 if(typeof(parseFloat(lat)) === 'number' && parseFloat(lat) >= -90 && parseFloat(lat) <= 90) latitude = lat
                 if(typeof(parseFloat(lon)) === 'number' && parseFloat(lon) >= -180 && parseFloat(lat) <= 180) longitude = lon
+                if(typeof(parseFloat(zoom)) === 'number' && parseFloat(zoom) >= 5 && parseFloat(zoom) <= 12) zoomlevel = zoom
 
             }
             if(param[0] === 'zoom') {
@@ -212,14 +204,5 @@
         saa.Tuulikartta.initMap();
 
     </script>
-
-    <script>
-        // $(document).ready(function () {
-        //     if(window.innerWidth <= 765) {
-        //         $("#main-navbar-param").appendTo("#map-param");
-        //     }
-        // })
-    </script>
-
 
 </html>

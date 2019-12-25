@@ -152,6 +152,9 @@ class DataMiner{
             $url .= "&bbox={$settings["bbox"]},epsg::4326&";
         }
 
+        if(isset($settings['timestep']))
+        $url .= "&timestep={$settings['timestep']}";
+
         if($timestamp == "now") {
             if($graph) {
                 $starttime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60-18*60*60);

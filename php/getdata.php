@@ -11,7 +11,7 @@ $dataMiner = new DataMiner();
 // synop observations
 $settings = array();
 $settings["stationtype"]    = "synop";
-$settings["parameter"]      = "ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,t2m,n_man,r_1h";
+$settings["parameter"]      = "ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,t2m,n_man,r_1h,snow_aws";
 $settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
 $settings["bbox"]           = "16.58,58.81,34.8,70.61";
 $synopdata = $dataMiner->multipointcoverage($timestamp,$settings, false);
@@ -35,6 +35,7 @@ foreach($roaddata as $key => $data) {
 	$tmp["wava"] = $tmp["prst1"];
 	$tmp["n_man"] = null;
 	$tmp["r_1h"] = null;
+	$tmp["snow_aws"] = null;
 	array_push($synopdata,$tmp);
 }
 
