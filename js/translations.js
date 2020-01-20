@@ -1,6 +1,18 @@
 
 var translations = {
   'fi': {
+    'roadObs': 'Näytä tiesäähavainnot',
+    'settings': 'Asetukset',
+    'lightningObs': 'Salamahavainnot',
+    'lightningShow': 'Näytettävät havainnot',
+    'allObs': 'Kaikki havainnot',
+    'groundOnly': 'Vain maasalamat',
+    'timeWindow': 'Aikaikkuna',
+    'minutes': 'minuuttia',
+    'layerOpacity': 'Tasojen läpinäkyvyys',
+    'radarLayer': 'Tutkakuva',
+    'foreignObs': 'Näytä tarjolla olevia ulkomaanhavaintoja',
+    'oldObs': 'Älä näytä yli kahta tuntia vanhempia havaintoja',
     'ws_10min': 'Keskituuli',
     'wg_10min': 'Maksimipuuska',
     'wd_10min': 'Tuulen suunta',
@@ -34,6 +46,18 @@ var translations = {
 
   },
   'en': {
+    'roadObs': 'Show finnish road weather observations',
+    'settings': 'Settings',
+    'lightningObs': 'Lightning observations',
+    'lightningShow': 'Observations to display',
+    'allObs': 'All observations',
+    'groundOnly': 'Ground discharges only',
+    'timeWindow': 'Time frame',
+    'minutes': 'minutes',
+    'layerOpacity': 'Layer transparency',
+    'radarLayer': 'Radar image',
+    'foreignObs': 'Display available foreign observations',
+    'oldObs': 'Don\'t show observations older that 2 hours',
     'ws_10min': 'Mean wind speed',
     'wg_10min': 'Wind gust',
     'wd_10min': 'Wind direction',

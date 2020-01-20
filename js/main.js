@@ -378,6 +378,14 @@ var saa = saa || {};
       saa.Tuulikartta.namelayer.bringToFront()
     })
 
+    /* settings sidebar */
+    var sidebar = L.control.sidebar('settings-sidebar', {
+      position: 'left',
+      autoPan: false
+    })
+    map.addControl(sidebar);
+    sidebar.setContent(populateSidebar())
+
     var customControl = L.Control.extend({
       options: {
         position: 'topright' 
@@ -387,30 +395,9 @@ var saa = saa || {};
           'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-source'
         )
         container.onclick = function(){
-          if(observationValue === parseInt(0)) {
-            observationValue = observationValue + 1
-            document.getElementById('data-loader').innerHTML = 'Näytä vain synop-asemat'
-            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupSynop)
-            saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
-            localStorage.setItem('observationValue', 1)
-            localStorage.setItem('observationSource', 'Näytä vain synop-asemat')
-          } else if(observationValue === parseInt(1)) {
-            observationValue = observationValue + 1
-            document.getElementById('data-loader').innerHTML = 'Näytä vain tiesääasemat'
-            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
-            saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupSynop)
-            localStorage.setItem('observationValue', 2)
-            localStorage.setItem('observationSource', 'Näytä vain tiesääasemat')
-          } else {
-            observationValue = 0
-            document.getElementById('data-loader').innerHTML = 'Näytä kaikki asematyypit'
-            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupSynop)
-            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
-            localStorage.setItem('observationValue', 0)
-            localStorage.setItem('observationSource', 'Näytä kaikki asematyypit')
-          }
+          sidebar.toggle()
         }
-        container.title = "Valitse näytettävät havaintoasemat"
+        container.title = translations[selectedLanguage]['settings']
         return container
       }
     })		
@@ -459,6 +446,57 @@ var saa = saa || {};
     console.log('Error: The Geolocation service failed.')
   }
 
+  function populateSidebar() {
+    var html = ""
+    html += '<div class="sidebar-container">'
+    html += '<h1>'+translations[selectedLanguage]['settings']+'</h1>'
+    html += '<input id="foreign-observations" type="checkbox" checked> '+translations[selectedLanguage]['roadObs']
+    html += '<br/>'
+    html += '<br/>'
+    html += '<span><b>'+translations[selectedLanguage]['layerOpacity']+'</b></span>'
+    html += '<table>'
+    html +=   '<tr>'
+    html +=     '<td>'+translations[selectedLanguage]['radarLayer']+':</td><td><input type="range" id="radar-opacity" name="opacity" min="0" max="100"></td>'
+    html +=   '</tr>'
+    html +=   '<tr>'
+    html +=     '<td>'+translations[selectedLanguage]['lightningObs']+':</td><td><input type="range" id="lightning-opacity" name="opacity" min="0" max="100"></td>'
+    html +=   '</tr>'
+    html += '</table>'
+    html += '<br/>'
+    html += '<span><b>'+translations[selectedLanguage]['lightningObs']+'</b></span>'
+    html += '<table>'
+    html +=   '<tr>'
+    html +=     '<td>'+translations[selectedLanguage]['lightningShow']+':</td>'
+    html +=     '<td>'
+    html +=       '<select>'
+    html +=         '<option value="1">'+translations[selectedLanguage]['allObs']+'</option>'
+    html +=         '<option value="0">'+translations[selectedLanguage]['groundOnly']+'</option>'
+    html +=       '</select>'
+    html +=     '</td>'
+    html +=   '</tr>'
+    html +=   '<tr>'
+    html +=     '<td>'+translations[selectedLanguage]['timeWindow']+':</td>'
+    html +=     '<td>'
+    html +=       '<select>'
+    html +=         '<option value="5">5 '+translations[selectedLanguage]['minutes']+'</option>'
+    html +=         '<option value="15">15 '+translations[selectedLanguage]['minutes']+'</option>'
+    html +=         '<option value="30">30 '+translations[selectedLanguage]['minutes']+'</option>' 
+    html +=         '<option value="60">60 '+translations[selectedLanguage]['minutes']+'</option>'
+    html +=       '</select>'
+    html +=     '</td>'
+    html +=   '</tr>'
+    html += '</table>'
+    html += '<br/>'
+    html += '<input id="foreign-observations" type="checkbox" checked> '+translations[selectedLanguage]['foreignObs']
+    html += '<br/>'
+    html += '<input id="old-observations" type="checkbox" checked> '+translations[selectedLanguage]['oldObs']
+    html += '<br/>'
+    html += '<br/>'
+    html += '</div>'
+
+    return html
+  }
+
   Tuulikartta.initWMS = function () {
     var dataWMS = 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms'
     var geosrvWMS = 'http://openwms.fmi.fi/geoserver/Radar/wms'
@@ -494,7 +532,7 @@ var saa = saa || {};
       '5min salamahavainnot': flash5min
     }
 
-    L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map)
+    // L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map)
   }
 
   // ---------------------------------------------------------
