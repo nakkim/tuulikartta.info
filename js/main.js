@@ -33,6 +33,9 @@ var saa = saa || {};
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
 
+  var radarLayer = ''
+  var flashLayer = ''
+
   // popup max width
   var maxWidth = 650
   var maxheight = 320
@@ -370,6 +373,10 @@ var saa = saa || {};
     saa.Tuulikartta.map = map
     Tuulikartta.initWMS()
 
+     // remove default zoomcontrol and add a new one with custom titles
+     map.zoomControl.remove()
+     L.control.zoom({zoomInTitle: translations[selectedLanguage]['zoomIn'], zoomOutTitle: translations[selectedLanguage]['zoomOut']}).addTo(map) 
+
     map.locate({ setView: false, maxZoom: 18 })
     map.on('locationfound', onLocationFound)
     map.on('locationerror', onLocationError)
@@ -386,6 +393,7 @@ var saa = saa || {};
     map.addControl(sidebar);
     sidebar.setContent(populateSidebar())
 
+    /* settings control */
     var customControl = L.Control.extend({
       options: {
         position: 'topright' 
@@ -402,6 +410,54 @@ var saa = saa || {};
       }
     })		
     map.addControl(new customControl());
+
+    /* radar control */
+    var radarControl = L.Control.extend({
+      options: {
+        position: 'topright' 
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-radar'
+        )
+        container.onclick = function(){
+          if(saa.Tuulikartta.map.hasLayer(radarLayer)) {
+            saa.Tuulikartta.map.removeLayer(radarLayer)
+            $(this).removeClass('active')
+          } else { 
+            saa.Tuulikartta.map.addLayer(radarLayer)
+            $(this).addClass('active')
+          }
+        }
+        container.title = translations[selectedLanguage]['radarTitle']
+        return container
+      }
+    })		
+    map.addControl(new radarControl());
+
+    /* lightning control */
+    var lightningControl = L.Control.extend({
+      options: {
+        position: 'topright' 
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-flash'
+        )
+        container.onclick = function(){
+          if(saa.Tuulikartta.map.hasLayer(flashLayer)) {
+            saa.Tuulikartta.map.removeLayer(flashLayer)
+            $(this).removeClass('active')
+          } else { 
+            saa.Tuulikartta.map.addLayer(flashLayer)
+            $(this).addClass('active')
+          }
+        }
+        container.title = translations[selectedLanguage]['lightningTitle']
+        return container
+      }
+    })		
+    map.addControl(new lightningControl());
 
     var infoControl = L.Control.extend({
       options: {
@@ -420,7 +476,7 @@ var saa = saa || {};
             x.style.display = "none";
           }
         }
-        container.title = "Näytä lisätietoja"
+        container.title = translations[selectedLanguage]['info']
         return container
       }
     })
@@ -501,7 +557,7 @@ var saa = saa || {};
     var dataWMS = 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms'
     var geosrvWMS = 'http://openwms.fmi.fi/geoserver/Radar/wms'
 
-    var radar = L.tileLayer.wms(geosrvWMS, {
+    radarLayer = L.tileLayer.wms(geosrvWMS, {
       layers: 'suomi_dbz_eureffin',
       format: 'image/png',
       tileSize: 2048,
@@ -513,7 +569,7 @@ var saa = saa || {};
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
 
-    var flash5min = L.tileLayer.wms(dataWMS, {
+    flashLayer = L.tileLayer.wms(dataWMS, {
       layers: 'fmi:observation:flashicon',
       format: 'image/png',
       tileSize: 2048,
@@ -526,11 +582,6 @@ var saa = saa || {};
       preventCache: Date.now(),
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
-
-    var overlayMaps = {
-      'Tutka - Sateen intensiteetti': radar,
-      '5min salamahavainnot': flash5min
-    }
 
     // L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map)
   }

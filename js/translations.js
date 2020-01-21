@@ -1,6 +1,11 @@
 
 var translations = {
   'fi': {
+    'zoomIn': 'Lähennä',
+    'zoomOut': 'Loitonna',
+    'info': 'Näytä lisätietoja',
+    'radarTitle': 'Näytä tutkakuva',
+    'lightningTitle': 'Näytä salamahavainnot',
     'roadObs': 'Näytä tiesäähavainnot',
     'settings': 'Asetukset',
     'lightningObs': 'Salamahavainnot',
@@ -46,6 +51,11 @@ var translations = {
 
   },
   'en': {
+    'zoomIn': 'Zoom in',
+    'zoomOut': 'Zoom out',
+    'info': 'Show information',
+    'radarTitle': 'Show radar image',
+    'lightningTitle': 'Show lightning observations',
     'roadObs': 'Show finnish road weather observations',
     'settings': 'Settings',
     'lightningObs': 'Lightning observations',
@@ -79,7 +89,7 @@ var translations = {
     'latestObservation': 'Latest observation',
     'observationTime': 'Observation ime',
     'loadObservations': 'Loading observations',
-    'windTitle': 'Keskituulen ja maksimipuuskan vaihteluväli [m/s]',
+    'windTitle': 'Mean wind speed and gust [m/s]',
     'weatherTitle': 'Weather on observation station',
     'dataSearch': 'Find',
     'dataNow': 'Now',
@@ -87,6 +97,6 @@ var translations = {
     'dataInfoBody1': ' - weather observations in real time',
     'dataInfoBody2': 'Weather observation data from the Finnish Meteorological Institute and from the Finnish Transport Infrastructure Agency.',
     'dataInfoBody3': 'Tuulikartta.info is based on the Finnish Meteorological Institute\'s <a href="https://en.ilmatieteenlaitos.fi/open-data">open data.',
-    'dataInfoBody4': 'Follow project progress and othe stuff:'
+    'dataInfoBody4': 'Follow project progress and other stuff:'
   }
 }

@@ -637,3 +637,47 @@ input[type=range] {
   input[type=range]:focus::-ms-fill-upper {
     background: #367ebd;
   }
+
+
+
+  .leaflet-control-select-radar {
+    background-image: url(../symbols/radar.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: white;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  
+  .leaflet-control-select-radar:hover {
+    background-image: url(../symbols/radar_blue.png);
+  }
+  
+  .leaflet-control-select-radar:hover, 
+  .leaflet-control-select-radar.active {
+    background-color: #f4f4f4;
+    background-image: url(../symbols/radar_blue.png);
+  }
+  
+  .leaflet-control-select-flash {
+    background-image: url(../symbols/flash.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: white;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  
+  .leaflet-control-select-flash:hover {
+    background-image: url(../symbols/flash_blue.png);
+  }
+  
+  .leaflet-control-select-flash:hover, 
+  .leaflet-control-select-flash.active {
+    background-color: #f4f4f4;
+    background-image: url(../symbols/flash_blue.png);
+  }
