@@ -10,7 +10,8 @@ var saa = saa || {};
 
   saa.Tuulikartta.data = []
   saa.Tuulikartta.debugvalue = false
-  saa.Tuulikartta.timestamp = 'now'
+  saa.Tuulikartta.timeValue = 'now'
+  saa.Tuulikartta.timeStamp = ''
   saa.Tuulikartta.markerGroupSynop = L.layerGroup()
   saa.Tuulikartta.markerGroupRoad = L.layerGroup()
   var emptymarker = []
@@ -84,7 +85,7 @@ var saa = saa || {};
       dataType: 'json',
       url: 'php/getdata.php',
       data: {
-        time: saa.Tuulikartta.timestamp
+        time: saa.Tuulikartta.timeValue
       },
       error: function () {
         document.body.style.cursor = 'default'
@@ -102,6 +103,39 @@ var saa = saa || {};
         document.getElementById('data-loader').style.display = 'none'
       }
     })
+  }
+
+  // 
+  // Update radar data timestamps
+  //
+
+  Tuulikartta.updateRadarData = function () {
+    if(saa.Tuulikartta.timeValue === 'now') {
+      $.ajax({
+        dataType: 'json',
+        url: 'php/dataparser.php',
+        data: {
+          name: 'suomi_dbz_eureffin',
+          server: '//openwms.fmi.fi/geoserver/Radar/wms'
+        },
+        error: function (request, status, error) {
+          console.log(request.responseText);
+        },
+        success: function (data) {
+          var timeString = data['dimension']
+          var timeArray = timeString.split('/')
+          var endTime = moment.utc(timeArray[1]).toISOString()
+          saa.Tuulikartta.timeStamp = endTime
+          Tuulikartta.callData()
+        },
+        complete: function() {
+        }
+        
+      })
+    } else {
+      Tuulikartta.callData()
+    }
+
   }
 
   // ---------------------------------------------------------
@@ -132,8 +166,8 @@ var saa = saa || {};
       Tuulikartta.debug('fmisid: '+e.popup._source.fmisid+', type: '+e.popup._source.type)
       if(type === 'Synop-asema') type = 'synop'
       if(type === 'Tiesääasema') type = 'road'
-      // saa.Tuulikartta.timestamp = "graph" // to avoid data reload
-      saa.weatherGraph.getObservationGraph(fmisid,type,saa.Tuulikartta.timestamp)
+      // saa.Tuulikartta.timeValue = "graph" // to avoid data reload
+      saa.weatherGraph.getObservationGraph(fmisid,type,saa.Tuulikartta.timeValue)
       $(".owl-carousel").owlCarousel({
         navigation: true, // Show next and prev buttons
         slideSpeed: 300,
@@ -148,7 +182,7 @@ var saa = saa || {};
     })
     
     // saa.Tuulikartta.map.on('popupclose', function(e){
-    //   saa.Tuulikartta.timestamp = "now"
+    //   saa.Tuulikartta.timeValue = "now"
     // })
 
     // ---------------------------------------------------------
@@ -181,15 +215,14 @@ var saa = saa || {};
       var timestring = moment(date + ' ' + time, ['DD-MM-YYYY HH:mm'])
       timestring = timestring.utc().format('YYYY-MM-DDTHH:mm:ss')
       timestring = timestring + 'Z'
-      saa.Tuulikartta.timestamp = timestring
+      saa.Tuulikartta.timeValue = timestring
 
       Tuulikartta.debug('............................')
       Tuulikartta.debug(`Find observations from ${timestring}`)
       Tuulikartta.clearMarkers()
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.wmsParams.preventCache = Date.now()
-          layer.setParams({time: saa.Tuulikartta.timestamp})
+          layer.setParams({time: saa.Tuulikartta.timeValue})
         }
       })
       saa.Tuulikartta.namelayer.bringToFront()
@@ -197,20 +230,20 @@ var saa = saa || {};
     })
 
     $('#select-content-now').click(function () {
-      saa.Tuulikartta.timestamp = 'now'
+      saa.Tuulikartta.timeValue = 'now'
       $(this).removeClass('inactive')
       $('#select-content-datasearch').addClass('inactive')
 
       Tuulikartta.debug('............................')
       Tuulikartta.debug('Get latest observations')
       Tuulikartta.clearMarkers()
-      Tuulikartta.callData()
+      Tuulikartta.updateRadarData()
 
       Tuulikartta.debug(`Load latest radar data`)
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.wmsParams.preventCache = Date.now()
-          layer.setParams({time: ''})
+          // set timestamp to latest available
+          layer.setParams({time: saa.Tuulikartta.timeValue})
         }
       })
       saa.Tuulikartta.namelayer.bringToFront()
@@ -244,14 +277,14 @@ var saa = saa || {};
       document.getElementById('datepicker-button').value = newTime.format('DD.MM.YYYY')
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
-      saa.Tuulikartta.timestamp = timestring
+      saa.Tuulikartta.timeValue = timestring
       Tuulikartta.callData()
 
-      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timestamp}`)
+      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timeValue}`)
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
           layer.wmsParams.preventCache = Date.now()
-          layer.setParams({time: saa.Tuulikartta.timestamp})
+          layer.setParams({time: saa.Tuulikartta.timeValue})
         }
       })
       saa.Tuulikartta.namelayer.bringToFront()
@@ -281,14 +314,13 @@ var saa = saa || {};
       document.getElementById('datepicker-button').value = newTime.format('DD.MM.YYYY')
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
-      saa.Tuulikartta.timestamp = timestring
+      saa.Tuulikartta.timeValue = timestring
       Tuulikartta.callData()
 
-      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timestamp}`)
+      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timeValue}`)
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.wmsParams.preventCache = Date.now()
-          layer.setParams({time: saa.Tuulikartta.timestamp})
+          layer.setParams({time: saa.Tuulikartta.timeValue})
         }
       })
       saa.Tuulikartta.namelayer.bringToFront()
@@ -1268,7 +1300,7 @@ var saa = saa || {};
       }
     }
 
-    if (saa.Tuulikartta.timestamp === 'now') {
+    if (saa.Tuulikartta.timeValue === 'now') {
       for (var i = 0; i < sizeofdata; i++) {
         if (saa.Tuulikartta.data[i]['type'] === 'synop') {
 	        var time = moment(saa.Tuulikartta.data[i]['time'], ['YYYY-MM-DDTHH:mm:ssZ'])
@@ -1305,7 +1337,7 @@ var saa = saa || {};
     output += '<b>'+translations[selectedLanguage]['observationStation']+': </b>' + data['station'] + '<br>'
     output += stationType
 
-    if (saa.Tuulikartta.timestamp === 'now') {
+    if (saa.Tuulikartta.timeValue === 'now') {
       output += '<b>'+translations[selectedLanguage]['latestObservation']+': </b>' + time + '<br>' 
     } else { 
       output += '<b>'+translations[selectedLanguage]['observationTime']+': </b>' + time + '<br>' 
@@ -1357,14 +1389,13 @@ var saa = saa || {};
   // ---------------------------------------------------------
 
   setInterval(function () {
-    if (saa.Tuulikartta.timestamp === 'now') {
+    if (saa.Tuulikartta.timeValue === 'now') {
       Tuulikartta.debug('............................')
       Tuulikartta.debug('Update data and draw markers')
       Tuulikartta.debug('Time now: ' + (new Date()).toUTCString())
-      Tuulikartta.callData()
+      Tuulikartta.updateRadarData()
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.wmsParams.preventCache = Date.now()
           layer.setParams({})
           saa.Tuulikartta.namelayer.bringToFront()
         }
