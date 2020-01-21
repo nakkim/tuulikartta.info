@@ -657,7 +657,6 @@ input[type=range] {
   
   .leaflet-control-select-radar:hover, 
   .leaflet-control-select-radar.active {
-    background-color: #f4f4f4;
     background-image: url(../symbols/radar_blue.png);
   }
   
@@ -678,6 +677,5 @@ input[type=range] {
   
   .leaflet-control-select-flash:hover, 
   .leaflet-control-select-flash.active {
-    background-color: #f4f4f4;
     background-image: url(../symbols/flash_blue.png);
   }
