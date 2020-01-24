@@ -3,6 +3,7 @@ var translations = {
   'fi': {
     'zoomIn': 'Lähennä',
     'zoomOut': 'Loitonna',
+    'showObservations': 'Näytä asemahavainnot',
     'info': 'Näytä lisätietoja',
     'radarTitle': 'Näytä tutkakuva',
     'lightningTitle': 'Näytä salamahavainnot',
@@ -54,6 +55,7 @@ var translations = {
     'zoomIn': 'Zoom in',
     'zoomOut': 'Zoom out',
     'info': 'Show information',
+    'showObservations': 'Show station observations',
     'radarTitle': 'Show radar image',
     'lightningTitle': 'Show lightning observations',
     'roadObs': 'Show finnish road weather observations',

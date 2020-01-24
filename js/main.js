@@ -34,9 +34,12 @@ var saa = saa || {};
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
 
+  var showStationObservations = true
   var getLightningData = false
   saa.Tuulikartta.radarLayer = ''
   saa.Tuulikartta.flashLayer = ''
+
+  var radarLayerOpacity = localStorage.getItem('radarLayerOpacity') ? localStorage.getItem('radarLayerOpacity') : 80
 
   // popup max width
   var maxWidth = 650
@@ -336,6 +339,48 @@ var saa = saa || {};
       window.location.replace('#lang='+selectedLanguage+'#latlon='+latitude+','+longtitude+'#zoom='+zoomlevel+'#parameter='+selectedparameter)
       window.location.reload()
     })
+
+    // ---------------------------------------------------------
+    // show data layers
+    // ---------------------------------------------------------
+
+    $('#show-observations').change(function() {
+      if (this.checked == true) {
+        console.log('Show')
+        saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupSynop)
+        saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
+      } else {
+        console.log('Hide')
+        saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupSynop)
+        saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
+      }
+    })
+
+    $('#road-observations').change(function() {
+      if (this.checked == true) {
+        console.log('Show')
+        saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
+      } else {
+        console.log('Hide')
+        saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
+      }
+    })
+
+    // -------------------------------------------------------------
+    // change layer opacity
+    // -------------------------------------------------------------
+
+    var slider = document.getElementById("radar-opacity");
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+      var layer = saa.Tuulikartta.radarLayer
+        if(layer){
+            var opacity = this.value;
+            layer.setOpacity(this.value/100);
+            radarLayerOpacity = this.value
+            localStorage.setItem('radarLayerOpacity', this.value)
+        }
+    }
   })
 
   Tuulikartta.buildObservationMenu = function() {
@@ -536,13 +581,15 @@ var saa = saa || {};
     var html = ""
     html += '<div class="sidebar-container">'
     html += '<h1>'+translations[selectedLanguage]['settings']+'</h1>'
-    html += '<input id="foreign-observations" type="checkbox" checked> '+translations[selectedLanguage]['roadObs']
+    html += '<input id="show-observations" type="checkbox" checked> '+translations[selectedLanguage]['showObservations'] 
+    html += '<br/>'
+    html += '<input id="road-observations" type="checkbox"> '+translations[selectedLanguage]['roadObs']
     html += '<br/>'
     html += '<br/>'
     html += '<span><b>'+translations[selectedLanguage]['layerOpacity']+'</b></span>'
     html += '<table>'
     html +=   '<tr>'
-    html +=     '<td>'+translations[selectedLanguage]['radarLayer']+':</td><td><input type="range" id="radar-opacity" name="opacity" min="0" max="100"></td>'
+    html +=     '<td>'+translations[selectedLanguage]['radarLayer']+':</td><td><input type="range" id="radar-opacity" name="opacity" min="0" max="100" value="'+radarLayerOpacity+'"></td>'
     html +=   '</tr>'
     html +=   '<tr>'
     html +=     '<td>'+translations[selectedLanguage]['lightningObs']+':</td><td><input type="range" id="lightning-opacity" name="opacity" min="0" max="100"></td>'
@@ -592,7 +639,7 @@ var saa = saa || {};
       format: 'image/png',
       tileSize: 2048,
       transparent: true,
-      opacity: 0.7,
+      opacity: radarLayerOpacity/100,
       time: saa.Tuulikartta.timeStamp,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
@@ -820,6 +867,7 @@ var saa = saa || {};
   }
 
   Tuulikartta.drawData = function (param) {
+
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
     if(observationValue == 1) {
       saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
@@ -1285,7 +1333,7 @@ var saa = saa || {};
     }
 
     if (saa.Tuulikartta.timeValue === 'now') {
-      for (var i = 0; i < sizeofdata; i++) {
+      for (var i = 0; i < 1; i++) {
         if (saa.Tuulikartta.data[i]['type'] === 'synop') {
 	        var time = moment(saa.Tuulikartta.data[i]['time'], ['YYYY-MM-DDTHH:mm:ssZ'])
 	        var timestring = time.format('DD.MM.YYYY HH:mm')
