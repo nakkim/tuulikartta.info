@@ -34,8 +34,9 @@ var saa = saa || {};
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
 
-  var radarLayer = ''
-  var flashLayer = ''
+  var getLightningData = false
+  saa.Tuulikartta.radarLayer = ''
+  saa.Tuulikartta.flashLayer = ''
 
   // popup max width
   var maxWidth = 650
@@ -105,7 +106,7 @@ var saa = saa || {};
     })
   }
 
-  // 
+  //
   // Update radar data timestamps
   //
 
@@ -126,14 +127,19 @@ var saa = saa || {};
           var timeArray = timeString.split('/')
           var endTime = moment.utc(timeArray[1]).toISOString()
           saa.Tuulikartta.timeStamp = endTime
+          saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
           Tuulikartta.callData()
-        },
-        complete: function() {
+
+          if(getLightningData)
+          saa.lightning.init(endTime)
+
         }
-        
       })
     } else {
       Tuulikartta.callData()
+      saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
+      if(getLightningData)
+      saa.lightning.init(saa.Tuulikartta.timeStamp)
     }
 
   }
@@ -143,12 +149,12 @@ var saa = saa || {};
   // ---------------------------------------------------------
 
   $(function bunttonFunctionalities () {
-    
+
     // select wind parameter
     $('#select-wind-parameter').change(function () {
       Tuulikartta.clearMarkers()
       Tuulikartta.drawData($(this).val())
-      
+
       selectedparameter = $(this).val()
 
       var lat = saa.Tuulikartta.map.getCenter().lat
@@ -180,7 +186,7 @@ var saa = saa || {};
         // itemsMobile : false
       });
     })
-    
+
     // saa.Tuulikartta.map.on('popupclose', function(e){
     //   saa.Tuulikartta.timeValue = "now"
     // })
@@ -216,17 +222,14 @@ var saa = saa || {};
       timestring = timestring.utc().format('YYYY-MM-DDTHH:mm:ss')
       timestring = timestring + 'Z'
       saa.Tuulikartta.timeValue = timestring
+      saa.Tuulikartta.timeStamp = timestring
 
       Tuulikartta.debug('............................')
       Tuulikartta.debug(`Find observations from ${timestring}`)
       Tuulikartta.clearMarkers()
-      saa.Tuulikartta.map.eachLayer(function (layer) {
-        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.setParams({time: saa.Tuulikartta.timeValue})
-        }
-      })
+      saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
-      Tuulikartta.callData()
+      Tuulikartta.updateRadarData()
     })
 
     $('#select-content-now').click(function () {
@@ -240,12 +243,7 @@ var saa = saa || {};
       Tuulikartta.updateRadarData()
 
       Tuulikartta.debug(`Load latest radar data`)
-      saa.Tuulikartta.map.eachLayer(function (layer) {
-        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          // set timestamp to latest available
-          layer.setParams({time: saa.Tuulikartta.timeValue})
-        }
-      })
+      saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.debug('Done')
     })
@@ -265,6 +263,7 @@ var saa = saa || {};
 
       var timestring = newTime.utc().format('YYYY-MM-DDTHH:mm:ss')
       timestring = timestring + 'Z'
+      saa.Tuulikartta.timeStamp = timestring
 
       Tuulikartta.debug('............................')
       Tuulikartta.debug('Progress time')
@@ -278,15 +277,11 @@ var saa = saa || {};
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
       saa.Tuulikartta.timeValue = timestring
-      Tuulikartta.callData()
+      saa.Tuulikartta.timeStamp = timestring
+      Tuulikartta.updateRadarData()
 
       Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timeValue}`)
-      saa.Tuulikartta.map.eachLayer(function (layer) {
-        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.wmsParams.preventCache = Date.now()
-          layer.setParams({time: saa.Tuulikartta.timeValue})
-        }
-      })
+      saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.debug('Done')
     })
@@ -302,6 +297,7 @@ var saa = saa || {};
 
       var timestring = newTime.utc().format('YYYY-MM-DDTHH:mm:ss')
       timestring = timestring + 'Z'
+      saa.Tuulikartta.timeStamp = timestring
 
       Tuulikartta.debug('............................')
       Tuulikartta.debug('Progress time')
@@ -315,14 +311,10 @@ var saa = saa || {};
       document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
 
       saa.Tuulikartta.timeValue = timestring
-      Tuulikartta.callData()
+      Tuulikartta.updateRadarData()
 
       Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timeValue}`)
-      saa.Tuulikartta.map.eachLayer(function (layer) {
-        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.setParams({time: saa.Tuulikartta.timeValue})
-        }
-      })
+      saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.debug('Done')
     })
@@ -407,7 +399,7 @@ var saa = saa || {};
 
      // remove default zoomcontrol and add a new one with custom titles
      map.zoomControl.remove()
-     L.control.zoom({zoomInTitle: translations[selectedLanguage]['zoomIn'], zoomOutTitle: translations[selectedLanguage]['zoomOut']}).addTo(map) 
+     L.control.zoom({zoomInTitle: translations[selectedLanguage]['zoomIn'], zoomOutTitle: translations[selectedLanguage]['zoomOut']}).addTo(map)
 
     map.locate({ setView: false, maxZoom: 18 })
     map.on('locationfound', onLocationFound)
@@ -428,7 +420,7 @@ var saa = saa || {};
     /* settings control */
     var customControl = L.Control.extend({
       options: {
-        position: 'topright' 
+        position: 'topright'
       },
       onAdd: function (map) {
         var container = L.DomUtil.create(
@@ -440,60 +432,66 @@ var saa = saa || {};
         container.title = translations[selectedLanguage]['settings']
         return container
       }
-    })		
+    })
     map.addControl(new customControl());
 
     /* radar control */
     var radarControl = L.Control.extend({
       options: {
-        position: 'topright' 
+        position: 'topright'
       },
       onAdd: function (map) {
         var container = L.DomUtil.create(
           'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-radar'
         )
         container.onclick = function(){
-          if(saa.Tuulikartta.map.hasLayer(radarLayer)) {
-            saa.Tuulikartta.map.removeLayer(radarLayer)
+          saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
+          if(saa.Tuulikartta.map.hasLayer(saa.Tuulikartta.radarLayer)) {
+            saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.radarLayer)
             $(this).removeClass('active')
-          } else { 
-            saa.Tuulikartta.map.addLayer(radarLayer)
+          } else {
+            saa.Tuulikartta.updateRadarData()
+            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.radarLayer)
             $(this).addClass('active')
           }
         }
         container.title = translations[selectedLanguage]['radarTitle']
         return container
       }
-    })		
+    })
     map.addControl(new radarControl());
 
     /* lightning control */
     var lightningControl = L.Control.extend({
       options: {
-        position: 'topright' 
+        position: 'topright'
       },
       onAdd: function (map) {
         var container = L.DomUtil.create(
           'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-flash'
         )
         container.onclick = function(){
-          if(saa.Tuulikartta.map.hasLayer(flashLayer)) {
-            saa.Tuulikartta.map.removeLayer(flashLayer)
+          if(saa.Tuulikartta.map.hasLayer(saa.lightning.geoLayer)) {
+            saa.Tuulikartta.map.removeLayer(saa.lightning.geoLayer)
             $(this).removeClass('active')
-          } else { 
-            saa.Tuulikartta.map.addLayer(flashLayer)
+            getLightningData = false
+          } else {
+            saa.lightning.init(saa.Tuulikartta.timeStamp)
+            saa.Tuulikartta.map.addLayer(saa.lightning.geoLayer)
             $(this).addClass('active')
+            getLightningData = true
           }
+          saa.Tuulikartta.updateRadarData()
         }
         container.title = translations[selectedLanguage]['lightningTitle']
         return container
       }
-    })		
+    })
     map.addControl(new lightningControl());
 
     var infoControl = L.Control.extend({
       options: {
-        position: 'topleft' 
+        position: 'topleft'
       },
       onAdd: function (map) {
         var container = L.DomUtil.create(
@@ -568,7 +566,7 @@ var saa = saa || {};
     html +=       '<select>'
     html +=         '<option value="5">5 '+translations[selectedLanguage]['minutes']+'</option>'
     html +=         '<option value="15">15 '+translations[selectedLanguage]['minutes']+'</option>'
-    html +=         '<option value="30">30 '+translations[selectedLanguage]['minutes']+'</option>' 
+    html +=         '<option value="30">30 '+translations[selectedLanguage]['minutes']+'</option>'
     html +=         '<option value="60">60 '+translations[selectedLanguage]['minutes']+'</option>'
     html +=       '</select>'
     html +=     '</td>'
@@ -589,29 +587,15 @@ var saa = saa || {};
     var dataWMS = 'https://data.fmi.fi/fmi-apikey/f01a92b7-c23a-47b0-95d7-cbcb4a60898b/wms'
     var geosrvWMS = 'http://openwms.fmi.fi/geoserver/Radar/wms'
 
-    radarLayer = L.tileLayer.wms(geosrvWMS, {
+    saa.Tuulikartta.radarLayer = L.tileLayer.wms(geosrvWMS, {
       layers: 'suomi_dbz_eureffin',
       format: 'image/png',
       tileSize: 2048,
       transparent: true,
       opacity: 0.7,
+      time: saa.Tuulikartta.timeStamp,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
-      preventCache: Date.now(),
-      attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
-    })
-
-    flashLayer = L.tileLayer.wms(dataWMS, {
-      layers: 'fmi:observation:flashicon',
-      format: 'image/png',
-      tileSize: 2048,
-      transparent: true,
-      opacity: 0.8,
-      version: '1.3.0',
-      crs: L.CRS.EPSG3857,
-      interval_start: 5,
-      timestep: 5,
-      preventCache: Date.now(),
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
 
@@ -711,8 +695,8 @@ var saa = saa || {};
       if (wawa === 76) return {short:'Snow',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#9cc3fc'}
       if (wawa === 77) return {short:'Snow',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#9cc3fc'}
       if (wawa === 78) return {short:'Snow',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#9cc3fc'}
-      if (wawa === 80) return {short:'RainShovers',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'} 
-      if (wawa === 81) return {short:'RainShovers',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'} 
+      if (wawa === 80) return {short:'RainShovers',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
+      if (wawa === 81) return {short:'RainShovers',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
       if (wawa === 82) return {short:'RainShovers',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
       if (wawa === 83) return {short:'RainShovers',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
       if (wawa === 84) return {short:'RainShovers',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
@@ -763,8 +747,8 @@ var saa = saa || {};
       if (wawa === 76) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#9cc3fc'}
       if (wawa === 77) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#9cc3fc'}
       if (wawa === 78) return {short:'Lumisade',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#9cc3fc'}
-      if (wawa === 80) return {short:'Sadekuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'} 
-      if (wawa === 81) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'} 
+      if (wawa === 80) return {short:'Sadekuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
+      if (wawa === 81) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
       if (wawa === 82) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
       if (wawa === 83) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
       if (wawa === 84) return {short:'Vesikuuroja',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#6dff94'}
@@ -839,10 +823,10 @@ var saa = saa || {};
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
     if(observationValue == 1) {
       saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
-    } 
+    }
     if(observationValue == 2) {
       saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
-    } 
+    }
     if(observationValue == 0) {
       saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
       saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
@@ -852,14 +836,14 @@ var saa = saa || {};
     if (L.Browser.mobile) {
       maxWidth = 250
     }
-    
+
     for (var i = 0; i < sizeofdata; i++) {
       var location = { lat: parseFloat(saa.Tuulikartta.data[i]['lat']), lng: parseFloat(saa.Tuulikartta.data[i]['lon']) }
       var time = Tuulikartta.timeTotime(saa.Tuulikartta.data[i]['epoctime'])
       var latlon = saa.Tuulikartta.data[i]['lat'] + ',' + saa.Tuulikartta.data[i]['lon']
 
       if (param == 'ws_10min' || param === 'wg_10min') {
-        if (saa.Tuulikartta.data[i]['ws_10min'] !== null && saa.Tuulikartta.data[i]['wd_10min'] !== null && 
+        if (saa.Tuulikartta.data[i]['ws_10min'] !== null && saa.Tuulikartta.data[i]['wd_10min'] !== null &&
                         saa.Tuulikartta.data[i]['wg_10min'] !== null) {
 
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
@@ -892,7 +876,7 @@ var saa = saa || {};
           })
           marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
           marker.type = saa.Tuulikartta.data[i]['type']
-          
+
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
               interactive: false,
@@ -950,7 +934,7 @@ var saa = saa || {};
           })
           marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
           marker.type = saa.Tuulikartta.data[i]['type']
-          
+
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
               interactive: false,
@@ -967,7 +951,7 @@ var saa = saa || {};
       }
 
       if (param === 'rr_1h' || param === 'ri_10min' ) {
-        if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) { 
+        if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) {
           var fillColor = Tuulikartta.resolvePrecipitationAmount(saa.Tuulikartta.data[i][param])
           var hex = fillColor.substr(1)
           hex = 'hex' + hex
@@ -991,7 +975,7 @@ var saa = saa || {};
             marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
             marker.type = saa.Tuulikartta.data[i]['type']
           }
-        } 
+        }
         // draw '–' if theres no precipitation
         if(parseFloat(saa.Tuulikartta.data[i][param]) == 0 && saa.Tuulikartta.data[i][param] !== 'NaN' ) {
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
@@ -1113,8 +1097,8 @@ var saa = saa || {};
       if (param === 'vis') {
         if (saa.Tuulikartta.data[i]['vis'] !== null) {
           var labelClass = 'textLabelclassGrey'
-          
-          // 1000 <= visibility < 2000 
+
+          // 1000 <= visibility < 2000
           if (parseFloat(saa.Tuulikartta.data[i][param]) < 2000 && parseFloat(saa.Tuulikartta.data[i][param]) >= 1000) {
             labelClass = 'textLabelclassBlack'
             var icon = L.icon({
@@ -1127,7 +1111,7 @@ var saa = saa || {};
               {
                 icon: icon
               })
-            
+
             if (saa.Tuulikartta.data[i]['type'] === 'road') {
               marker.addTo(saa.Tuulikartta.markerGroupRoad)
             } else {
@@ -1257,11 +1241,11 @@ var saa = saa || {};
           })
           marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
           marker.type = saa.Tuulikartta.data[i]['type']
-        } 
+        }
       }
 
       if (param === 'snow_aws') {
-        if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) { 
+        if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) {
           var fillColor = Tuulikartta.resolveSnowDepth(saa.Tuulikartta.data[i][param])
           var hex = fillColor.substr(1)
           hex = 'hex' + hex
@@ -1281,7 +1265,7 @@ var saa = saa || {};
             marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
             marker.type = saa.Tuulikartta.data[i]['type']
           }
-        } 
+        }
         if(parseFloat(saa.Tuulikartta.data[i][param]) == 0 && saa.Tuulikartta.data[i][param] !== 'NaN' ) {
           var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
             {
@@ -1338,13 +1322,13 @@ var saa = saa || {};
     output += stationType
 
     if (saa.Tuulikartta.timeValue === 'now') {
-      output += '<b>'+translations[selectedLanguage]['latestObservation']+': </b>' + time + '<br>' 
-    } else { 
-      output += '<b>'+translations[selectedLanguage]['observationTime']+': </b>' + time + '<br>' 
+      output += '<b>'+translations[selectedLanguage]['latestObservation']+': </b>' + time + '<br>'
+    } else {
+      output += '<b>'+translations[selectedLanguage]['observationTime']+': </b>' + time + '<br>'
     }
     output += '</div>'
-    
-    output += `<div id="graph-box-loader" style="text-align: center;"></div>`;   
+
+    output += `<div id="graph-box-loader" style="text-align: center;"></div>`;
     output += `<div id="graph-box" style="width:${maxWidth}px;">`
     output += `<div id="owl-carousel-chart-${fmisid}" class="owl-carousel owl-theme">`
     output += `<div id="weather-chart-${fmisid}"></div>`
