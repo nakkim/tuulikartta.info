@@ -15,6 +15,7 @@ var saa = saa || {};
   saa.Tuulikartta.markerGroupSynop = L.layerGroup()
   saa.Tuulikartta.markerGroupRoad = L.layerGroup()
   var emptymarker = []
+  var showForeignObservations = localStorage.getItem('foreignObservations') ? localStorage.getItem('foreigObservations') : false
 
   saa.Tuulikartta.graphIds = ""
 
@@ -35,7 +36,11 @@ var saa = saa || {};
   var minRoadZoomLevel = 8
 
   var showStationObservations = true
+  var showOldObservations = false
   var getLightningData = false
+  var showCloudStrikes = true
+  saa.Tuulikartta.lightningInterval = 5
+
   saa.Tuulikartta.radarLayer = ''
   saa.Tuulikartta.flashLayer = ''
 
@@ -358,11 +363,32 @@ var saa = saa || {};
 
     $('#road-observations').change(function() {
       if (this.checked == true) {
-        console.log('Show')
         saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
       } else {
         console.log('Hide')
         saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
+      }
+    })
+
+    $('#foreign-observations').change(function() {
+      if (this.checked == false) {
+        showForeignObservations = false
+        localStorage.setItem('foreignObservations', 'false')
+        saa.Tuulikartta.callData()
+      } else {
+        showForeignObservations = true
+        localStorage.setItem('foreignObservations', 'true')
+        saa.Tuulikartta.callData()
+      }
+    })
+
+    $('#old-observations').change(function() {
+      if (this.checked == false) {
+        showOldObservations = false
+        saa.Tuulikartta.callData()
+      } else {
+        showForeignObservations = true
+        saa.Tuulikartta.callData()
       }
     })
 
@@ -620,7 +646,9 @@ var saa = saa || {};
     html +=   '</tr>'
     html += '</table>'
     html += '<br/>'
+    if(showStationObservations == 'true')
     html += '<input id="foreign-observations" type="checkbox" checked> '+translations[selectedLanguage]['foreignObs']
+    else html += '<input id="foreign-observations" type="checkbox"> '+translations[selectedLanguage]['foreignObs']
     html += '<br/>'
     html += '<input id="old-observations" type="checkbox" checked> '+translations[selectedLanguage]['oldObs']
     html += '<br/>'

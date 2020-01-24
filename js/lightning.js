@@ -19,7 +19,7 @@ var saa = saa || {};
       dataType: 'json',
       data: {
         time: time,
-        interval: 60
+        interval: saa.Tuulikartta.lightningInterval
       },
       url: 'php/lightning.php',
       error: function () {
