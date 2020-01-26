@@ -15,6 +15,7 @@ var saa = saa || {};
     var timeArray = timeString.split('/')
     var time = moment.utc(timeString).toISOString()
 
+    saa.Tuulikartta.dataLoader(true)
     $.ajax({
       dataType: 'json',
       data: {
@@ -29,6 +30,7 @@ var saa = saa || {};
         // console.log(data)
       },
       complete: function (data) {
+        saa.Tuulikartta.dataLoader(false)
         var data = data.responseJSON
         saa.lightning.drawData(data)
       }
@@ -65,12 +67,13 @@ var saa = saa || {};
       }
     }).addTo(saa.lightning.geoLayer)
 
-    var customLayerCloud = L.geoJson(data[1], {
-      pointToLayer: function (feature, latlng) {
-          return L.circleMarker(latlng, cloudLightningStyle);
-      }
-    }).addTo(saa.lightning.geoLayer)
-
+    if(saa.Tuulikartta.showCloudStrikes == true) {
+      var customLayerCloud = L.geoJson(data[1], {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, cloudLightningStyle);
+        }
+      }).addTo(saa.lightning.geoLayer)
+    }
     saa.lightning.geoLayer.addTo(saa.Tuulikartta.map)
 
   }

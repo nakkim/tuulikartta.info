@@ -38,7 +38,7 @@ var saa = saa || {};
   var showStationObservations = true
   var showOldObservations = false
   var getLightningData = false
-  var showCloudStrikes = true
+  saa.Tuulikartta.showCloudStrikes = localStorage.getItem('showCloudStrikes') ? localStorage.getItem('showCloudStrikes') : true
   saa.Tuulikartta.lightningInterval = 5
 
   saa.Tuulikartta.radarLayer = ''
@@ -82,14 +82,23 @@ var saa = saa || {};
     return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + hours + ':' + minutes
   }
 
+  Tuulikartta.dataLoader = function (param) {
+    if(param) {
+      document.getElementById('data-loader').style.display = 'block'
+      document.body.style.cursor = 'wait'
+    } else {
+      document.getElementById('data-loader').style.display = 'none'
+      document.body.style.cursor = 'default'
+    }
+  }
+
   // ---------------------------------------------------------
   // Get observation data from getdata.php
   // ---------------------------------------------------------
 
   Tuulikartta.callData = function () {
     Tuulikartta.debug('Getting data... ')
-    document.getElementById('data-loader').style.display = 'block'
-    document.body.style.cursor = 'wait'
+    saa.Tuulikartta.dataLoader(true)
     $.ajax({
       dataType: 'json',
       url: 'php/getdata.php',
@@ -98,18 +107,16 @@ var saa = saa || {};
       },
       error: function () {
         document.body.style.cursor = 'default'
-        document.getElementById('data-loader').innerHTML = "Havaintoja ei saatu ladattua"
         Tuulikartta.debug('An error has occurred')
       },
       success: function (data) {
-        document.body.style.cursor = 'default'
+        saa.Tuulikartta.dataLoader(false)
         Tuulikartta.debug('Done')
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
         Tuulikartta.clearMarkers()
         Tuulikartta.drawData(selectedparameter)
         selectedparameter = $('#select-wind-parameter').val()
-        document.getElementById('data-loader').style.display = 'none'
       }
     })
   }
@@ -407,6 +414,28 @@ var saa = saa || {};
             localStorage.setItem('radarLayerOpacity', this.value)
         }
     }
+
+    // -------------------------------------------------------------
+    // lightning options
+    // -------------------------------------------------------------
+
+    $('#lightning-source').change(function() {
+      if(this.value == 1) {
+        saa.Tuulikartta.showCloudStrikes = true
+        localStorage.setItem('showCloudStrikes', 'true')
+        saa.lightning.init(saa.Tuulikartta.timeStamp)
+      } else {
+        saa.Tuulikartta.showCloudStrikes = false
+        localStorage.setItem('showCloudStrikes', 'false')
+        saa.lightning.init(saa.Tuulikartta.timeStamp)
+      }
+    })
+
+    $('#lightning-interval').change(function() {
+      saa.Tuulikartta.lightningInterval = this.value
+      saa.lightning.init(saa.Tuulikartta.timeStamp)
+    })
+
   })
 
   Tuulikartta.buildObservationMenu = function() {
@@ -617,9 +646,6 @@ var saa = saa || {};
     html +=   '<tr>'
     html +=     '<td>'+translations[selectedLanguage]['radarLayer']+':</td><td><input type="range" id="radar-opacity" name="opacity" min="0" max="100" value="'+radarLayerOpacity+'"></td>'
     html +=   '</tr>'
-    html +=   '<tr>'
-    html +=     '<td>'+translations[selectedLanguage]['lightningObs']+':</td><td><input type="range" id="lightning-opacity" name="opacity" min="0" max="100"></td>'
-    html +=   '</tr>'
     html += '</table>'
     html += '<br/>'
     html += '<span><b>'+translations[selectedLanguage]['lightningObs']+'</b></span>'
@@ -627,31 +653,35 @@ var saa = saa || {};
     html +=   '<tr>'
     html +=     '<td>'+translations[selectedLanguage]['lightningShow']+':</td>'
     html +=     '<td>'
-    html +=       '<select>'
-    html +=         '<option value="1">'+translations[selectedLanguage]['allObs']+'</option>'
-    html +=         '<option value="0">'+translations[selectedLanguage]['groundOnly']+'</option>'
+    html +=       '<select id="lightning-source">'
+    if(saa.Tuulikartta.showCloudStrikes == true || saa.Tuulikartta.showCloudStrikes == 'true') {
+      html +=         '<option value="1" selected>'+translations[selectedLanguage]['allObs']+'</option>'
+      html +=         '<option value="0">'+translations[selectedLanguage]['groundOnly']+'</option>'
+    } else {
+      html +=         '<option value="1">'+translations[selectedLanguage]['allObs']+'</option>'
+      html +=         '<option value="0" selected>'+translations[selectedLanguage]['groundOnly']+'</option>'
+    }
     html +=       '</select>'
     html +=     '</td>'
     html +=   '</tr>'
     html +=   '<tr>'
     html +=     '<td>'+translations[selectedLanguage]['timeWindow']+':</td>'
     html +=     '<td>'
-    html +=       '<select>'
+    html +=       '<select id="lightning-interval">'
     html +=         '<option value="5">5 '+translations[selectedLanguage]['minutes']+'</option>'
     html +=         '<option value="15">15 '+translations[selectedLanguage]['minutes']+'</option>'
     html +=         '<option value="30">30 '+translations[selectedLanguage]['minutes']+'</option>'
-    html +=         '<option value="60">60 '+translations[selectedLanguage]['minutes']+'</option>'
     html +=       '</select>'
     html +=     '</td>'
     html +=   '</tr>'
     html += '</table>'
     html += '<br/>'
-    if(showStationObservations == 'true')
-    html += '<input id="foreign-observations" type="checkbox" checked> '+translations[selectedLanguage]['foreignObs']
-    else html += '<input id="foreign-observations" type="checkbox"> '+translations[selectedLanguage]['foreignObs']
-    html += '<br/>'
-    html += '<input id="old-observations" type="checkbox" checked> '+translations[selectedLanguage]['oldObs']
-    html += '<br/>'
+    // if(showStationObservations == 'true')
+    // html += '<input id="foreign-observations" type="checkbox" checked> '+translations[selectedLanguage]['foreignObs']
+    // else html += '<input id="foreign-observations" type="checkbox"> '+translations[selectedLanguage]['foreignObs']
+    // html += '<br/>'
+    // html += '<input id="old-observations" type="checkbox" checked> '+translations[selectedLanguage]['oldObs']
+    // html += '<br/>'
     html += '<br/>'
     html += '</div>'
 
@@ -892,6 +922,7 @@ var saa = saa || {};
     // remove all old markers
     saa.Tuulikartta.markerGroupSynop.clearLayers()
     saa.Tuulikartta.markerGroupRoad.clearLayers()
+    saa.lightning.geoLayer.clearLayers()
   }
 
   Tuulikartta.drawData = function (param) {
