@@ -30,7 +30,7 @@ var saa = saa || {};
   var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 25
   var zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 8
   var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä vain synop-asemat'
-  var observationValue = parseInt(localStorage.getItem('observationValue')) ? parseInt(localStorage.getItem('observationValue')) : 1
+  var observationValue = 1
   var selectedparameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
@@ -370,9 +370,8 @@ var saa = saa || {};
 
     $('#road-observations').change(function() {
       if (this.checked == true) {
-        saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
+        saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
       } else {
-        console.log('Hide')
         saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
       }
     })
@@ -928,17 +927,17 @@ var saa = saa || {};
   Tuulikartta.drawData = function (param) {
 
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
-    if(observationValue == 1) {
-      saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
-    }
-    if(observationValue == 2) {
-      saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
-    }
-    if(observationValue == 0) {
-      saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
-      saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
-    }
-
+    // if(observationValue == 1) {
+    //   saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
+    // }
+    // if(observationValue == 2) {
+    //   saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
+    // }
+    // if(observationValue == 0) {
+    //   saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
+    //   saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
+    // }
+    saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
 
     if (L.Browser.mobile) {
       maxWidth = 250
