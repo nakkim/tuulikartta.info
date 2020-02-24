@@ -1,6 +1,7 @@
 
 var translations = {
   'fi': {
+    'geolocation': 'Paikanna käyttäjä',
     'zoomIn': 'Lähennä',
     'zoomOut': 'Loitonna',
     'showObservations': 'Näytä asemahavainnot',
@@ -52,6 +53,7 @@ var translations = {
 
   },
   'en': {
+    'geolocation': 'Use geolocation',
     'zoomIn': 'Zoom in',
     'zoomOut': 'Zoom out',
     'info': 'Show information',

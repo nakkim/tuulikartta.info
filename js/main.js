@@ -497,12 +497,21 @@ var saa = saa || {};
     Tuulikartta.initWMS()
 
      // remove default zoomcontrol and add a new one with custom titles
-     map.zoomControl.remove()
-     L.control.zoom({zoomInTitle: translations[selectedLanguage]['zoomIn'], zoomOutTitle: translations[selectedLanguage]['zoomOut']}).addTo(map)
+    map.zoomControl.remove()
+    L.control.zoom({zoomInTitle: translations[selectedLanguage]['zoomIn'], zoomOutTitle: translations[selectedLanguage]['zoomOut']}).addTo(map)
 
-    map.locate({ setView: false, maxZoom: 18 })
-    map.on('locationfound', onLocationFound)
-    map.on('locationerror', onLocationError)
+    L.control.locate({
+      drawCircle: false,
+      locateOptions: {
+        maxZoom: 9,
+        enableHighAccuracy: true
+      },
+      icon: 'fas fa-map-marker-alt',
+      showPopup: false,
+      strings: {
+        title: translations[selectedLanguage]['geolocation']
+      }
+    }).addTo(map);
 
     saa.Tuulikartta.map.on('overlayadd', function(e) {
       saa.Tuulikartta.namelayer.bringToFront()
@@ -610,25 +619,6 @@ var saa = saa || {};
       }
     })
     map.addControl(new infoControl());
-  }
-
-  function onLocationFound (e) {
-    var radius = e.accuracy / 2
-
-    var icon = L.icon({
-      iconUrl: '../symbols/blue-pushpin.png',
-      iconSize: [32, 32],
-      iconAnchor: [10, 32],
-      popupAnchor: [0, 0]
-    })
-
-    L.marker(e.latlng, { icon: icon }).addTo(saa.Tuulikartta.map)
-    Tuulikartta.map.setView(e.latlng, 9, { animation: true })
-  }
-
-  function onLocationError (e) {
-    Tuulikartta.debug(e.message)
-    console.log('Error: The Geolocation service failed.')
   }
 
   function populateSidebar() {
