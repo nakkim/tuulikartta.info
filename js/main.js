@@ -502,6 +502,7 @@ var saa = saa || {};
 
     L.control.locate({
       drawCircle: false,
+      showCompass: false,
       locateOptions: {
         maxZoom: 9,
         enableHighAccuracy: true
