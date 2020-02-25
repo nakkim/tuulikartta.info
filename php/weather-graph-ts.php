@@ -16,7 +16,7 @@ if ($type == 'road') {
     $settings["storedQueryId"]  = "livi::observations::road::default::multipointcoverage";
     $settings["fmisid"]         = $fmisid;
 
-    
+
     $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
     $observationData = [];
     foreach ( $obs as $key => $observation ) {
@@ -45,7 +45,7 @@ if ($type == 'synop') {
     $settings["parameter"]      = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h";
     $settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
     $settings["fmisid"]         = $fmisid;
-    
+
     $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
     if(count($obs) > 200) {
         $obs = [];
@@ -58,8 +58,34 @@ $combinedData = [];
 $combinedData["obs"] = $obs;
 $combinedData["for"] = [];
 
+$combinedData = calcCumulativeSum($combinedData);
 print formatWindData($combinedData);
 
+
+
+/**
+ *
+ * Calculate cumulative precipitation
+ * @param    data as php aarray
+ * @return   data as javascript array string
+ *
+ */
+
+
+function calcCumulativeSum($data) {
+    $precSum = 0;
+    $tmpData = [];
+    foreach($data["obs"] as $observation) {
+        $tmp = $observation;
+        if(is_numeric($observation["r_1h"])) {
+            $precSum = $precSum + (float)$observation["r_1h"];
+        }
+        $tmp["calc_rr_1h"] = $precSum;
+        array_push($tmpData,$tmp);
+    }
+    $data["obs"] = $tmpData;
+    return $data;
+}
 
 
 
@@ -80,12 +106,14 @@ function formatWindData($data) {
         $dir  = "";
         $temp = "";
         $rr1h = "";
-        
+        $calc = "";
+
         $i = 0;
         foreach($dataArray as $array) {
             $tmp = $array;
             if(!is_numeric($tmp["t2m"])) {$tmp["t2m"] = "null";}
             if(empty($tmp['r_1h'])) {$tmp['r_1h'] = "null";}
+            if(empty($tmp['calc_rr_1h'])) {$tmp['calc_rr_1h'] = "null";}
             if(empty($tmp['ws_10min'])) {$tmp['ws_10min'] = "null";}
             if(empty($tmp['wg_10min'])) {$tmp['wg_10min'] = "null";}
             if(empty($tmp['wd_10min'])) {$tmp['wd_10min'] = "null";}
@@ -105,21 +133,23 @@ function formatWindData($data) {
             } else {
                 $dir  .= "[".$tmp["epoctime"].",null,null],";
             }
+            $calc .= "[".$tmp["epoctime"].",".$tmp["calc_rr_1h"]."],";
             $i++;
         }
 
         // remove last comma and add closing bracket
-        
+
         $wind = substr($wind, 0, -1);
         $dir  = substr($dir, 0, -1);
         $temp = substr($temp, 0, -1);
         $rr1h = substr($rr1h, 0, -1);
-    
-        $formattedData .= "\"{$key}\":{\"wind\":[".$wind."],\"dir\":[".$dir."],\"rr1h\":[".$rr1h."],\"temp\":[".$temp."]},";
-        
+        $calc = substr($calc, 0, -1);
+
+        $formattedData .= "\"{$key}\":{\"wind\":[".$wind."],\"rr1h_calc\":[".$calc."],\"dir\":[".$dir."],\"rr1h\":[".$rr1h."],\"temp\":[".$temp."]},";
+
     }
     $formattedData = substr($formattedData, 0, -1);
     $formattedData .= "}";
     return $formattedData;
-    
+
 }

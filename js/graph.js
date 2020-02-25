@@ -413,6 +413,21 @@ var saa = saa || {};
                 dataLabels: {
                     enabled: true
                 }
+            },
+            {
+                type: 'column',
+                name: translations[selectedLanguage]['rr_1h_calc'],
+                zIndex: 2,
+                color: '#89CFF0',
+                data: data.obs.rr1h_calc,
+                tooltip: {
+                    valueSuffix: ' mm'
+                },
+                yAxis: 1,
+                pointWidth: 1,
+                dataLabels: {
+                    enabled: false
+                }
             }],
             responsive: {
                 rules: [{
