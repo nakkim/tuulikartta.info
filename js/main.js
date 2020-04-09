@@ -30,12 +30,12 @@ var saa = saa || {};
   var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 25
   var zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 8
   var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä vain synop-asemat'
-  var observationValue = 1
   var selectedparameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
 
   var showStationObservations = true
+  var showRoadObservations = false
   var showOldObservations = false
   var getLightningData = false
   saa.Tuulikartta.showCloudStrikes = localStorage.getItem('showCloudStrikes') ? localStorage.getItem('showCloudStrikes') : true
@@ -358,12 +358,14 @@ var saa = saa || {};
 
     $('#show-observations').change(function() {
       if (this.checked == true) {
-        console.log('Show')
+        showStationObservations = true
         saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupSynop)
+        if(showRoadObservations)
         saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
       } else {
-        console.log('Hide')
+        showStationObservations = false
         saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupSynop)
+        if(showRoadObservations)
         saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
       }
     })
@@ -371,8 +373,10 @@ var saa = saa || {};
     $('#road-observations').change(function() {
       if (this.checked == true) {
         saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
+        showRoadObservations = true
       } else {
         saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
+        showRoadObservations = false
       }
     })
 
@@ -666,12 +670,6 @@ var saa = saa || {};
     html +=   '</tr>'
     html += '</table>'
     html += '<br/>'
-    // if(showStationObservations == 'true')
-    // html += '<input id="foreign-observations" type="checkbox" checked> '+translations[selectedLanguage]['foreignObs']
-    // else html += '<input id="foreign-observations" type="checkbox"> '+translations[selectedLanguage]['foreignObs']
-    // html += '<br/>'
-    // html += '<input id="old-observations" type="checkbox" checked> '+translations[selectedLanguage]['oldObs']
-    // html += '<br/>'
     html += '<br/>'
     html += '</div>'
 
@@ -917,17 +915,11 @@ var saa = saa || {};
 
   Tuulikartta.drawData = function (param) {
 
+    if(!showStationObservations) {
+      return false
+    }
+
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
-    // if(observationValue == 1) {
-    //   saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
-    // }
-    // if(observationValue == 2) {
-    //   saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
-    // }
-    // if(observationValue == 0) {
-    //   saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
-    //   saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
-    // }
     saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
 
     if (L.Browser.mobile) {
