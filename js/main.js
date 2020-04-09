@@ -114,7 +114,6 @@ var saa = saa || {};
         Tuulikartta.debug('Done')
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
-        Tuulikartta.clearMarkers()
         Tuulikartta.drawData(selectedparameter)
         selectedparameter = $('#select-wind-parameter').val()
       }
@@ -372,7 +371,7 @@ var saa = saa || {};
 
     $('#road-observations').change(function() {
       if (this.checked == true) {
-        saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
+        if(showStationObservations == true) saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
         showRoadObservations = true
       } else {
         saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
@@ -918,6 +917,7 @@ var saa = saa || {};
     if(!showStationObservations) {
       return false
     }
+    Tuulikartta.clearMarkers()
 
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
     saa.Tuulikartta.markerGroupSynop.addTo(saa.Tuulikartta.map)
