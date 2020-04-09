@@ -48,7 +48,8 @@ var saa = saa || {};
       stroke: true,
       weight: 1,
       opacity: 0.8,
-      color: 'black'
+      color: 'black',
+      interactive: false
     };
 
     var cloudLightningStyle = {
@@ -58,7 +59,8 @@ var saa = saa || {};
       stroke: true,
       weight: 1,
       opacity: 0.5,
-      color: 'black'
+      color: 'black',
+      interactive: false
     };
     
     var customLayerGround = L.geoJson(data[0], {

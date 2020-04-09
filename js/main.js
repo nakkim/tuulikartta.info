@@ -144,16 +144,20 @@ var saa = saa || {};
           saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
           Tuulikartta.callData()
 
-          if(getLightningData)
-          saa.lightning.init(endTime)
+          if(getLightningData) {
+            saa.lightning.geoLayer.clearLayers()
+            saa.lightning.init(endTime)
+          }
 
         }
       })
     } else {
       Tuulikartta.callData()
       saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
-      if(getLightningData)
-      saa.lightning.init(saa.Tuulikartta.timeStamp)
+      if(getLightningData) {
+        saa.lightning.geoLayer.clearLayers()
+        saa.lightning.init(saa.Tuulikartta.timeStamp)
+      }
     }
 
   }
@@ -587,6 +591,7 @@ var saa = saa || {};
             saa.Tuulikartta.map.removeLayer(saa.lightning.geoLayer)
             $(this).removeClass('active')
             getLightningData = false
+            saa.lightning.geoLayer.clearLayers()
           } else {
             saa.lightning.init(saa.Tuulikartta.timeStamp)
             saa.Tuulikartta.map.addLayer(saa.lightning.geoLayer)
@@ -909,7 +914,6 @@ var saa = saa || {};
     // remove all old markers
     saa.Tuulikartta.markerGroupSynop.clearLayers()
     saa.Tuulikartta.markerGroupRoad.clearLayers()
-    saa.lightning.geoLayer.clearLayers()
   }
 
   Tuulikartta.drawData = function (param) {
