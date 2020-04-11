@@ -50,7 +50,8 @@ var translations = {
     'dataInfoBody1': ' - säähavaintoja (lähes) reaaliajassa.',
     'dataInfoBody2': 'Säähavaintoaineistoa Ilmatieteen laitoksen havaintoasemilta sekä Liikenneviraston tiesääasemilta.',
     'dataInfoBody3': 'Tuulikartta.info perustuu Ilmatieteen laitoksen <a href="https://ilmatieteenlaitos.fi/avoin-data">avoimeen dataan.',
-    'dataInfoBody4': 'Seuraa sivuston kehitystä sekä kehittäjän edesottamuksia:'
+    'dataInfoBody4': 'Seuraa sivuston kehitystä sekä kehittäjän edesottamuksia:',
+    'feedback': 'Kysymykset ja palaute:'
 
   },
   'en': {
@@ -103,6 +104,7 @@ var translations = {
     'dataInfoBody1': ' - weather observations in real time',
     'dataInfoBody2': 'Weather observation data from the Finnish Meteorological Institute and from the Finnish Transport Infrastructure Agency.',
     'dataInfoBody3': 'Tuulikartta.info is based on the Finnish Meteorological Institute\'s <a href="https://en.ilmatieteenlaitos.fi/open-data">open data.',
-    'dataInfoBody4': 'Follow project progress and other stuff:'
+    'dataInfoBody4': 'Follow project progress and other stuff:',
+    'feedback': 'Questions and feedback:'
   }
 }

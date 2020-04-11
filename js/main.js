@@ -470,7 +470,9 @@ var saa = saa || {};
     html = html + '    '+translations[selectedLanguage]["dataInfoBody2"]+'</br>'
     html = html + '    '+translations[selectedLanguage]["dataInfoBody3"]+'</a>'
     html = html + '</p>'
+    html = html + '<p>'+translations[selectedLanguage]["feedback"]+' <a href="mailto:contact@tuulikarta.info">contact@tuulikarta.info</a></p>'
     html = html + '<p>'+translations[selectedLanguage]["dataInfoBody4"]+'</p>'
+
     $('#site-info-body').html(html)
   }
 
