@@ -184,7 +184,6 @@ var saa = saa || {};
       var type = e.popup._source.type
       if(type === 'Synop-asema') type = 'synop'
       if(type === 'Tiesääasema') type = 'road'
-      // saa.Tuulikartta.timeValue = "graph" // to avoid data reload
       saa.weatherGraph.getObservationGraph(fmisid,type,saa.Tuulikartta.timeValue)
       $(".owl-carousel").owlCarousel({
         navigation: true, // Show next and prev buttons
@@ -198,10 +197,6 @@ var saa = saa || {};
         // itemsMobile : false
       });
     })
-
-    // saa.Tuulikartta.map.on('popupclose', function(e){
-    //   saa.Tuulikartta.timeValue = "now"
-    // })
 
     // ---------------------------------------------------------
     // Get and save user location to localstorage
@@ -365,28 +360,6 @@ var saa = saa || {};
       }
     })
 
-    $('#foreign-observations').change(function() {
-      if (this.checked == false) {
-        showForeignObservations = false
-        localStorage.setItem('foreignObservations', 'false')
-        saa.Tuulikartta.callData()
-      } else {
-        showForeignObservations = true
-        localStorage.setItem('foreignObservations', 'true')
-        saa.Tuulikartta.callData()
-      }
-    })
-
-    $('#old-observations').change(function() {
-      if (this.checked == false) {
-        showOldObservations = false
-        saa.Tuulikartta.callData()
-      } else {
-        showForeignObservations = true
-        saa.Tuulikartta.callData()
-      }
-    })
-
     // -------------------------------------------------------------
     // change layer opacity
     // -------------------------------------------------------------
@@ -425,6 +398,10 @@ var saa = saa || {};
     })
 
   })
+
+  // ---------------------------------------------------------
+  // Build observation menu and Populate info content element
+  // ---------------------------------------------------------
 
   Tuulikartta.buildObservationMenu = function() {
     $('#main-navbar-param').html("")
@@ -684,16 +661,7 @@ var saa = saa || {};
   }
 
   // ---------------------------------------------------------
-  //  catch location error message
-  // ---------------------------------------------------------
-
-  Tuulikartta.handleLocationError = function (browserHasGeolocation, pos) {
-    geoLocation = 'false'
-    console.log('Error: The Geolocation service failed.')
-  }
-
-  // ---------------------------------------------------------
-  // Resolve wind speed and icon and  draw wind data
+  // Resolve parameter values and colors, translate wawa code to text
   // ---------------------------------------------------------
 
   Tuulikartta.resolveWindSpeed = function (windspeed) {
@@ -899,6 +867,10 @@ var saa = saa || {};
     saa.Tuulikartta.markerGroupSynop.clearLayers()
     saa.Tuulikartta.markerGroupRoad.clearLayers()
   }
+
+  // ---------------------------------------------------------
+  // Draw station observations
+  // ---------------------------------------------------------
 
   Tuulikartta.drawData = function (param) {
 
@@ -1371,7 +1343,7 @@ var saa = saa || {};
       }
     }
   }
-
+  
   // ---------------------------------------------------------
   // populate infowindow with observations
   // ---------------------------------------------------------
