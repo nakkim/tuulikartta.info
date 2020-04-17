@@ -97,7 +97,6 @@ var saa = saa || {};
   // ---------------------------------------------------------
 
   Tuulikartta.callData = function () {
-    Tuulikartta.debug('Getting data... ')
     saa.Tuulikartta.dataLoader(true)
     $.ajax({
       dataType: 'json',
@@ -107,11 +106,9 @@ var saa = saa || {};
       },
       error: function () {
         document.body.style.cursor = 'default'
-        Tuulikartta.debug('An error has occurred')
       },
       success: function (data) {
         saa.Tuulikartta.dataLoader(false)
-        Tuulikartta.debug('Done')
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
         Tuulikartta.drawData(selectedparameter)
@@ -183,11 +180,8 @@ var saa = saa || {};
     })
 
     saa.Tuulikartta.map.on('popupopen', function(e) {
-      Tuulikartta.debug('............................')
-
       var fmisid = e.popup._source.fmisid
       var type = e.popup._source.type
-      Tuulikartta.debug('fmisid: '+e.popup._source.fmisid+', type: '+e.popup._source.type)
       if(type === 'Synop-asema') type = 'synop'
       if(type === 'Tiesääasema') type = 'road'
       // saa.Tuulikartta.timeValue = "graph" // to avoid data reload
@@ -242,8 +236,6 @@ var saa = saa || {};
       saa.Tuulikartta.timeValue = timestring
       saa.Tuulikartta.timeStamp = timestring
 
-      Tuulikartta.debug('............................')
-      Tuulikartta.debug(`Find observations from ${timestring}`)
       Tuulikartta.clearMarkers()
       saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
@@ -255,15 +247,11 @@ var saa = saa || {};
       $(this).removeClass('inactive')
       $('#select-content-datasearch').addClass('inactive')
 
-      Tuulikartta.debug('............................')
-      Tuulikartta.debug('Get latest observations')
       Tuulikartta.clearMarkers()
       Tuulikartta.updateRadarData()
 
-      Tuulikartta.debug(`Load latest radar data`)
       saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
-      Tuulikartta.debug('Done')
     })
 
     // ---------------------------------------------------------
@@ -286,10 +274,6 @@ var saa = saa || {};
       timestring = timestring + 'Z'
       saa.Tuulikartta.timeStamp = timestring
 
-      Tuulikartta.debug('............................')
-      Tuulikartta.debug('Progress time')
-      Tuulikartta.debug(`Find observations from ${timestring}`)
-
       var utcOffSet = moment(timestring).utcOffset()
       if (utcOffSet < 0) { newTime.subtrack(Math.abs(utcOffSet), 'minutes') }
       if (utcOffSet > 0) { newTime.add(Math.abs(utcOffSet), 'minutes') }
@@ -301,10 +285,8 @@ var saa = saa || {};
       saa.Tuulikartta.timeStamp = timestring
       Tuulikartta.updateRadarData()
 
-      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timeValue}`)
       saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
-      Tuulikartta.debug('Done')
     })
 
     $('#timepicker-regress-time').click(function () {
@@ -323,10 +305,6 @@ var saa = saa || {};
       timestring = timestring + 'Z'
       saa.Tuulikartta.timeStamp = timestring
 
-      Tuulikartta.debug('............................')
-      Tuulikartta.debug('Progress time')
-      Tuulikartta.debug(`Find observations from ${timestring}`)
-
       var utcOffSet = moment(timestring).utcOffset()
       if (utcOffSet < 0) { newTime.subtrack(Math.abs(utcOffSet), 'minutes') }
       if (utcOffSet > 0) { newTime.add(Math.abs(utcOffSet), 'minutes') }
@@ -337,10 +315,8 @@ var saa = saa || {};
       saa.Tuulikartta.timeValue = timestring
       Tuulikartta.updateRadarData()
 
-      Tuulikartta.debug(`Load radar data from ${saa.Tuulikartta.timeValue}`)
       saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
-      Tuulikartta.debug('Done')
     })
 
     // ---------------------------------------------------------
@@ -1473,9 +1449,6 @@ var saa = saa || {};
 
   setInterval(function () {
     if (saa.Tuulikartta.timeValue === 'now') {
-      Tuulikartta.debug('............................')
-      Tuulikartta.debug('Update data and draw markers')
-      Tuulikartta.debug('Time now: ' + (new Date()).toUTCString())
       Tuulikartta.updateRadarData()
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
