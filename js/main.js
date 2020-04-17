@@ -271,6 +271,9 @@ var saa = saa || {};
     // ---------------------------------------------------------
 
     $('#timepicker-progress-time').click(function () {
+      $('#select-content-datasearch').removeClass('inactive')
+      $('#select-content-now').addClass('inactive')
+
       Tuulikartta.clearMarkers()
 
       var date = document.getElementById('datepicker-button').value
@@ -305,6 +308,9 @@ var saa = saa || {};
     })
 
     $('#timepicker-regress-time').click(function () {
+      $('#select-content-datasearch').removeClass('inactive')
+      $('#select-content-now').addClass('inactive')
+
       Tuulikartta.clearMarkers()
 
       var date = document.getElementById('datepicker-button').value
@@ -920,9 +926,7 @@ var saa = saa || {};
 
   Tuulikartta.drawData = function (param) {
 
-    if(!showStationObservations) {
-      return false
-    }
+    if(!showStationObservations) return false
     Tuulikartta.clearMarkers()
 
     var sizeofdata = parseInt(Object.keys(saa.Tuulikartta.data).length)
@@ -1380,7 +1384,7 @@ var saa = saa || {};
     }
 
     if (saa.Tuulikartta.timeValue === 'now') {
-      for (var i = 0; i < 1; i++) {
+      for (var i = 0; i < 100; i++) {
         if (saa.Tuulikartta.data[i]['type'] === 'synop') {
 	        var time = moment(saa.Tuulikartta.data[i]['time'], ['YYYY-MM-DDTHH:mm:ssZ'])
 	        var timestring = time.format('DD.MM.YYYY HH:mm')
