@@ -149,7 +149,7 @@ class DataMiner{
         if(isset($settings['fmisid'])) {
             $url .= "&fmisid={$settings["fmisid"]}";
         } else {
-            $url .= "&bbox={$settings["bbox"]},epsg::4326&";
+            $url .= "&bbox={$settings["bbox"]},epsg::4326";
         }
 
         if(isset($settings['timestep']))
@@ -157,23 +157,31 @@ class DataMiner{
 
         if($timestamp == "now") {
             if($graph) {
-                $starttime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60-18*60*60);
-                $endtime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60);
-                $url .= "&starttime=${starttime}&endtime=${endtime}";
+                $endtime = new DateTime();
+                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+                $start   = $endtime->sub(new DateInterval('PT18H'));
+                $start   = $start->format('Y-m-d\TH:i:s\Z');
+                $url .= "&starttime=${start}&endtime=${end}";
             } else {
-                $starttime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60-60*60);
-                $endtime = date("Y-m-d\TH:i:s\Z", time()-(date('Z')/3600)*60*60);
-                $url .= "&starttime=${starttime}&endtime=${endtime}";
+                $endtime = new DateTime();
+                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+                $start   = $endtime->sub(new DateInterval('PT1H'));
+                $start   = $start->format('Y-m-d\TH:i:s\Z');
+                $url .= "&starttime=${start}&endtime=${end}";
             }
         } else {
             if($graph) {
-                $time = strtotime($timestamp);
-                $starttime = date('Y-m-d\TH:i:s\Z',$time - 18*3600);
-                $url .= "&starttime=${starttime}&endtime=${timestamp}";
+                $endtime = new DateTime($timestamp);
+                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+                $start   = $endtime->sub(new DateInterval('PT18H'));
+                $strat   = $start->format('Y-m-d\TH:i:s\Z');
+                $url .= "&starttime=${start}&endtime=${end}";
             } else {
-                $time = strtotime($timestamp);
-                $starttime = date('Y-m-d\TH:i:s\Z',$time - 3600);
-                $url .= "&starttime=${starttime}&endtime=${timestamp}";
+                $endtime = new DateTime($timestamp);
+                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+                $start   = $endtime->sub(new DateInterval('PT1H'));
+                $start   = $start->format('Y-m-d\TH:i:s\Z');
+                $url .= "&starttime=${start}&endtime=${end}";
             }
         }
 
