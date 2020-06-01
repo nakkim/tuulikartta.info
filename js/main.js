@@ -188,7 +188,6 @@ var saa = saa || {};
       if(type === 'Synop-asema') type = 'synop'
       if(type === 'Tiesääasema') type = 'road'
       saa.weatherGraph.getObservationGraph(fmisid,type,saa.Tuulikartta.timeValue)
-      console.log('startPosition:',startPosition)
       $(".owl-carousel").owlCarousel({
         navigation: true, // Show next and prev buttons
         slideSpeed: 300,
