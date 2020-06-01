@@ -174,7 +174,7 @@ class DataMiner{
                 $endtime = new DateTime($timestamp);
                 $end     = $endtime->format('Y-m-d\TH:i:s\Z');
                 $start   = $endtime->sub(new DateInterval('PT18H'));
-                $strat   = $start->format('Y-m-d\TH:i:s\Z');
+                $start   = $start->format('Y-m-d\TH:i:s\Z');
                 $url .= "&starttime=${start}&endtime=${end}";
             } else {
                 $endtime = new DateTime($timestamp);
