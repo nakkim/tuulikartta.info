@@ -30,7 +30,8 @@ var saa = saa || {};
   var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 25
   var zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 8
   var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä vain synop-asemat'
-  var selectedparameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
+  var selectedParameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
+  var startPosition = 0
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
 
@@ -60,7 +61,7 @@ var saa = saa || {};
     latitude = lat
     longtitude = lon
     zoomlevel = zoom
-    selectedparameter = initParam
+    selectedParameter = initParam
   }
 
   // ---------------------------------------------------------
@@ -111,8 +112,9 @@ var saa = saa || {};
         saa.Tuulikartta.dataLoader(false)
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
-        Tuulikartta.drawData(selectedparameter)
-        selectedparameter = $('#select-wind-parameter').val()
+        Tuulikartta.drawData(selectedParameter)
+        selectedParameter = $('#select-wind-parameter').val()
+        startPosition = resolveGraphStartposition(selectedParameter)
       }
     })
   }
@@ -170,7 +172,8 @@ var saa = saa || {};
       Tuulikartta.clearMarkers()
       Tuulikartta.drawData($(this).val())
 
-      selectedparameter = $(this).val()
+      selectedParameter = $(this).val()
+      startPosition = resolveGraphStartposition(selectedParameter)
 
       var lat = saa.Tuulikartta.map.getCenter().lat
       var lon = saa.Tuulikartta.map.getCenter().lng
@@ -185,16 +188,14 @@ var saa = saa || {};
       if(type === 'Synop-asema') type = 'synop'
       if(type === 'Tiesääasema') type = 'road'
       saa.weatherGraph.getObservationGraph(fmisid,type,saa.Tuulikartta.timeValue)
+      console.log('startPosition:',startPosition)
       $(".owl-carousel").owlCarousel({
         navigation: true, // Show next and prev buttons
         slideSpeed: 300,
         paginationSpeed: 400,
         items: 1,
-        pagination: false
-        // itemsDesktop : false,
-        // itemsDesktopSmall : false,
-        // itemsTablet: false,
-        // itemsMobile : false
+        pagination: false,
+        startPosition: startPosition
       });
     })
 
@@ -210,7 +211,7 @@ var saa = saa || {};
       localStorage.setItem('longitude', lon)
       localStorage.setItem('zoomlevel', zoom)
 
-      window.location.replace('#lang='+selectedLanguage+'#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+','+zoom+'#parameter='+selectedparameter)
+      window.location.replace('#lang='+selectedLanguage+'#latlon='+Math.round(lat*100)/100+','+Math.round(lon*100)/100+','+zoom+'#parameter='+selectedParameter)
 
     })
 
@@ -328,7 +329,7 @@ var saa = saa || {};
         selectedLanguage = 'fi'
         localStorage.setItem('language', 'fi')
       }
-      window.location.replace('#lang='+selectedLanguage+'#latlon='+latitude+','+longtitude+'#zoom='+zoomlevel+'#parameter='+selectedparameter)
+      window.location.replace('#lang='+selectedLanguage+'#latlon='+latitude+','+longtitude+'#zoom='+zoomlevel+'#parameter='+selectedParameter)
       window.location.reload()
     })
 
@@ -1413,6 +1414,15 @@ var saa = saa || {};
 
   Tuulikartta.eraseCookie = function (name) {
     mMinClass.createCookie(name, '', -1)
+  }
+
+  function resolveGraphStartposition(value) {
+    if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1h' || value === 'wg_1h')
+    return 0
+    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 't2m')
+    return 1
+    else 
+    return 0
   }
 
   // ---------------------------------------------------------
