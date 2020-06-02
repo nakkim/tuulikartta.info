@@ -556,6 +556,206 @@
 }
 
 
+/* relative humidity */
 
+.hexf7fbff {
+  font-weight: bold;
+  background-color: rgba(247,251,255,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
 
+.hexdeebf7 {
+  font-weight: bold;
+  background-color: rgba(222,235,247,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
 
+.hexc6dbef {
+  font-weight: bold;
+  background-color: rgba(198,219,239,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex9ecae1 {
+  font-weight: bold;
+  background-color: rgba(158,202,225,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex6baed6 {
+  font-weight: bold;
+  background-color: rgba(107,174,214,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex4292c6 {
+  font-weight: bold;
+  background-color: rgba(66,146,198,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex2171b5 {
+  font-weight: bold;
+  background-color: rgba(33,113,181,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex08519c {
+  font-weight: bold;
+  background-color: rgba(8,81,156,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex08306b {
+  font-weight: bold;
+  background-color: rgba(8,48,107,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+/* pressure */
+
+.hex9e0142 {
+  font-weight: bold;
+  background-color: rgba(158,1,66,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hexd53e4f {
+  font-weight: bold;
+  background-color: rgba(213,62,79,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hexf46d43 {
+  font-weight: bold;
+  background-color: rgba(244,109,67,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hexfdae61 {
+  font-weight: bold;
+  background-color: rgba(253,174,97,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hexfee08b {
+  font-weight: bold;
+  background-color: rgba(254,224,139,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hexffffbf {
+  font-weight: bold;
+  background-color: rgba(255,255,191,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hexe6f598 {
+  font-weight: bold;
+  background-color: rgba(230,245,152,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hexabdda4 {
+  font-weight: bold;
+  background-color: rgba(171,221,164,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex66c2a5 {
+  font-weight: bold;
+  background-color: rgba(102,194,165,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex3288bd {
+  font-weight: bold;
+  background-color: rgba(50,136,189,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}
+
+.hex5e4fa2 {
+  font-weight: bold;
+  background-color: rgba(94,79,162,0.7);
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
+}

@@ -417,6 +417,8 @@ var saa = saa || {};
     html = html + '<option value="wawa">'+translations[selectedLanguage]["wawa"]+'</option>'
     html = html + '<option value="n_man">'+translations[selectedLanguage]["n_man"]+'</option>'
     html = html + '<option value="snow_aws">'+translations[selectedLanguage]["snow_aws"]+'</option>'
+    html = html + '<option value="pressure">'+translations[selectedLanguage]["pressure"]+'</option>'
+    html = html + '<option value="rh">'+translations[selectedLanguage]["rh"]+'</option>'
     html = html + '</select>'
     $('#main-navbar-param').html(html)
   }
@@ -686,7 +688,7 @@ var saa = saa || {};
     if (rr_1h > 20.0 && rr_1h <= 30.0) return "#fc8d59";
     if (rr_1h > 30.0) return "#d73027";
   }
-
+0
   Tuulikartta.resolveSnowDepth = function (snow) {
     if (snow > 0 && snow <= 10) return "#bfe6ff";
     if (snow > 10 && snow <= 20) return "#8dcdff";
@@ -699,6 +701,33 @@ var saa = saa || {};
     if (snow > 150 && snow <= 175) return "#7e117e";
     if (snow > 175 && snow <= 200) return "#5b106f";
     if (snow > 200) return "#ebdaf0";
+  }
+
+  Tuulikartta.resolveRelativeHumidity = function (rh) {
+    if (rh >= 0 && rh < 50) return "#f7fbff";
+    if (rh >= 50 && rh < 60) return "#deebf7";
+    if (rh >= 60 && rh < 65) return "#c6dbef";
+    if (rh >= 65 && rh < 70) return "#9ecae1";
+    if (rh >= 70 && rh < 75) return "#6baed6";
+    if (rh >= 75 && rh < 80) return "#4292c6";
+    if (rh >= 80 && rh < 85) return "#2171b5";
+    if (rh >= 85 && rh < 90) return "#08519c";
+    if (rh > 90) return "#08306b";
+    //https://colorbrewer2.org/#type=sequential&scheme=GnBu&n=6
+  }
+
+  Tuulikartta.resolvePressure = function (p) {
+    if (p < 980) return "#9e0142";
+    if (p >= 985 && p < 990) return "#d53e4f";
+    if (p >= 990 && p < 995) return "#f46d43";
+    if (p >= 995 && p < 1000) return "#fdae61";
+    if (p >= 1000 && p < 1005) return "#fee08b";
+    if (p >= 1005 && p < 1010) return "#ffffbf";
+    if (p >= 1010 && p < 1015) return "#e6f598";
+    if (p >= 1015 && p < 1020) return "#abdda4";
+    if (p >= 1020 && p < 1025) return "#66c2a5";
+    if (p >= 1025 && p < 1030) return "#3288bd";
+    if (p > 1030) return "#5e4fa2";
   }
 
   Tuulikartta.resolveWawaCode = function (wawa) {
@@ -1211,6 +1240,35 @@ var saa = saa || {};
         }
       }
 
+      if (param === 'pressure') {
+        if (saa.Tuulikartta.data[i]['pressure'] !== null) {
+          var fillColor = Tuulikartta.resolvePressure(saa.Tuulikartta.data[i][param])
+          var hex = fillColor.substr(1)
+          hex = 'hex' + hex
+
+          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+            {
+              interactive: true,
+              keyboard: false,
+              icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+            })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
+        }
+      }
+
       if (param === 'wawa') {
         if (saa.Tuulikartta.data[i]['wawa'] !== null && Tuulikartta.resolveWawaCode(saa.Tuulikartta.data[i]['wawa']) !== null) {
           var code = Tuulikartta.resolveWawaCode(saa.Tuulikartta.data[i]['wawa'])
@@ -1328,6 +1386,36 @@ var saa = saa || {};
           marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
           marker.type = saa.Tuulikartta.data[i]['type']
         }
+      }
+
+      if (param === 'rh') {
+        if(saa.Tuulikartta.data[i][param] !== 'NaN' ) {
+          var fillColor = Tuulikartta.resolveRelativeHumidity(saa.Tuulikartta.data[i][param])
+          var hex = fillColor.substr(1)
+          hex = 'hex' + hex
+          if (saa.Tuulikartta.data[i][param] !== null && parseFloat(saa.Tuulikartta.data[i][param]) > 0) {
+            var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+              {
+                interactive: true,
+                keyboard: false,
+                icon: Tuulikartta.createLabelIcon(hex, parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+              })
+
+            if (saa.Tuulikartta.data[i]['type'] === 'road') {
+              marker.addTo(saa.Tuulikartta.markerGroupRoad)
+            } else {
+              marker.addTo(saa.Tuulikartta.markerGroupSynop)
+            }
+
+            marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+            saa.Tuulikartta.data[i]['fmisid']),{
+              maxWidth: maxWidth
+            })
+            marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+            marker.type = saa.Tuulikartta.data[i]['type']
+          }
+        }
+
       }
     }
 
