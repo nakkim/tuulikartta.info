@@ -267,7 +267,6 @@ var saa = saa || {};
 
         });
 
-
         var chart2 = Highcharts.chart(`weather-chart-${fmisid}_alt`, {
 
             chart: {
@@ -443,6 +442,162 @@ var saa = saa || {};
             }
 
         });
+
+        var chart3 = Highcharts.chart(`weather-chart-${fmisid}_alt2`, {
+
+          chart: {
+              spacingTop: 0,
+              // spacingRight: 0,
+              spacingBottom: 0,
+              spacingLeft: 0,
+              // plotBorderWidth: 0,
+              marginLeft: 40,
+              // marginRight: 10,
+              marginBottom: 60,
+              height: '300px'
+          },
+          title: {
+              text: null
+          },
+          time: {
+              timezoneOffset: weatherGraph.getTimeZoneDirrerence()
+          },
+          rangeSelector: {
+              selected: 1
+          },
+          subtitle: {
+              text: translations[selectedLanguage]['cloudVisTitle'],
+              style: {
+                  color: 'black',
+                  font: '12px Roboto, sans-serif'
+              }
+          },
+          xAxis: {
+              type: 'datetime',
+              labels: {
+                  formatter: function () {
+                      var date    = new Date(this.value),
+                          hours   = weatherGraph.formatTimeLabel(date.getHours()),
+                          minutes = weatherGraph.formatTimeLabel(date.getMinutes()),
+                          day     = weatherGraph.resolveWeekDay(date.getDay());
+
+                      if( hours !== "00" ) {
+                          return hours + ":" + minutes;
+                      }
+                      else {
+                          // if 12 AM return day name
+                          //return day + ", " + hours + ":" + minutes;
+                          return day;
+                      }
+                  }
+              },
+              style: {
+                  color: 'black',
+                  font: '12px Roboto, sans-serif'
+              },
+              minorTickInterval: 'auto',
+              minorTickColor: '#f2f2f2'
+          },
+          yAxis: [
+              {
+                  title: {
+                      align: 'high',
+                      offset: 0,
+                      text: 'km',
+                      rotation: 0,
+                      y: -14,
+                      x: -10
+                  },
+                  labels: {
+                      style: {
+                          color: 'black',
+                          font: '12px Roboto, sans-serif'
+                      }
+                  },
+                  minorTickInterval: 'auto',
+                  minorTickColor: '#f2f2f2'
+              },
+              {
+                  title: {
+                      align: 'high',
+                      offset: 0,
+                      text: '/8',
+                      rotation: 0,
+                      y: -14,
+                      x: -10
+                  },
+                  max: 8,
+                  min: 0,
+                  tickAmount: 9,
+                  opposite: true,
+                  labels: {
+                      style: {
+                          color: 'black',
+                          font: '12px Roboto, sans-serif'
+                      }
+                  },
+              }
+          ],
+          tooltip: {
+              crosshairs: true,
+              shared: true,
+              labels: {
+                  style: {
+                      color: 'black',
+                      font: '12px Roboto, sans-serif'
+                  }
+              }
+          },
+          exporting: {
+              enabled: false
+          },
+          legend: {
+              enabled: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [
+          {
+              type: 'column',
+              name: translations[selectedLanguage]['n_man'],
+              color: '#828282',//'#A8A8A8',
+              data: data.obs.n_man,
+              zIndex: 10,
+              tooltip: {
+                  valueSuffix: '/8'
+              },
+              yAxis: 1
+          },
+          {
+              type: 'areaspline',
+              name: translations[selectedLanguage]['vis'],
+              zIndex: 9,
+              data: data.obs.vis,
+              tooltip: {
+                  valueSuffix: ' km'
+              },
+              yAxis: 0
+          }],
+          responsive: {
+              rules: [{
+                  condition: {
+                      maxHeight: 150
+                  },
+                  chartOptions: {
+                      legend: {
+                          enabled: true
+                      }
+                  }
+              }]
+          },
+          plotOptions: {
+            areaspline: {
+                fillOpacity: 0.4
+            }
+        },
+
+      });
         // saa.Tuulikartta.graphIds = {chart1,chart2}
     }
 

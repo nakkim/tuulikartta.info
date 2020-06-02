@@ -42,7 +42,7 @@ if ($type == 'synop') {
 
     $settings = array();
     $settings["stationtype"]    = "synop";
-    $settings["parameter"]      = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h";
+    $settings["parameter"]      = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h,vis";
     $settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
     $settings["fmisid"]         = $fmisid;
 
@@ -107,6 +107,8 @@ function formatWindData($data) {
         $temp = "";
         $rr1h = "";
         $calc = "";
+        $vis  = "";
+        $nn   = "";
 
         $i = 0;
         foreach($dataArray as $array) {
@@ -117,11 +119,15 @@ function formatWindData($data) {
             if(empty($tmp['ws_10min'])) {$tmp['ws_10min'] = "null";}
             if(empty($tmp['wg_10min'])) {$tmp['wg_10min'] = "null";}
             if(empty($tmp['wd_10min'])) {$tmp['wd_10min'] = "null";}
+            if(empty($tmp['vis'])) {$tmp['vis'] = "null";}
+            if(!is_numeric($tmp['n_man'])) {$tmp['n_man'] = "null";}
 
             $tmp["epoctime"] = intval($tmp["epoctime"]*1000);
 
             $temp .= "[".$tmp["epoctime"].",".$tmp["t2m"]."],";
             $rr1h .= "[".$tmp["epoctime"].",".$tmp["r_1h"]."],";
+            $vis  .= "[".$tmp["epoctime"].",".round($tmp["vis"]/1000,2)."],";
+            $nn   .= "[".$tmp["epoctime"].",".$tmp["n_man"]."],";
             $wind .= "[".$tmp["epoctime"].",".$tmp["ws_10min"].",".$tmp["wg_10min"]."],";
             if ($i % 3 == 0) {
                 if (floatval($tmp["ws_10min"]) >= 1.0) {
@@ -144,8 +150,10 @@ function formatWindData($data) {
         $temp = substr($temp, 0, -1);
         $rr1h = substr($rr1h, 0, -1);
         $calc = substr($calc, 0, -1);
+        $nn   = substr($nn  , 0, -1);
+        $vis  = substr($vis , 0, -1);
 
-        $formattedData .= "\"{$key}\":{\"wind\":[".$wind."],\"rr1h_calc\":[".$calc."],\"dir\":[".$dir."],\"rr1h\":[".$rr1h."],\"temp\":[".$temp."]},";
+        $formattedData .= "\"{$key}\":{\"wind\":[".$wind."],\"rr1h_calc\":[".$calc."],\"dir\":[".$dir."],\"rr1h\":[".$rr1h."],\"vis\":[".$vis."],\"n_man\":[".$nn."],\"temp\":[".$temp."]},";
 
     }
     $formattedData = substr($formattedData, 0, -1);

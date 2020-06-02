@@ -1380,6 +1380,7 @@ var saa = saa || {};
     output += `<div id="owl-carousel-chart-${fmisid}" class="owl-carousel owl-theme">`
     output += `<div id="weather-chart-${fmisid}"></div>`
     output += `<div id="weather-chart-${fmisid}_alt"></div>`
+    output += `<div id="weather-chart-${fmisid}_alt2"></div>`
     output += '</div>'
     output += `</div>`
 
@@ -1418,8 +1419,10 @@ var saa = saa || {};
   function resolveGraphStartposition(value) {
     if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1h' || value === 'wg_1h')
     return 0
-    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 't2m')
+    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 't2m' || value === 'wawa')
     return 1
+    else if(value === 'vis' || value === 'n_man')
+    return 2
     else 
     return 0
   }
