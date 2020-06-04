@@ -42,7 +42,7 @@ var saa = saa || {};
     saa.lightning.geoLayer.clearLayers()
 
     var groundLightningStyle = {
-      radius: 4, 
+      radius: 6, 
       fillColor: 'red', 
       fillOpacity: 0.7, 
       stroke: true,
@@ -53,7 +53,7 @@ var saa = saa || {};
     };
 
     var cloudLightningStyle = {
-      radius: 3, 
+      radius: 5, 
       fillColor: 'violet', 
       fillOpacity: 0.6, 
       stroke: true,
