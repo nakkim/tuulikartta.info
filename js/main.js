@@ -712,7 +712,7 @@ var saa = saa || {};
     if (rh >= 75 && rh < 80) return "#4292c6";
     if (rh >= 80 && rh < 85) return "#2171b5";
     if (rh >= 85 && rh < 90) return "#08519c";
-    if (rh > 90) return "#08306b";
+    if (rh >= 90) return "#08306b";
     //https://colorbrewer2.org/#type=sequential&scheme=GnBu&n=6
   }
 
