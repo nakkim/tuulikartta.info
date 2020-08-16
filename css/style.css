@@ -2,6 +2,7 @@ html, body {
     height: 100%;
     width: 100%;
     margin: 0px 0px 0px 0px;
+    font-family: sans-serif;
 }
 
 body {
@@ -34,6 +35,14 @@ td, tr {
     margin-top: 50px;
 }
 
+.leaflet-bar a,
+.leaflet-bar a:hover {
+	  width: 30px;
+	  height: 30px;
+    line-height: 30px;
+    font-size: 18px;
+}
+
 .leaflet-control-select-source {
     background-image: url(images/layers.png);
     background-repeat: no-repeat;
@@ -42,7 +51,7 @@ td, tr {
     width: 48px;
     height: 48px;
     cursor: pointer;
-	pointer-events: auto;
+	  pointer-events: auto;
 }
 
 .leaflet-control-select-source:hover {
@@ -56,10 +65,10 @@ td, tr {
     padding: 7px 7px 7px 7px;
     background-size: 100%;
     background-color: white;
-    width: 34px;
-    height: 34px;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
-	pointer-events: auto;
+	  pointer-events: auto;
 }
 
 .leaflet-bar button {

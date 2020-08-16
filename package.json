@@ -1,0 +1,37 @@
+{
+  "name": "tuulikartta.info",
+  "version": "1.0.0",
+  "description": "Weather observation visualization tool",
+  "main": "js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nakkim/tuulikartta.info.git"
+  },
+  "keywords": [
+    "tuulikartta",
+    "weather",
+    "observation"
+  ],
+  "author": "Ville Ilkka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nakkim/tuulikartta.info/issues"
+  },
+  "homepage": "https://github.com/nakkim/tuulikartta.info#readme",
+  "dependencies": {
+    "bootstrap-datepicker": "^1.9.0",
+    "highcharts": "^8.1.2",
+    "jquery": "^3.5.1",
+    "leaflet": "^1.6.0",
+    "leaflet-responsive-popup": "^0.6.4",
+    "leaflet-rotatedmarker": "^0.2.0",
+    "leaflet-sidebar": "^0.2.0",
+    "leaflet-timedimension": "^1.1.1",
+    "leaflet.locatecontrol": "^0.72.0",
+    "moment": "^2.27.0",
+    "owl.carousel": "^2.3.4"
+  }
+}
