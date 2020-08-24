@@ -448,10 +448,10 @@ class DataMiner{
                     $r_1h = $data[$i]["r_1h"];
                 }
             } else {
-                if($ws_1h === -0.1){ $ws_1h = "null"; }
-                if($wg_1h === -0.1){ $wg_1h = "null"; }
-                if($ws_max_dir === ""){ $ws_max_dir = "null"; }
-                if($wg_max_dir === ""){ $wg_max_dir = "null"; }
+                if($ws_1h === -0.1){ $ws_1h = null; }
+                if($wg_1h === -0.1){ $wg_1h = null; }
+                if($ws_max_dir === ""){ $ws_max_dir = null; }
+                if($wg_max_dir === ""){ $wg_max_dir = null; }
                 $data[$i]["ws_1h"] = $ws_1h;
                 $data[$i]["wg_1h"] = $wg_1h;
                 $data[$i]["wg_max_dir"] = $wg_max_dir;
