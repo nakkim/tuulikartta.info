@@ -605,7 +605,7 @@ var saa = saa || {};
     html += '<h1>'+translations[selectedLanguage]['settings']+'</h1>'
     html += '<input id="show-observations" type="checkbox" checked> '+translations[selectedLanguage]['showObservations'] 
     html += '<br/>'
-    html += '<input id="road-observations" type="checkbox"> '+translations[selectedLanguage]['roadObs']
+    html += '<input id="road-observations" type="checkbox" disabled> '+translations[selectedLanguage]['roadObs']
     html += '<br/>'
     html += '<br/>'
     html += '<span><b>'+translations[selectedLanguage]['layerOpacity']+'</b></span>'
