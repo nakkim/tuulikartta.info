@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit', '-1');
 
 /**
  * DataMiner class
@@ -9,6 +10,26 @@ class DataMiner{
 
     function __construct(){
 
+    }
+
+    private function setTime($timestamp) {
+      $url = "";
+      if ( $timestamp === "now" ) {
+        $start  = new DateTime('', new DateTimezone('Europe/Helsinki'));
+        $start->setTime(0,0);
+        $start->setTimezone(new DateTimeZone('UTC'));
+        $start  = $start->format('Y-m-d\TH:i:s\Z');
+        $url    = "&starttime=${start}";
+      } else {
+        $start  = new DateTime(substr($timestamp,0,-1), new DateTimezone('Europe/Helsinki'));
+        $start->setTime(0,0);
+        $start->setTimezone(new DateTimeZone('UTC'));
+        $start  = $start->format('Y-m-d\TH:i:s\Z');
+        $endtime = new DateTime($timestamp, new DateTimeZone('UTC'));
+        $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+        $url     = "&starttime=${start}&endtime=${end}";
+      }
+      return $url;
     }
 
     /**
@@ -258,16 +279,7 @@ class DataMiner{
       $url .= "&timeformat=xml";
       // $url .= "&timestep=10";
       $url .= "&param=".$settings['parameters'];
-      if ( $timestamp === "now" ) {
-        $endtime = new DateTime();
-        $start   = $endtime->format('Y-m-d\T00:00:00\Z');
-        $url .= "&starttime=${start}";
-      } else {
-        $endtime = new DateTime($timestamp);
-        $end     = $endtime->format('Y-m-d\TH:i:s\Z');
-        $start   = $endtime->format('Y-m-d\T00:00:00\Z');
-        $url .= "&starttime=${start}&endtime=${end}";
-      }
+      $url .= $this->setTime($timestamp);
       $data = file_get_contents($url);
       return json_decode($data, true);
     }
