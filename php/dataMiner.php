@@ -405,6 +405,7 @@ class DataMiner{
                 $data[$i]["ws_max_dir"] = $ws_max_dir;
                 $data[$i]["tmax"] = $tmax;
                 $data[$i]["tmin"] = $tmin;
+                $data[$i]["rr_1h"] = $r_1h;
                 $data[$i]["rr_1d"] = round($r_1d,1);
                 array_push($outputArray, $data[$i]);
                 $r_1h = null;
