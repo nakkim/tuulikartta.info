@@ -250,17 +250,14 @@ class DataMiner{
     public function timeseries($timestamp,$settings) {
       $url =  "http://opendata.fmi.fi/timeseries?";
       $url .= "format=json";
-      $url .= "&producer=observations_fmi";
-      $url .= "&keyword=synop_fi";
+      $url .= "&producer=".$settings['producer'];
+      $url .= "&keyword=".$settings['keyword'];
       $url .= "&precision=double";
       // $url .= "&missingtext=null";
       $url .= "&tz=utc";      
       $url .= "&timeformat=xml";
       // $url .= "&timestep=10";
-      // meta parameters
-      $url .= "&param=stationname%20as%20station,fmisid,lat,lon,epochtime,time,fmisid,";
-      // meteorological parameters
-      $url .= "ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,t2m,n_man,r_1h,snow_aws,pressure,rh";
+      $url .= "&param=".$settings['parameters'];
       if ( $timestamp === "now" ) {
         $endtime = new DateTime();
         $start   = $endtime->format('Y-m-d\T00:00:00\Z');
@@ -363,6 +360,9 @@ class DataMiner{
         $wg_max_dir = "";
         $ws_max_dir = "";
         $r_1h = null;
+        $r_1d = 0;
+        $tmin = 999;
+        $tmax = -999;
         for ($i = 0; $i <= count($data)-2; $i++) {
             # check if fmisid value is the same as the next one (ie its the same station)
             if($data[$i]["fmisid"] === $data[$i+1]["fmisid"]) {
@@ -386,7 +386,14 @@ class DataMiner{
                 if($data[$i]["r_1h"] !== null) {
                     # save observation values
                     $r_1h = $data[$i]["r_1h"];
+                    $r_1d = $r_1d + floatVal($data[$i]["r_1h"]);
                 }
+                # check if observations are valid
+                if($data[$i]["t2m"] !== null) {
+                  # save observation values
+                  if($data[$i]["t2m"] < $tmin) {$tmin = $data[$i]["t2m"];}
+                  if($data[$i]["t2m"] > $tmax) {$tmax = $data[$i]["t2m"];}
+              }
             } else {
                 if($ws_1d === -0.1){ $ws_1d = null; }
                 if($wg_1d === -0.1){ $wg_1d = null; }
@@ -396,11 +403,16 @@ class DataMiner{
                 $data[$i]["wg_1d"] = $wg_1d;
                 $data[$i]["wg_max_dir"] = $wg_max_dir;
                 $data[$i]["ws_max_dir"] = $ws_max_dir;
-                $data[$i]["rr_1h"] = $r_1h;
+                $data[$i]["tmax"] = $tmax;
+                $data[$i]["tmin"] = $tmin;
+                $data[$i]["rr_1d"] = round($r_1d,1);
                 array_push($outputArray, $data[$i]);
                 $r_1h = null;
+                $r_1d = 0;
                 $ws_1d = -0.1;
                 $wg_1d = -0.1;
+                $tmin = 999;
+                $tmax = -999;
                 $wg_max_dir = "";
                 $ws_max_dir = "";
             }

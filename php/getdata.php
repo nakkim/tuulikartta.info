@@ -10,11 +10,9 @@ $dataMiner = new DataMiner();
 
 // synop observations
 $settings = array();
-$settings["stationtype"]    = "synop";
-$settings["parameter"]      = "ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,t2m,n_man,r_1h,snow_aws,pressure,rh";
-$settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
-$settings["bbox"]           = "16.58,58.81,34.8,70.61";
-#$synopdata = $dataMiner->multipointcoverage($timestamp,$settings, false);
+$settings["parameters"]     = "stationname%20as%20station,fmisid,lat,lon,epochtime,time,fmisid,ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,t2m,n_man,r_1h,snow_aws,pressure,rh";
+$settings["producer"]       = "observations_fmi";
+$settings["keyword"]        = "synop_fi";
 $synopdata = $dataMiner->timeseries($timestamp,$settings,false);
 
 for ($i=0; $i < count($synopdata); $i++) {
