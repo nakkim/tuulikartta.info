@@ -336,8 +336,8 @@ class DataMiner{
         }
 
         for($i=0; $i<count($final); $i++) {
-        $final[$i]["ws_1h"] = $final[$i]["ws_10min"];
-        $final[$i]["wg_1h"] = $final[$i]["wg_10min"];
+        $final[$i]["ws_1d"] = $final[$i]["ws_10min"];
+        $final[$i]["wg_1d"] = $final[$i]["wg_10min"];
         $final[$i]["ws_max_dir"] = $final[$i]["wd_10min"];
         $final[$i]["wg_max_dir"] = $final[$i]["wd_10min"];
         }
@@ -358,8 +358,8 @@ class DataMiner{
         $outputArray = array();
         $tmp = array();
 
-        $ws_1h = -0.1;
-        $wg_1h = -0.1;
+        $ws_1d = -0.1;
+        $wg_1d = -0.1;
         $wg_max_dir = "";
         $ws_max_dir = "";
         $r_1h = null;
@@ -369,16 +369,16 @@ class DataMiner{
                 # check if observations are valid
                 if($data[$i]["ws_10min"] !== "nan") {
                     # check if observation values are greater that previous one
-                    if($ws_1h < floatval($data[$i]["ws_10min"])) {
-                        $ws_1h = $data[$i]["ws_10min"];
+                    if($ws_1d < floatval($data[$i]["ws_10min"])) {
+                        $ws_1d = $data[$i]["ws_10min"];
                         $ws_max_dir = $data[$i]["wd_10min"];
                     }
                 }
                 # check if observations are valid
                 if($data[$i]["wg_10min"] !== "nan") {
                     # check if observation values are greater that previous one
-                    if($wg_1h < floatval($data[$i]["wg_10min"])) {
-                        $wg_1h = $data[$i]["wg_10min"];
+                    if($wg_1d < floatval($data[$i]["wg_10min"])) {
+                        $wg_1d = $data[$i]["wg_10min"];
                         $wg_max_dir = $data[$i]["wd_10min"];
                     }
                 }
@@ -388,19 +388,19 @@ class DataMiner{
                     $r_1h = $data[$i]["r_1h"];
                 }
             } else {
-                if($ws_1h === -0.1){ $ws_1h = null; }
-                if($wg_1h === -0.1){ $wg_1h = null; }
+                if($ws_1d === -0.1){ $ws_1d = null; }
+                if($wg_1d === -0.1){ $wg_1d = null; }
                 if($ws_max_dir === ""){ $ws_max_dir = null; }
                 if($wg_max_dir === ""){ $wg_max_dir = null; }
-                $data[$i]["ws_1h"] = $ws_1h;
-                $data[$i]["wg_1h"] = $wg_1h;
+                $data[$i]["ws_1d"] = $ws_1d;
+                $data[$i]["wg_1d"] = $wg_1d;
                 $data[$i]["wg_max_dir"] = $wg_max_dir;
                 $data[$i]["ws_max_dir"] = $ws_max_dir;
                 $data[$i]["rr_1h"] = $r_1h;
                 array_push($outputArray, $data[$i]);
                 $r_1h = null;
-                $ws_1h = -0.1;
-                $wg_1h = -0.1;
+                $ws_1d = -0.1;
+                $wg_1d = -0.1;
                 $wg_max_dir = "";
                 $ws_max_dir = "";
             }

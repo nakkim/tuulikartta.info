@@ -406,10 +406,9 @@ var saa = saa || {};
   Tuulikartta.buildObservationMenu = function() {
     $('#main-navbar-param').html("")
     var html = '<select id="select-wind-parameter" class="select-style" style="height:26px;">'
+    html = html + '<optgroup label="Hetkellishavainnot">'
     html = html + '<option value="ws_10min">'+translations[selectedLanguage]["ws_10min"]+'</option>'
     html = html + '<option value="wg_10min">'+translations[selectedLanguage]["wg_10min"]+'</option>'
-    html = html + '<option value="ws_1h">'+translations[selectedLanguage]["ws_1h"]+'</option>'
-    html = html + '<option value="wg_1h">'+translations[selectedLanguage]["wg_1h"]+'</option>'
     html = html + '<option value="ri_10min">'+translations[selectedLanguage]["ri_10min"]+'</option>'
     html = html + '<option value="rr_1h">'+translations[selectedLanguage]["rr_1h"]+'</option>'
     html = html + '<option value="t2m">'+translations[selectedLanguage]["t2m"]+'</option>'
@@ -419,6 +418,12 @@ var saa = saa || {};
     html = html + '<option value="snow_aws">'+translations[selectedLanguage]["snow_aws"]+'</option>'
     html = html + '<option value="pressure">'+translations[selectedLanguage]["pressure"]+'</option>'
     html = html + '<option value="rh">'+translations[selectedLanguage]["rh"]+'</option>'
+    html = html + '<optgroup label="Vuorokausiarvot">'
+    html = html + '<option value="ws_1d">'+translations[selectedLanguage]["ws_1d"]+'</option>'
+    html = html + '<option value="wg_1d">'+translations[selectedLanguage]["wg_1d"]+'</option>'
+    html = html + '<option value="t2m">'+translations[selectedLanguage]["tmax"]+'</option>'
+    html = html + '<option value="t2m">'+translations[selectedLanguage]["tmin"]+'</option>'
+
     html = html + '</select>'
     $('#main-navbar-param').html(html)
   }
@@ -968,8 +973,8 @@ var saa = saa || {};
         }
       }
 
-      if (param === 'ws_1h' || param === 'wg_1h') {
-        if (saa.Tuulikartta.data[i]['ws_1h'] !== null && saa.Tuulikartta.data[i]['ws_max_dir'] !== null && saa.Tuulikartta.data[i]['wg_max_dir'] !== null &&  saa.Tuulikartta.data[i]['wg_1h'] !== null) {
+      if (param === 'ws_1d' || param === 'wg_1d') {
+        if (saa.Tuulikartta.data[i]['ws_1d'] !== null && saa.Tuulikartta.data[i]['ws_max_dir'] !== null && saa.Tuulikartta.data[i]['wg_max_dir'] !== null &&  saa.Tuulikartta.data[i]['wg_1d'] !== null) {
 
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
           if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
@@ -981,7 +986,7 @@ var saa = saa || {};
             popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
           })
 
-          if (param == 'ws_1h') {
+          if (param == 'ws_1d') {
             var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
               {
                 icon: icon,
@@ -1505,7 +1510,7 @@ var saa = saa || {};
   }
 
   function resolveGraphStartposition(value) {
-    if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1h' || value === 'wg_1h')
+    if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1d' || value === 'wg_1d')
     return 0
     else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 't2m' || value === 'wawa')
     return 1

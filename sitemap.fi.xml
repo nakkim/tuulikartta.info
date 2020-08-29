@@ -10,11 +10,11 @@
     <changefreq>always</changefreq>
   </url>
   <url>
-    <loc>https://tuulikartta.info/#parameter=ws_1h</loc>
+    <loc>https://tuulikartta.info/#parameter=ws_1d</loc>
     <changefreq>always</changefreq>
   </url>
   <url>
-    <loc>https://tuulikartta.info/#parameter=wg_1h</loc>
+    <loc>https://tuulikartta.info/#parameter=wg_1d</loc>
     <changefreq>always</changefreq>
   </url>
   <url>
