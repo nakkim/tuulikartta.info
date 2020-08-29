@@ -406,10 +406,9 @@ var saa = saa || {};
   Tuulikartta.buildObservationMenu = function() {
     $('#main-navbar-param').html("")
     var html = '<select id="select-wind-parameter" class="select-style" style="height:26px;">'
+    html = html + '<optgroup label="'+translations[selectedLanguage]["currentObs"]+'">'
     html = html + '<option value="ws_10min">'+translations[selectedLanguage]["ws_10min"]+'</option>'
     html = html + '<option value="wg_10min">'+translations[selectedLanguage]["wg_10min"]+'</option>'
-    html = html + '<option value="ws_1h">'+translations[selectedLanguage]["ws_1h"]+'</option>'
-    html = html + '<option value="wg_1h">'+translations[selectedLanguage]["wg_1h"]+'</option>'
     html = html + '<option value="ri_10min">'+translations[selectedLanguage]["ri_10min"]+'</option>'
     html = html + '<option value="rr_1h">'+translations[selectedLanguage]["rr_1h"]+'</option>'
     html = html + '<option value="t2m">'+translations[selectedLanguage]["t2m"]+'</option>'
@@ -419,6 +418,13 @@ var saa = saa || {};
     html = html + '<option value="snow_aws">'+translations[selectedLanguage]["snow_aws"]+'</option>'
     html = html + '<option value="pressure">'+translations[selectedLanguage]["pressure"]+'</option>'
     html = html + '<option value="rh">'+translations[selectedLanguage]["rh"]+'</option>'
+    html = html + '<optgroup label="'+translations[selectedLanguage]["dailyObs"]+'">'
+    html = html + '<option value="ws_1d">'+translations[selectedLanguage]["ws_1d"]+'</option>'
+    html = html + '<option value="wg_1d">'+translations[selectedLanguage]["wg_1d"]+'</option>'
+    html = html + '<option value="rr_1d">'+translations[selectedLanguage]["rr_1d"]+'</option>'
+    html = html + '<option value="tmax">'+translations[selectedLanguage]["tmax"]+'</option>'
+    html = html + '<option value="tmin">'+translations[selectedLanguage]["tmin"]+'</option>'
+
     html = html + '</select>'
     $('#main-navbar-param').html(html)
   }
@@ -599,7 +605,7 @@ var saa = saa || {};
     html += '<h1>'+translations[selectedLanguage]['settings']+'</h1>'
     html += '<input id="show-observations" type="checkbox" checked> '+translations[selectedLanguage]['showObservations'] 
     html += '<br/>'
-    html += '<input id="road-observations" type="checkbox"> '+translations[selectedLanguage]['roadObs']
+    html += '<input id="road-observations" type="checkbox" disabled> '+translations[selectedLanguage]['roadObs']
     html += '<br/>'
     html += '<br/>'
     html += '<span><b>'+translations[selectedLanguage]['layerOpacity']+'</b></span>'
@@ -968,8 +974,8 @@ var saa = saa || {};
         }
       }
 
-      if (param === 'ws_1h' || param === 'wg_1h') {
-        if (saa.Tuulikartta.data[i]['ws_1h'] !== null && saa.Tuulikartta.data[i]['ws_max_dir'] !== null && saa.Tuulikartta.data[i]['wg_max_dir'] !== null &&  saa.Tuulikartta.data[i]['wg_1h'] !== null) {
+      if (param === 'ws_1d' || param === 'wg_1d') {
+        if (saa.Tuulikartta.data[i]['ws_1d'] !== null && saa.Tuulikartta.data[i]['ws_max_dir'] !== null && saa.Tuulikartta.data[i]['wg_max_dir'] !== null &&  saa.Tuulikartta.data[i]['wg_1d'] !== null) {
 
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
           if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
@@ -981,7 +987,7 @@ var saa = saa || {};
             popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
           })
 
-          if (param == 'ws_1h') {
+          if (param == 'ws_1d') {
             var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
               {
                 icon: icon,
@@ -1026,7 +1032,7 @@ var saa = saa || {};
         }
       }
 
-      if (param === 'rr_1h' || param === 'ri_10min' ) {
+      if (param === 'rr_1h' || param === 'ri_10min' || param === 'rr_1d' ) {
         if(parseFloat(saa.Tuulikartta.data[i][param]) > 0) {
           var fillColor = Tuulikartta.resolvePrecipitationAmount(saa.Tuulikartta.data[i][param])
           var hex = fillColor.substr(1)
@@ -1075,7 +1081,7 @@ var saa = saa || {};
         }
       }
 
-      if (param === 't2m') {
+      if (param === 't2m'|| param === 'tmin' || param === 'tmax') {
 
         var fillColor = Tuulikartta.resolveTemperature(saa.Tuulikartta.data[i][param])
         var hex = fillColor.substr(1)
@@ -1093,7 +1099,7 @@ var saa = saa || {};
 
         var svgicon = encodeURI('data:image/svg+xml,' + svgicon).replace('#', '%23')
 
-        if (saa.Tuulikartta.data[i]['t2m'] !== null) {
+        if (saa.Tuulikartta.data[i][param] !== null && Math.abs(saa.Tuulikartta.data[i][param])<100 ) {
           // add trash symbol to enable bigger popup activation area
           // trashSymbol(saa.Tuulikartta.data[i])
 
@@ -1438,7 +1444,7 @@ var saa = saa || {};
 
   Tuulikartta.populateInfoWindow = function (data,fmisid) {
     var location = { lat: parseFloat(data['lat']), lng: parseFloat(data['lon']) }
-    var time = Tuulikartta.timeTotime(data['epoctime'])
+    var time = Tuulikartta.timeTotime(data['epochtime'])
     var latlon = data['lat'] + ',' + data['lon']
 
     if (L.Browser.mobile) {
@@ -1505,9 +1511,9 @@ var saa = saa || {};
   }
 
   function resolveGraphStartposition(value) {
-    if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1h' || value === 'wg_1h')
+    if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1d' || value === 'wg_1d')
     return 0
-    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 't2m' || value === 'wawa')
+    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'tmax' || value === 'tmin' || value === 'wawa')
     return 1
     else if(value === 'vis' || value === 'n_man')
     return 2

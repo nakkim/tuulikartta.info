@@ -35,8 +35,10 @@ class DataMiner{
 
     /**
     *
-    * Opendata synop observations
-    * @return   data as php array
+    * Parse observation data from WFS multipointcoverage
+    * @param    timestamp timestamp or now if latest observations
+    * @param    settings array that contains required query parameters
+    * @return   graph true if graph dat request
     *
     */
 
@@ -236,6 +238,40 @@ class DataMiner{
         return $final;
     }
 
+    /**
+    *
+    * Get observation data from timeseries
+    * @param    timestamp timestamp or now if latest observations
+    * @param    settings array that contains required query parameters
+    * @return   graph true if graph dat request
+    *
+    */
+
+    public function timeseries($timestamp,$settings) {
+      $url =  "http://opendata.fmi.fi/timeseries?";
+      $url .= "format=json";
+      $url .= "&producer=".$settings['producer'];
+      $url .= "&keyword=".$settings['keyword'];
+      $url .= "&precision=double";
+      // $url .= "&missingtext=null";
+      $url .= "&tz=utc";      
+      $url .= "&timeformat=xml";
+      // $url .= "&timestep=10";
+      $url .= "&param=".$settings['parameters'];
+      if ( $timestamp === "now" ) {
+        $endtime = new DateTime();
+        $start   = $endtime->format('Y-m-d\T00:00:00\Z');
+        $url .= "&starttime=${start}";
+      } else {
+        $endtime = new DateTime($timestamp);
+        $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+        $start   = $endtime->format('Y-m-d\T00:00:00\Z');
+        $url .= "&starttime=${start}&endtime=${end}";
+      }
+      $data = file_get_contents($url);
+      return json_decode($data, true);
+    }
+
 
     /**
     * Get observation data from SMHI open data
@@ -297,8 +333,8 @@ class DataMiner{
         }
 
         for($i=0; $i<count($final); $i++) {
-        $final[$i]["ws_1h"] = $final[$i]["ws_10min"];
-        $final[$i]["wg_1h"] = $final[$i]["wg_10min"];
+        $final[$i]["ws_1d"] = $final[$i]["ws_10min"];
+        $final[$i]["wg_1d"] = $final[$i]["wg_10min"];
         $final[$i]["ws_max_dir"] = $final[$i]["wd_10min"];
         $final[$i]["wg_max_dir"] = $final[$i]["wd_10min"];
         }
@@ -319,27 +355,30 @@ class DataMiner{
         $outputArray = array();
         $tmp = array();
 
-        $ws_1h = -0.1;
-        $wg_1h = -0.1;
+        $ws_1d = -0.1;
+        $wg_1d = -0.1;
         $wg_max_dir = "";
         $ws_max_dir = "";
         $r_1h = null;
+        $r_1d = 0;
+        $tmin = 999;
+        $tmax = -999;
         for ($i = 0; $i <= count($data)-2; $i++) {
             # check if fmisid value is the same as the next one (ie its the same station)
             if($data[$i]["fmisid"] === $data[$i+1]["fmisid"]) {
                 # check if observations are valid
                 if($data[$i]["ws_10min"] !== "nan") {
                     # check if observation values are greater that previous one
-                    if($ws_1h < floatval($data[$i]["ws_10min"])) {
-                        $ws_1h = $data[$i]["ws_10min"];
+                    if($ws_1d < floatval($data[$i]["ws_10min"])) {
+                        $ws_1d = $data[$i]["ws_10min"];
                         $ws_max_dir = $data[$i]["wd_10min"];
                     }
                 }
                 # check if observations are valid
                 if($data[$i]["wg_10min"] !== "nan") {
                     # check if observation values are greater that previous one
-                    if($wg_1h < floatval($data[$i]["wg_10min"])) {
-                        $wg_1h = $data[$i]["wg_10min"];
+                    if($wg_1d < floatval($data[$i]["wg_10min"])) {
+                        $wg_1d = $data[$i]["wg_10min"];
                         $wg_max_dir = $data[$i]["wd_10min"];
                     }
                 }
@@ -347,21 +386,34 @@ class DataMiner{
                 if($data[$i]["r_1h"] !== null) {
                     # save observation values
                     $r_1h = $data[$i]["r_1h"];
+                    $r_1d = $r_1d + floatVal($data[$i]["r_1h"]);
                 }
+                # check if observations are valid
+                if($data[$i]["t2m"] !== null) {
+                  # save observation values
+                  if($data[$i]["t2m"] < $tmin) {$tmin = $data[$i]["t2m"];}
+                  if($data[$i]["t2m"] > $tmax) {$tmax = $data[$i]["t2m"];}
+              }
             } else {
-                if($ws_1h === -0.1){ $ws_1h = null; }
-                if($wg_1h === -0.1){ $wg_1h = null; }
+                if($ws_1d === -0.1){ $ws_1d = null; }
+                if($wg_1d === -0.1){ $wg_1d = null; }
                 if($ws_max_dir === ""){ $ws_max_dir = null; }
                 if($wg_max_dir === ""){ $wg_max_dir = null; }
-                $data[$i]["ws_1h"] = $ws_1h;
-                $data[$i]["wg_1h"] = $wg_1h;
+                $data[$i]["ws_1d"] = $ws_1d;
+                $data[$i]["wg_1d"] = $wg_1d;
                 $data[$i]["wg_max_dir"] = $wg_max_dir;
                 $data[$i]["ws_max_dir"] = $ws_max_dir;
+                $data[$i]["tmax"] = $tmax;
+                $data[$i]["tmin"] = $tmin;
                 $data[$i]["rr_1h"] = $r_1h;
+                $data[$i]["rr_1d"] = round($r_1d,1);
                 array_push($outputArray, $data[$i]);
                 $r_1h = null;
-                $ws_1h = -0.1;
-                $wg_1h = -0.1;
+                $r_1d = 0;
+                $ws_1d = -0.1;
+                $wg_1d = -0.1;
+                $tmin = 999;
+                $tmax = -999;
                 $wg_max_dir = "";
                 $ws_max_dir = "";
             }
