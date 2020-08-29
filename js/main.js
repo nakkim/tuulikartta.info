@@ -1438,7 +1438,7 @@ var saa = saa || {};
 
   Tuulikartta.populateInfoWindow = function (data,fmisid) {
     var location = { lat: parseFloat(data['lat']), lng: parseFloat(data['lon']) }
-    var time = Tuulikartta.timeTotime(data['epoctime'])
+    var time = Tuulikartta.timeTotime(data['epochtime'])
     var latlon = data['lat'] + ',' + data['lon']
 
     if (L.Browser.mobile) {

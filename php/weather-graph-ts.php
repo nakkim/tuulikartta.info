@@ -47,11 +47,6 @@ if ($type == 'synop') {
     $settings["fmisid"]         = $fmisid;
 
     $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
-    if(count($obs) > 200) {
-        $obs = [];
-        $settings["timestep"] = "10";
-        $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
-    }
 }
 
 $combinedData = [];
@@ -126,7 +121,7 @@ function formatWindData($data) {
 
             $temp .= "[".$tmp["epoctime"].",".$tmp["t2m"]."],";
             $rr1h .= "[".$tmp["epoctime"].",".$tmp["r_1h"]."],";
-            $vis  .= "[".$tmp["epoctime"].",".round($tmp["vis"]/1000,2)."],";
+            $vis  .= "[".$tmp["epoctime"].",".round(floatVal($tmp["vis"])/1000,2)."],";
             $nn   .= "[".$tmp["epoctime"].",".$tmp["n_man"]."],";
             $wind .= "[".$tmp["epoctime"].",".$tmp["ws_10min"].",".$tmp["wg_10min"]."],";
             if ($i % 3 == 0) {

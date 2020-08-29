@@ -35,8 +35,10 @@ class DataMiner{
 
     /**
     *
-    * Opendata synop observations
-    * @return   data as php array
+    * Parse observation data from WFS multipointcoverage
+    * @param    timestamp timestamp or now if latest observations
+    * @param    settings array that contains required query parameters
+    * @return   graph true if graph dat request
     *
     */
 
@@ -234,6 +236,43 @@ class DataMiner{
 
         }
         return $final;
+    }
+
+    /**
+    *
+    * Get observation data from timeseries
+    * @param    timestamp timestamp or now if latest observations
+    * @param    settings array that contains required query parameters
+    * @return   graph true if graph dat request
+    *
+    */
+
+    public function timeseries($timestamp,$settings) {
+      $url =  "http://opendata.fmi.fi/timeseries?";
+      $url .= "format=json";
+      $url .= "&producer=observations_fmi";
+      $url .= "&keyword=synop_fi";
+      $url .= "&precision=double";
+      // $url .= "&missingtext=null";
+      $url .= "&tz=utc";      
+      $url .= "&timeformat=xml";
+      // $url .= "&timestep=10";
+      // meta parameters
+      $url .= "&param=stationname%20as%20station,fmisid,lat,lon,epochtime,time,fmisid,";
+      // meteorological parameters
+      $url .= "ri_10min,ws_10min,wg_10min,wd_10min,vis,wawa,t2m,n_man,r_1h,snow_aws,pressure,rh";
+      if ( $timestamp === "now" ) {
+        $endtime = new DateTime();
+        $start   = $endtime->format('Y-m-d\T00:00:00\Z');
+        $url .= "&starttime=${start}";
+      } else {
+        $endtime = new DateTime($timestamp);
+        $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+        $start   = $endtime->format('Y-m-d\T00:00:00\Z');
+        $url .= "&starttime=${start}&endtime=${end}";
+      }
+      $data = file_get_contents($url);
+      return json_decode($data, true);
     }
 
 
