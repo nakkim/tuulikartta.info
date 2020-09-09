@@ -84,11 +84,13 @@ var saa = saa || {};
   }
 
   Tuulikartta.dataLoader = function (param) {
+    var dataLoader = document.getElementById('data-loader')
+    dataLoader.innerHTML = translations[selectedLanguage]['loadObservations']
     if(param) {
-      document.getElementById('data-loader').style.display = 'block'
+      dataLoader.style.display = 'block'
       document.body.style.cursor = 'wait'
     } else {
-      document.getElementById('data-loader').style.display = 'none'
+      dataLoader.style.display = 'none'
       document.body.style.cursor = 'default'
     }
   }
@@ -99,6 +101,17 @@ var saa = saa || {};
 
   Tuulikartta.callData = function () {
     saa.Tuulikartta.dataLoader(true)
+    saa.Tuulikartta.map.spin(true, {
+      lines: 14,
+      length: 25,
+      width: 27,
+      radius: 80,
+      scale: 0.35,
+      corners: 1,
+      speed: 1.4,
+      animation: 'spinner-line-fade-quick',
+      color: '#b1b1b1'
+    })
     $.ajax({
       dataType: 'json',
       url: 'php/getdata.php',
@@ -110,6 +123,7 @@ var saa = saa || {};
       },
       success: function (data) {
         saa.Tuulikartta.dataLoader(false)
+        saa.Tuulikartta.map.spin(false)
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
         Tuulikartta.drawData(selectedParameter)
