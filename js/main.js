@@ -9,7 +9,7 @@ var saa = saa || {};
   'use strict'
 
   saa.Tuulikartta.data = []
-  saa.Tuulikartta.debugvalue = true
+  saa.Tuulikartta.debugvalue = false
   saa.Tuulikartta.timeValue = 'now'
   saa.Tuulikartta.timeStamp = ''
   saa.Tuulikartta.markerGroupSynop = L.layerGroup()
