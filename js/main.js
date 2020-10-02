@@ -9,7 +9,7 @@ var saa = saa || {};
   'use strict'
 
   saa.Tuulikartta.data = []
-  saa.Tuulikartta.debugvalue = false
+  saa.Tuulikartta.debugvalue = true
   saa.Tuulikartta.timeValue = 'now'
   saa.Tuulikartta.timeStamp = ''
   saa.Tuulikartta.markerGroupSynop = L.layerGroup()
@@ -95,8 +95,19 @@ var saa = saa || {};
     }
   }
 
+  Tuulikartta.checkValidity = function (timestamp) {
+    var time = moment.utc(timestamp, 'YYYYMMDDHHmmss', true);
+    var difference = moment().diff(time, 'minutes');
+    Tuulikartta.debug(`Difference: ${difference}`)
+    if(difference < 18) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   // ---------------------------------------------------------
-  // Get observation data from getdata.php
+  // Get observation data
   // ---------------------------------------------------------
 
   Tuulikartta.callData = function () {
@@ -112,6 +123,83 @@ var saa = saa || {};
       animation: 'spinner-line-fade-quick',
       color: '#b1b1b1'
     })
+
+    var observationFiles = $.get('list.php');
+
+    $.when(observationFiles).done(function(a){
+      if (saa.Tuulikartta.timeValue === 'now') {
+        // pick the last file from list.php if timetamp is valid
+        Tuulikartta.debug('Get data as "now"')
+        if (a.length > 0) {
+          Tuulikartta.debug(`Found ${a.length} data files`)
+          var time = (a[a.length-1]).split('/')
+          time = time[1]
+          time = (time.split('.'))[0]
+          if(Tuulikartta.checkValidity(time)) {
+            Tuulikartta.debug(`Found data with a valid timestamp: ${time}`)
+            $.ajax({
+              dataType: 'json',
+              url: a[a.length-1],
+              data: {},
+              error: function () {
+                document.body.style.cursor = 'default'
+              },
+              success: function (data) {
+                saa.Tuulikartta.dataLoader(false)
+                saa.Tuulikartta.map.spin(false)
+                // store the Map-instance in map variable
+                saa.Tuulikartta.data = data
+                Tuulikartta.drawData(selectedParameter)
+                selectedParameter = $('#select-wind-parameter').val()
+                startPosition = resolveGraphStartposition(selectedParameter)
+              }
+            })
+          } else {
+            Tuulikartta.debug(`Did not found data with a valid timestamp`)
+            Tuulikartta.requestData()
+          } 
+
+        } else {
+          Tuulikartta.debug(`No data files found`)
+          Tuulikartta.requestData()
+        }
+
+      } else if (a.includes(`data/${moment.utc(saa.Tuulikartta.timeValue, 'YYYY-MM-DDTHH:mm:ssZ', true).format('YYYYMMDDHHmmss')}.json`)) {
+        // check whether timestamp can be found from list.php files
+        Tuulikartta.debug(`Get data with timestamp: ${saa.Tuulikartta.timeValue}`)
+        var requestedTime = `data/${moment.utc(saa.Tuulikartta.timeValue, 'YYYY-MM-DDTHH:mm:ssZ', true).format('YYYYMMDDHHmmss')}.json`
+        Tuulikartta.debug(`requestTime: ${requestedTime}`)
+        $.ajax({
+          dataType: 'json',
+          url: requestedTime,
+          data: {},
+          error: function () {
+            document.body.style.cursor = 'default'
+          },
+          success: function (data) {
+            saa.Tuulikartta.dataLoader(false)
+            saa.Tuulikartta.map.spin(false)
+            // store the Map-instance in map variable
+            saa.Tuulikartta.data = data
+            Tuulikartta.drawData(selectedParameter)
+            selectedParameter = $('#select-wind-parameter').val()
+            startPosition = resolveGraphStartposition(selectedParameter)
+          }
+        })
+      
+      } else {
+        // get data from backend
+        Tuulikartta.debug('No data files found with a given timestamp')
+        saa.Tuulikartta.requestData()
+      } 
+    })
+  }
+
+  // ---------------------------------------------------------
+  // Requestobservation data from getdata.php
+  // ---------------------------------------------------------
+
+  Tuulikartta.requestData = function () {
     $.ajax({
       dataType: 'json',
       url: 'php/getdata.php',
