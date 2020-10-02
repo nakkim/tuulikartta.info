@@ -196,7 +196,7 @@ class DataMiner{
                     $tmp["lat"] = floatval($latlon[0]);
                     $tmp["lon"] = floatval($latlon[1]);
                     $epoch = str_replace("\n", "", $latlon[3]);
-                    $tmp["epoctime"] = floatval($epoch);
+                    $tmp["epochtime"] = floatval($epoch);
 
                     // convert UNIX timestamp to time
                     $tmp["time"] = date("Y-m-d\TH:i:s\Z", intval($latlon[3]));

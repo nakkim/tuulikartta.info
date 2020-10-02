@@ -117,24 +117,24 @@ function formatWindData($data) {
             if(empty($tmp['vis'])) {$tmp['vis'] = "null";}
             if(!is_numeric($tmp['n_man'])) {$tmp['n_man'] = "null";}
 
-            $tmp["epoctime"] = intval($tmp["epoctime"]*1000);
+            $tmp["epochtime"] = intval($tmp["epochtime"]*1000);
 
-            $temp .= "[".$tmp["epoctime"].",".$tmp["t2m"]."],";
-            $rr1h .= "[".$tmp["epoctime"].",".$tmp["r_1h"]."],";
-            $vis  .= "[".$tmp["epoctime"].",".round(floatVal($tmp["vis"])/1000,2)."],";
-            $nn   .= "[".$tmp["epoctime"].",".$tmp["n_man"]."],";
-            $wind .= "[".$tmp["epoctime"].",".$tmp["ws_10min"].",".$tmp["wg_10min"]."],";
+            $temp .= "[".$tmp["epochtime"].",".$tmp["t2m"]."],";
+            $rr1h .= "[".$tmp["epochtime"].",".$tmp["r_1h"]."],";
+            $vis  .= "[".$tmp["epochtime"].",".round(floatVal($tmp["vis"])/1000,2)."],";
+            $nn   .= "[".$tmp["epochtime"].",".$tmp["n_man"]."],";
+            $wind .= "[".$tmp["epochtime"].",".$tmp["ws_10min"].",".$tmp["wg_10min"]."],";
             if ($i % 3 == 0) {
                 if (floatval($tmp["ws_10min"]) >= 1.0) {
-                    $dir  .= "[".$tmp["epoctime"].",".$tmp["ws_10min"].",".$tmp["wd_10min"]."],";
+                    $dir  .= "[".$tmp["epochtime"].",".$tmp["ws_10min"].",".$tmp["wd_10min"]."],";
                 } else {
-                    $dir  .= "[".$tmp["epoctime"].",null,".$tmp["wd_10min"]."],";
+                    $dir  .= "[".$tmp["epochtime"].",null,".$tmp["wd_10min"]."],";
                 }
 
             } else {
-                $dir  .= "[".$tmp["epoctime"].",null,null],";
+                $dir  .= "[".$tmp["epochtime"].",null,null],";
             }
-            $calc .= "[".$tmp["epoctime"].",".$tmp["calc_rr_1h"]."],";
+            $calc .= "[".$tmp["epochtime"].",".$tmp["calc_rr_1h"]."],";
             $i++;
         }
 

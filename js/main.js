@@ -68,9 +68,9 @@ var saa = saa || {};
   // Convert epoch time to properly formatted time string
   // ---------------------------------------------------------
 
-  Tuulikartta.timeTotime = function (epoctime) {
+  Tuulikartta.timeTotime = function (epochtime) {
     // convert epoc time to time stamp
-    var d = new Date(epoctime * 1000)
+    var d = new Date(epochtime * 1000)
     var hours = d.getHours()
     var minutes = d.getMinutes()
     // add leading zeros
@@ -1023,7 +1023,7 @@ var saa = saa || {};
 
     for (var i = 0; i < sizeofdata; i++) {
       var location = { lat: parseFloat(saa.Tuulikartta.data[i]['lat']), lng: parseFloat(saa.Tuulikartta.data[i]['lon']) }
-      var time = Tuulikartta.timeTotime(saa.Tuulikartta.data[i]['epoctime'])
+      var time = Tuulikartta.timeTotime(saa.Tuulikartta.data[i]['epochtime'])
       var latlon = saa.Tuulikartta.data[i]['lat'] + ',' + saa.Tuulikartta.data[i]['lon']
 
       if (param == 'ws_10min' || param === 'wg_10min') {
