@@ -68,16 +68,10 @@ class DataMiner{
 
         $url = "";
         $url .= "http://opendata.fmi.fi/wfs?request=getFeature";
-        $url .= "&storedquery_id={$settings["storedQueryId"]}";
-        $url .= "&parameters={$settings["parameter"]}";
-        if(isset($settings['fmisid'])) {
-            $url .= "&fmisid={$settings["fmisid"]}";
-        } else {
-            $url .= "&bbox={$settings["bbox"]},epsg::4326";
-        }
 
-        if(isset($settings['timestep']))
-        $url .= "&timestep={$settings['timestep']}";
+        foreach($settings as $key => $value) {
+          $url .= "&${key}=${value}";
+        }
 
         if($timestamp == "now") {
             if($graph) {
@@ -124,7 +118,7 @@ class DataMiner{
         $final = [];
 
         $data = $resultString->children("wfs", true);
-        $params = explode(",", $settings["parameter"]);
+        $params = explode(",", $settings["parameters"]);
 
         $result1 = [];
         $result2 = [];
@@ -220,7 +214,7 @@ class DataMiner{
             }
 
             // actual observations
-            $parameters = explode(",",$settings["parameter"]);
+            $parameters = explode(",",$settings["parameters"]);
             $observations = $locations
                     -> children("omso", true)->GridSeriesObservation
                     -> children("om", true)->result

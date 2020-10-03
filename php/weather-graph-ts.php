@@ -12,8 +12,8 @@ $data = [];
 if ($type == 'road') {
     $settings = array();
     $settings["stationtype"]    = "road";
-    $settings["parameter"]      = "ws,wg,wd,vis,prst1,ta,pri";
-    $settings["storedQueryId"]  = "livi::observations::road::default::multipointcoverage";
+    $settings["parameters"]     = "ws,wg,wd,vis,prst1,ta,pri";
+    $settings["storedquery_id"] = "livi::observations::road::default::multipointcoverage";
     $settings["fmisid"]         = $fmisid;
 
 
@@ -42,8 +42,9 @@ if ($type == 'synop') {
 
     $settings = array();
     $settings["stationtype"]    = "synop";
-    $settings["parameter"]      = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h,vis";
-    $settings["storedQueryId"]  = "fmi::observations::weather::multipointcoverage";
+    $settings["parameters"]     = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h,vis";
+    $settings["storedquery_id"] = "fmi::observations::weather::multipointcoverage";
+    $settings["timestep"]       = "10";
     $settings["fmisid"]         = $fmisid;
 
     $obs = $dataMiner->multipointcoverage($timestamp,$settings,true);
