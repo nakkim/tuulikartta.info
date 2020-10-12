@@ -50,6 +50,7 @@ var translations = {
     'observationTime': 'Havaintoaika',
     'loadObservations': 'Ladataan havaintoja...',
     'windTitle': 'Keskituulen ja maksimipuuskan vaihteluväli [m/s]',
+    'windroseTitle': 'Havaintojakson tuulen suunnan voimakkuuden jakauma',
     'weatherTitle': 'Säätila havaintoasemalla',
     'cloudVisTitle': 'Näkyvyys ja pilvisyys',
     'dataSearch': 'Hae',
@@ -59,7 +60,8 @@ var translations = {
     'dataInfoBody2': 'Säähavaintoaineistoa Ilmatieteen laitoksen havaintoasemilta sekä Liikenneviraston tiesääasemilta.',
     'dataInfoBody3': 'Tuulikartta.info perustuu Ilmatieteen laitoksen <a href="https://ilmatieteenlaitos.fi/avoin-data">avoimeen dataan.',
     'dataInfoBody4': 'Seuraa sivuston kehitystä sekä kehittäjän edesottamuksia:',
-    'feedback': 'Kysymykset ja palaute:'
+    'feedback': 'Kysymykset ja palaute:',
+    'frequency': 'Jakauma'
 
   },
   'en': {
@@ -112,6 +114,7 @@ var translations = {
     'observationTime': 'Observation ime',
     'loadObservations': 'Loading observations...',
     'windTitle': 'Mean wind speed and gust [m/s]',
+    'windroseTitle': 'Deviation of wind speed and direction',
     'weatherTitle': 'Weather on observation station',
     'cloudVisTitle': 'Visibility and cloudiness',
     'dataSearch': 'Find',
@@ -121,6 +124,7 @@ var translations = {
     'dataInfoBody2': 'Weather observation data from the Finnish Meteorological Institute and from the Finnish Transport Infrastructure Agency.',
     'dataInfoBody3': 'Tuulikartta.info is based on the Finnish Meteorological Institute\'s <a href="https://en.ilmatieteenlaitos.fi/open-data">open data.',
     'dataInfoBody4': 'Follow project progress and other stuff:',
-    'feedback': 'Questions and feedback:'
+    'feedback': 'Questions and feedback:',
+    'frequency': 'Frequency'
   }
 }

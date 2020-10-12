@@ -776,7 +776,16 @@ var saa = saa || {};
 
   Tuulikartta.resolveWindSpeed = function (windspeed) {
     windspeed = parseFloat(windspeed)
-    if (windspeed < 1) { return 'calm' } else if (windspeed >= 1 && windspeed < 2) { return 'light' } else if (windspeed >= 2 && windspeed < 7) { return 'moderate' } else if (windspeed >= 7 && windspeed < 14) { return 'brisk' } else if (windspeed >= 14 && windspeed < 21) { return 'hard' } else if (windspeed >= 21 && windspeed < 25) { return 'storm' } else if (windspeed >= 25 && windspeed < 28) { return 'severestorm' } else if (windspeed >= 28 && windspeed < 32) { return 'extremestorm' } else if (windspeed >= 32) { return 'hurricane' } else { return 'calm' }
+    if (windspeed < 1) { return 'calm' } 
+    else if (windspeed >= 1 && windspeed < 2) { return 'light' } 
+    else if (windspeed >= 2 && windspeed < 7) { return 'moderate' } 
+    else if (windspeed >= 7 && windspeed < 14) { return 'brisk' } 
+    else if (windspeed >= 14 && windspeed < 21) { return 'hard' } 
+    else if (windspeed >= 21 && windspeed < 25) { return 'storm' } 
+    else if (windspeed >= 25 && windspeed < 28) { return 'severestorm' } 
+    else if (windspeed >= 28 && windspeed < 32) { return 'extremestorm' } 
+    else if (windspeed >= 32) { return 'hurricane' } 
+    else { return 'calm' }
   }
 
   Tuulikartta.resolvePrecipitationAmount = function (rr_1h) {
@@ -1574,6 +1583,7 @@ var saa = saa || {};
     output += `<div id="graph-box-loader" style="text-align: center;"></div>`;
     output += `<div id="graph-box" style="width:${maxWidth}px;">`
     output += `<div id="owl-carousel-chart-${fmisid}" class="owl-carousel owl-theme">`
+    output += `<div id="weather-chart-${fmisid}_windrose"></div>`
     output += `<div id="weather-chart-${fmisid}"></div>`
     output += `<div id="weather-chart-${fmisid}_alt"></div>`
     output += `<div id="weather-chart-${fmisid}_alt2"></div>`
@@ -1614,13 +1624,13 @@ var saa = saa || {};
 
   function resolveGraphStartposition(value) {
     if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1d' || value === 'wg_1d')
-    return 0
-    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'tmax' || value === 'tmin' || value === 'wawa')
     return 1
-    else if(value === 'vis' || value === 'n_man')
+    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'tmax' || value === 'tmin' || value === 'wawa')
     return 2
+    else if(value === 'vis' || value === 'n_man')
+    return 3
     else 
-    return 0
+    return 1
   }
 
   // ---------------------------------------------------------

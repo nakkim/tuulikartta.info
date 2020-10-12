@@ -77,7 +77,7 @@ class DataMiner{
             if($graph) {
                 $endtime = new DateTime();
                 $end     = $endtime->format('Y-m-d\TH:i:s\Z');
-                $start   = $endtime->sub(new DateInterval('PT18H'));
+                $start   = $endtime->sub(new DateInterval('PT24H'));
                 $start   = $start->format('Y-m-d\TH:i:s\Z');
                 $url .= "&starttime=${start}&endtime=${end}";
             } else {

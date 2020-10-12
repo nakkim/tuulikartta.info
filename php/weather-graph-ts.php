@@ -55,7 +55,8 @@ $combinedData["obs"] = $obs;
 $combinedData["for"] = [];
 
 $combinedData = calcCumulativeSum($combinedData);
-print formatWindData($combinedData);
+$winddirections = resolveWindDirection($combinedData);
+print json_encode(formatHighChart($combinedData, $winddirections));
 
 
 
@@ -63,10 +64,10 @@ print formatWindData($combinedData);
  *
  * Calculate cumulative precipitation
  * @param    data as php aarray
- * @return   data as javascript array string
+ * @return   data as javascript array string×
+
  *
  */
-
 
 function calcCumulativeSum($data) {
     $precSum = 0;
@@ -84,6 +85,71 @@ function calcCumulativeSum($data) {
 }
 
 
+function resolveWindDirection($data) {
+  $dir = [
+    "N",
+    "NNE",
+    "NE",
+    "ENE",
+    "E",
+    "ESE",
+    "SE",
+    "SSE",
+    "S",
+    "SSW",
+    "SW",
+    "WSW",
+    "W",
+    "WNW",
+    "NW",
+    "NNW"
+  ];
+
+  $speed = [
+    0 => ["Tyyntä", 0, "#ffffff"],
+    1 => ["Heikkoa", 1, "#e6f7ff"],
+    2 => ["Kohtalaista", 4, "#ccffcc"], 
+    3 => ["Navakkaa", 7, "#ffff99"],
+    4 => ["Kovaa", 14, "#ffcc00"],
+    5 => ["Myrskyä", 21, "#ff3300"],
+    6 => ["Kovaa myrskyä", 25, "#ff0066"],
+    7 => ["Ankaraa myrskyä", 28, "#cc0099"],
+    8 => ["Hirmymyrskyä", 32, "#6600cc"]
+  ];
+
+  $values = [];
+  foreach($speed as $key => $value) {
+    $values[$key] = [];
+    $values[$key]['name'] = $speed[$key][0];
+    $values[$key]['fillColor'] = $speed[$key][2];   
+    $values[$key]['data'] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+  };
+
+  // count valid wind observations
+  $valid = 0;
+  foreach($data['obs'] as $key => $observation) {
+    if(is_numeric($observation['ws_10min'])) {
+      $valid++;
+    }
+  }
+
+  $x=1;  
+  for($z=0; $z<9; $z++) {
+    for($i=0; $i<16; $i++) {
+      $k=0;
+      foreach($data['obs'] as $key => $observation) {
+        if($dir[$observation['wd_10min']/22.5] === $dir[$i] && ($observation['ws_10min'] > $speed[$x-1][1] && $observation['ws_10min'] <= $speed[$x][1]) ) {
+          $k++;
+        }
+      } 
+      $values[$z]['data'][$i] = round(100*($k/$valid),1);
+    }
+    $x++;
+  }
+
+  return $values;
+}
 
 /**
  *
@@ -94,66 +160,127 @@ function calcCumulativeSum($data) {
  */
 
 
-function formatWindData($data) {
+function formatHighChart($data, $winddirections) {
     // print json_encode($data);
-    $formattedData = "{";
-    foreach($data as $key => $dataArray){
-        $wind = "";
-        $dir  = "";
-        $temp = "";
-        $rr1h = "";
-        $calc = "";
-        $vis  = "";
-        $nn   = "";
 
-        $i = 0;
-        foreach($dataArray as $array) {
-            $tmp = $array;
-            if(!is_numeric($tmp["t2m"])) {$tmp["t2m"] = "null";}
-            if(empty($tmp['r_1h'])) {$tmp['r_1h'] = "null";}
-            if(empty($tmp['calc_rr_1h'])) {$tmp['calc_rr_1h'] = "null";}
-            if(empty($tmp['ws_10min'])) {$tmp['ws_10min'] = "null";}
-            if(empty($tmp['wg_10min'])) {$tmp['wg_10min'] = "null";}
-            if(empty($tmp['wd_10min'])) {$tmp['wd_10min'] = "null";}
-            if(empty($tmp['vis'])) {$tmp['vis'] = "null";}
-            if(!is_numeric($tmp['n_man'])) {$tmp['n_man'] = "null";}
+    $formattedData = [];
+    $formattedData["obs"] = [];
+    $formattedData["for"] = [];
+    foreach($formattedData as $key => $array) {
+      $formattedData[$key]["wind"] = [];
+      $formattedData[$key]["windrose"] = [];
+      $formattedData[$key]["dir"] = [];
+      $formattedData[$key]["rr1h"] = [];
+      $formattedData[$key]["vis"] = [];
+      $formattedData[$key]["n_man"] = [];
+      $formattedData[$key]["temp"] = [];
+      $formattedData[$key]["rr1h_calc"] = [];
+    }
 
-            $tmp["epochtime"] = intval($tmp["epochtime"]*1000);
-
-            $temp .= "[".$tmp["epochtime"].",".$tmp["t2m"]."],";
-            $rr1h .= "[".$tmp["epochtime"].",".$tmp["r_1h"]."],";
-            $vis  .= "[".$tmp["epochtime"].",".round(floatVal($tmp["vis"])/1000,2)."],";
-            $nn   .= "[".$tmp["epochtime"].",".$tmp["n_man"]."],";
-            $wind .= "[".$tmp["epochtime"].",".$tmp["ws_10min"].",".$tmp["wg_10min"]."],";
-            if ($i % 3 == 0) {
-                if (floatval($tmp["ws_10min"]) >= 1.0) {
-                    $dir  .= "[".$tmp["epochtime"].",".$tmp["ws_10min"].",".$tmp["wd_10min"]."],";
-                } else {
-                    $dir  .= "[".$tmp["epochtime"].",null,".$tmp["wd_10min"]."],";
-                }
-
-            } else {
-                $dir  .= "[".$tmp["epochtime"].",null,null],";
-            }
-            $calc .= "[".$tmp["epochtime"].",".$tmp["calc_rr_1h"]."],";
-            $i++;
+    foreach($data as $key => $dataArray) {
+      $i = 0;
+      foreach($dataArray as $array) {
+        // wind
+        if(!empty($array['ws_10min'])) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['ws_10min']);
+          array_push($tmp, $array['wg_10min']);
+          array_push($formattedData['obs']['wind'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['wind'], $tmp);
         }
 
-        // remove last comma and add closing bracket
+        // dir
+        if(!empty($array['ws_10min']) && $i % 3 == 0) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['ws_10min']);
+          array_push($tmp, $array['wd_10min']);
+          array_push($formattedData['obs']['dir'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['dir'], $tmp);
+        }
 
-        $wind = substr($wind, 0, -1);
-        $dir  = substr($dir, 0, -1);
-        $temp = substr($temp, 0, -1);
-        $rr1h = substr($rr1h, 0, -1);
-        $calc = substr($calc, 0, -1);
-        $nn   = substr($nn  , 0, -1);
-        $vis  = substr($vis , 0, -1);
+        // rr1h
+        if(!empty($array['rr_1h'])) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['rr_1h']);
+          array_push($formattedData['obs']['rr1h'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['rr1h'], $tmp);
+        }
 
-        $formattedData .= "\"{$key}\":{\"wind\":[".$wind."],\"rr1h_calc\":[".$calc."],\"dir\":[".$dir."],\"rr1h\":[".$rr1h."],\"vis\":[".$vis."],\"n_man\":[".$nn."],\"temp\":[".$temp."]},";
+        // vis
+        if(!empty($array['vis'])) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['vis']);
+          array_push($formattedData['obs']['vis'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['vis'], $tmp);
+        }
 
+        // n_man
+        if(!empty($array['n_man'])) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['n_man']);
+          array_push($formattedData['obs']['n_man'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['n_man'], $tmp);
+        }
+
+        // temp
+        if(!empty($array['t2m'])) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['t2m']);
+          array_push($formattedData['obs']['temp'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['temp'], $tmp);
+        }
+
+        // rr1h_calc
+        if(!empty($array['rr1h_calc'])) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['rr1h_calc']);
+          array_push($formattedData['obs']['rr1h_calc'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['rr1h_calc'], $tmp);
+        }
+
+        $i++;
+      }
     }
-    $formattedData = substr($formattedData, 0, -1);
-    $formattedData .= "}";
+
+    $formattedData['obs']['windrose'] = $winddirections;
+
     return $formattedData;
 
 }

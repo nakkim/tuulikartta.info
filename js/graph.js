@@ -131,6 +131,72 @@ var saa = saa || {};
     // ---------------------------------------------------------
 
     weatherGraph.drawGraph = function(data,fmisid) {
+        var categories = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+        var colors = ["#ffffff","#e6f7ff","#ccffcc","#ffff99","#ffcc00","#ff3300","#ff0066","#cc0099","#6600cc"]
+        var chart01 = Highcharts.chart(`weather-chart-${fmisid}_windrose`, {
+          chart: {
+            polar: true,
+            type: 'column',
+            height: '300px'
+          },
+          colors: colors,
+          title: {
+              text: null
+          },
+          pane: {
+              size: '85%'
+          },
+          legend: {
+              // align: 'right',
+              // verticalAlign: 'top',
+              // y: 70,
+              // layout: 'vertical'
+              enabled: false
+          },
+          xAxis: {
+              tickmarkPlacement: 'on',
+              categories: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+          },
+          yAxis: {
+              min: 0,
+              endOnTick: false,
+              showLastLabel: true,
+              title: {
+                  text: translations[selectedLanguage]['frequency']+' (%)'
+              },
+              labels: {
+                  formatter: function () {
+                      return this.value + ' %';
+                  }
+              },
+              reversedStacks: false
+          },
+          tooltip: {
+              valueSuffix: ' %'
+          },
+          credits: {
+            enabled: false
+          },
+          subtitle: {
+            text: translations[selectedLanguage]['windroseTitle'],
+            style: {
+                color: 'black',
+                font: '12px Roboto, sans-serif'
+            }
+          },
+          plotOptions: {
+              series: {
+                  stacking: 'normal',
+                  shadow: false,
+                  groupPadding: 0,
+                  pointPlacement: 'on',
+                  borderColor: 'grey',
+                  borderWidth: 1
+              }
+          },
+          series: data.obs.windrose
+        });
+
         var chart1 = Highcharts.chart(`weather-chart-${fmisid}`, {
 
             chart: {
@@ -572,7 +638,7 @@ var saa = saa || {};
           {
               type: 'areaspline',
               name: translations[selectedLanguage]['vis'],
-              zIndex: 9,
+              zIndex: 11,
               data: data.obs.vis,
               tooltip: {
                   valueSuffix: ' km'
@@ -597,7 +663,7 @@ var saa = saa || {};
             }
         },
 
-      });
+        });
         // saa.Tuulikartta.graphIds = {chart1,chart2}
     }
 
