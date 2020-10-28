@@ -15,5 +15,8 @@ RewriteRule (.*) https://tuulikartta.info [R=301,L]
 # </filesMatch>
 
 <Files *.png>
-Header add "Cache-Control" "max-age=604800"
+  Header add "Cache-Control" "max-age=604800"
 </Files>
+
+AddCharset UTF-8 .php
+AddDefaultCharset utf-8
