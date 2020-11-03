@@ -1,5 +1,4 @@
 <?php
-ini_set('memory_limit', '-1');
 
 /**
  * DataMiner class
@@ -34,28 +33,6 @@ class DataMiner{
 
     /**
     *
-    * Calculate time zone difference between UTC0 and local time in Helsinki 
-    * @return time zone dirrerence as integer
-    *
-    */
-
-    public function getTimezoneDifference() {
-
-        $dateTimeZoneHelsinki = new DateTimeZone("Europe/Helsinki");
-        $dateTimeZoneLondon = new DateTimeZone("Europe/London");
-
-        $dateTimeHelsinki = new DateTime("now", $dateTimeZoneHelsinki);
-        $dateTimeLondon = new DateTime("now", $dateTimeZoneLondon);
-        
-        $timeOffset = $dateTimeZoneHelsinki->getOffset($dateTimeLondon);
-
-        $timeOffset = $timeOffset/3600;
-        return $timeOffset;
-        
-    }
-
-    /**
-    *
     * Parse observation data from WFS multipointcoverage
     * @param    timestamp timestamp or now if latest observations
     * @param    settings array that contains required query parameters
@@ -73,37 +50,13 @@ class DataMiner{
           $url .= "&${key}=${value}";
         }
 
-        if($timestamp == "now") {
-            if($graph) {
-                $endtime = new DateTime();
-                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
-                $start   = $endtime->sub(new DateInterval('PT24H'));
-                $start   = $start->format('Y-m-d\TH:i:s\Z');
-                $url .= "&starttime=${start}&endtime=${end}";
-            } else {
-                $endtime = new DateTime();
-                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
-                $start   = $endtime->sub(new DateInterval('PT1H'));
-                $start   = $start->format('Y-m-d\TH:i:s\Z');
-                $url .= "&starttime=${start}&endtime=${end}";
-            }
-        } else {
-            if($graph) {
-                $endtime = new DateTime($timestamp);
-                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
-                $start   = $endtime->sub(new DateInterval('PT18H'));
-                $start   = $start->format('Y-m-d\TH:i:s\Z');
-                $url .= "&starttime=${start}&endtime=${end}";
-            } else {
-                $endtime = new DateTime($timestamp);
-                $end     = $endtime->format('Y-m-d\TH:i:s\Z');
-                $start   = $endtime->sub(new DateInterval('PT1H'));
-                $start   = $start->format('Y-m-d\TH:i:s\Z');
-                $url .= "&starttime=${start}&endtime=${end}";
-            }
-        }
-
-        $xmlData = file_get_contents($url);
+        $url = $url . $this->setTime($timestamp);
+        $ctx = stream_context_create(array('http'=>
+            array(
+                'timeout' => 240,  //1200 Seconds is 20 Minutes
+            )
+        ));
+        $xmlData = file_get_contents($url, false, $ctx);
         if($xmlData == false) {
             return [];
         }
