@@ -1,4 +1,4 @@
-var version = 'v0.16'
+var version = 'v.2020.11.03'
 var OFFLINE_URL = '/offline.html'
 
 
@@ -38,7 +38,7 @@ self.addEventListener('activate', function(event) {
     caches.keys().then((keyList) => {
       return Promise.all(keyList.map((key) => {
         if (key !== CACHE_NAME) {
-          // console.log('[ServiceWorker] Removing old cache', key);
+          console.log('[ServiceWorker] Removing old cache', key);
           return caches.delete(key);
         }
       }));
