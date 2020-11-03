@@ -77,7 +77,7 @@ function calcCumulativeSum($data) {
         if(is_numeric($observation["r_1h"])) {
             $precSum = $precSum + (float)$observation["r_1h"];
         }
-        $tmp["calc_rr_1h"] = $precSum;
+        $tmp["rr1h_calc"] = $precSum;
         array_push($tmpData,$tmp);
     }
     $data["obs"] = $tmpData;
@@ -142,8 +142,12 @@ function resolveWindDirection($data) {
         if($dir[$observation['wd_10min']/22.5] === $dir[$i] && ($observation['ws_10min'] > $speed[$x-1][1] && $observation['ws_10min'] <= $speed[$x][1]) ) {
           $k++;
         }
-      } 
-      $values[$z]['data'][$i] = round(100*($k/$valid),1);
+      }
+      if($valid > 0) {
+        $values[$z]['data'][$i] = round(100*($k/$valid),1);
+      } else {
+        $values[$z]['data'][$i] = 0;
+      }
     }
     $x++;
   }
