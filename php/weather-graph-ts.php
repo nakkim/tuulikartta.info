@@ -75,7 +75,7 @@ function calcCumulativeSum($data) {
     foreach($data["obs"] as $observation) {
         $tmp = $observation;
         if(is_numeric($observation["r_1h"])) {
-            $precSum = $precSum + (float)$observation["r_1h"];
+            $precSum = round($precSum + $observation["r_1h"],1);
         }
         $tmp["rr1h_calc"] = $precSum;
         array_push($tmpData,$tmp);
