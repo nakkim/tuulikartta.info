@@ -11,24 +11,43 @@ class DataMiner{
 
     }
 
-    private function setTime($timestamp) {
+    private function setTime($timestamp, $graph) {
       $url = "";
-      if ( $timestamp === "now" ) {
-        $start  = new DateTime('', new DateTimezone('Europe/Helsinki'));
-        $start->setTime(0,0);
-        $start->setTimezone(new DateTimeZone('UTC'));
-        $start  = $start->format('Y-m-d\TH:i:s\Z');
-        $url    = "&starttime=${start}";
+      if($graph) {
+        if ( $timestamp === "now" ) {
+          $endtime = new DateTime();
+          $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+          $start   = $endtime->sub(new DateInterval('PT24H'));
+          $start   = $start->format('Y-m-d\TH:i:s\Z');
+          
+          $url     = "&starttime=${start}&endtime=${end}";
+        } else {
+          $endtime = new DateTime($timestamp);
+          $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+          $start   = $endtime->sub(new DateInterval('PT24H'));
+          $start   = $start->format('Y-m-d\TH:i:s\Z');
+
+          $url     = "&starttime=${start}&endtime=${end}";
+        }
+
       } else {
-        $endtime = new DateTime($timestamp, new DateTimeZone('UTC'));
-        $end     = $endtime->format('Y-m-d\TH:i:s\Z');
-        $endtime->setTimezone(new DateTimeZone('Europe/Helsinki'));
+        if ( $timestamp === "now" ) {
+          $start  = new DateTime('', new DateTimezone('Europe/Helsinki'));
+          $start->setTime(0,0);
+          $start->setTimezone(new DateTimeZone('UTC'));
+          $start  = $start->format('Y-m-d\TH:i:s\Z');
+          $url    = "&starttime=${start}";
+        } else {
+          $endtime = new DateTime($timestamp, new DateTimeZone('UTC'));
+          $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+          $endtime->setTimezone(new DateTimeZone('Europe/Helsinki'));
 
-        $starttime = $endtime->setTime(0,0);
-        $starttime->setTimezone(new DateTimeZone('UTC'));
-        $start     = $starttime->format('Y-m-d\TH:i:s\Z');
+          $starttime = $endtime->setTime(0,0);
+          $starttime->setTimezone(new DateTimeZone('UTC'));
+          $start     = $starttime->format('Y-m-d\TH:i:s\Z');
 
-        $url     = "&starttime=${start}&endtime=${end}";
+          $url     = "&starttime=${start}&endtime=${end}";
+        }
       }
       return $url;
     }
@@ -52,7 +71,7 @@ class DataMiner{
           $url .= "&${key}=${value}";
         }
 
-        $url = $url . $this->setTime($timestamp);
+        $url = $url . $this->setTime($timestamp, $graph);
         $ctx = stream_context_create(array('http'=>
             array(
                 'timeout' => 240,  //1200 Seconds is 20 Minutes
