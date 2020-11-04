@@ -20,12 +20,14 @@ class DataMiner{
         $start  = $start->format('Y-m-d\TH:i:s\Z');
         $url    = "&starttime=${start}";
       } else {
-        $start  = new DateTime(substr($timestamp,0,-1), new DateTimezone('Europe/Helsinki'));
-        $start->setTime(0,0);
-        $start->setTimezone(new DateTimeZone('UTC'));
-        $start  = $start->format('Y-m-d\TH:i:s\Z');
         $endtime = new DateTime($timestamp, new DateTimeZone('UTC'));
         $end     = $endtime->format('Y-m-d\TH:i:s\Z');
+        $endtime->setTimezone(new DateTimeZone('Europe/Helsinki'));
+
+        $starttime = $endtime->setTime(0,0);
+        $starttime->setTimezone(new DateTimeZone('UTC'));
+        $start     = $starttime->format('Y-m-d\TH:i:s\Z');
+
         $url     = "&starttime=${start}&endtime=${end}";
       }
       return $url;
@@ -75,8 +77,8 @@ class DataMiner{
 
         $result1 = [];
         $result2 = [];
-        foreach ($data->member as $key => $locations) {            
-            
+        foreach ($data->member as $key => $locations) {
+
             // station names and fmisid's
             $stations = $locations
                     -> children("omso", true)->GridSeriesObservation
@@ -116,7 +118,7 @@ class DataMiner{
                 $tmp["pos"] = (string)$pos;
                 array_push($result2,$tmp);
             }
-            
+
             // merge station arrays
             $stations = [];
             foreach($result1 as $key => $station) {
@@ -175,7 +177,7 @@ class DataMiner{
                     -> children("gml", true)->rangeSet
                     -> children("gml", true)->DataBlock
                     -> children("gml", true)->doubleOrNilReasonTupleList;
-            
+
             $observations = explode("                ",(string)$observations);
 
             $tmp = [];
@@ -222,7 +224,7 @@ class DataMiner{
       $url .= "&keyword=".$settings['keyword'];
       $url .= "&precision=double";
       // $url .= "&missingtext=null";
-      $url .= "&tz=utc";      
+      $url .= "&tz=utc";
       $url .= "&timeformat=xml";
       // $url .= "&timestep=10";
       $url .= "&param=".$settings['parameters'];
@@ -234,7 +236,7 @@ class DataMiner{
 
     /**
     * Get observation data from SMHI open data
-    * @param    data observation data 
+    * @param    data observation data
     * @return   data as an array
     *
     */
@@ -264,7 +266,7 @@ class DataMiner{
             $tmp["${keyvalue}"] = round(8*((float)$key->value->value / 100));
             else
             $tmp["${keyvalue}"] = (float)$key->value->value;
-            
+
             $tmp["time"] = (string)$key->value->date;
 
             } else {
@@ -304,7 +306,7 @@ class DataMiner{
 
     /**
     *
-    * @param    data observation data 
+    * @param    data observation data
     * @return   data as an array
     *
     */
@@ -380,7 +382,7 @@ class DataMiner{
         }
         return $outputArray;
     }
- 
+
 
     public function combineData($observation, $forecast) {
 
@@ -393,7 +395,7 @@ class DataMiner{
         }
 
         // return json_encode($data);
-        return $data;     
+        return $data;
     }
 
     // end of class
