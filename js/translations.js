@@ -61,8 +61,9 @@ var translations = {
     'dataInfoBody3': 'Tuulikartta.info perustuu Ilmatieteen laitoksen <a href="https://ilmatieteenlaitos.fi/avoin-data">avoimeen dataan.',
     'dataInfoBody4': 'Seuraa sivuston kehitystä sekä kehittäjän edesottamuksia:',
     'feedback': 'Kysymykset ja palaute:',
-    'frequency': 'Jakauma'
-
+    'frequency': 'Jakauma',
+    'cookieConsent': 'Sivustolla käytetään evästeitä parhaan käyttökokemuksen varmistamiseksi.',
+    'consent': 'Asia selvä!'
   },
   'en': {
     'geolocation': 'Use geolocation',
@@ -125,6 +126,8 @@ var translations = {
     'dataInfoBody3': 'Tuulikartta.info is based on the Finnish Meteorological Institute\'s <a href="https://en.ilmatieteenlaitos.fi/open-data">open data.',
     'dataInfoBody4': 'Follow project progress and other stuff:',
     'feedback': 'Questions and feedback:',
-    'frequency': 'Frequency'
+    'frequency': 'Frequency',
+    'cookieConsent': 'This website uses cookies to ensure you get the best experience on this website.',
+    'consent': 'Got it!'
   }
 }

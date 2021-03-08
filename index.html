@@ -64,6 +64,9 @@
         <script src="js/graph.js?v=2"></script>
         <script src="js/lightning.js?v=2"></script>
 
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+
         <link href="css/style.css" rel="stylesheet">
         <link href="css/temperature.css" rel="stylesheet">
 
@@ -156,6 +159,23 @@
         if(selectedLanguage === 'en')
         $('#language-selector-value').html('FI')
 
+        window.cookieconsent.initialise({
+          "palette": {
+            "popup": {
+              "background": "white",
+              "text": "black"
+            },
+            "button": {
+              "background": "#3f8abf"
+            }
+          },
+          "theme": "classic",
+          "showLink": false,
+          "content": {
+            "message": translations[selectedLanguage]['cookieConsent'],
+            "dismiss": translations[selectedLanguage]['consent']
+          }
+        });
 
         $('#select-content-datasearch').html(translations[selectedLanguage]['dataSearch'])
         $('#select-content-now').html(translations[selectedLanguage]['dataNow'])
