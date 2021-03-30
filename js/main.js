@@ -1593,35 +1593,6 @@ var saa = saa || {};
     return output
   }
 
-  // ---------------------------------------------------------
-  // Cookie functions
-  // https://quirksmode.org/js/cookies.html
-  // ---------------------------------------------------------
-
-  Tuulikartta.createCookie = function (name, value, days) {
-    if (days) {
-      var date = new Date()
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
-      var expires = '; expires=' + date.toGMTString()
-    } else var expires = ''
-    document.cookie = name + '=' + value + expires + '; path=/'
-  }
-
-  Tuulikartta.readCookie = function (name) {
-    var nameEQ = name + '='
-    var ca = document.cookie.split(';')
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i]
-      while (c.charAt(0) == ' ') c = c.substring(1, c.length)
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length)
-    }
-    return null
-  }
-
-  Tuulikartta.eraseCookie = function (name) {
-    mMinClass.createCookie(name, '', -1)
-  }
-
   function resolveGraphStartposition(value) {
     if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1d' || value === 'wg_1d')
     return 1
