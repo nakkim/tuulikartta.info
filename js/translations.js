@@ -63,7 +63,8 @@ var translations = {
     'feedback': 'Kysymykset ja palaute:',
     'frequency': 'Jakauma',
     'cookieConsent': 'Sivustolla käytetään evästeitä parhaan käyttökokemuksen varmistamiseksi.',
-    'consent': 'Asia selvä!'
+    'consent': 'Hyväksy',
+    'deny': 'Poista käytöstä'
   },
   'en': {
     'geolocation': 'Use geolocation',
@@ -128,6 +129,7 @@ var translations = {
     'feedback': 'Questions and feedback:',
     'frequency': 'Frequency',
     'cookieConsent': 'This website uses cookies to ensure you get the best experience on this website.',
-    'consent': 'Got it!'
+    'consent': 'OK',
+    'deny': 'Disable'
   }
 }

@@ -141,9 +141,6 @@
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-105001415-1', 'auto');
-        ga('send', 'pageview');
-
     </script>
     <script>
 
@@ -160,20 +157,21 @@
         $('#language-selector-value').html('FI')
 
         window.cookieconsent.initialise({
-          "palette": {
-            "popup": {
-              "background": "white",
-              "text": "black"
+          palette: {
+            popup: {
+              background: "white",
+              text: "black",
             },
-            "button": {
-              "background": "#3f8abf"
+            button: {
+              background: "#3f8abf",
+              message: "OK"
             }
           },
-          "theme": "classic",
-          "showLink": false,
-          "content": {
-            "message": translations[selectedLanguage]['cookieConsent'],
-            "dismiss": translations[selectedLanguage]['consent']
+          theme: "classic",
+          showLink: false,
+          content: {
+            message: translations[selectedLanguage]['cookieConsent'],
+            dismiss: translations[selectedLanguage]['consent'],
           }
         });
 
