@@ -1,3 +1,3 @@
 # tuulikartta.info
 
-![alt text](symbols/flowchart.png?raw=true "javascript flowchart")
+Display and visualize finnish meteorological observations.
