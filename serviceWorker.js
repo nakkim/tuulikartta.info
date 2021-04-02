@@ -1,4 +1,4 @@
-var version = 'v.2021.03.31'
+var version = 'v.2021.04.02'
 var OFFLINE_URL = '/offline.html'
 
 
@@ -37,7 +37,7 @@ self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then((keyList) => {
       return Promise.all(keyList.map((key) => {
-        if (key !== CACHE_NAME) {
+        if (key !== CACHE_NAME + version) {
           console.log('[ServiceWorker] Removing old cache', key);
           return caches.delete(key);
         }
