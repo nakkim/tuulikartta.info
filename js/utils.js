@@ -81,7 +81,7 @@ hash.forEach(function(element) {
 
 saa.Tuulikartta.buildObservationMenu()
 saa.Tuulikartta.populateInfoContent()
-var values = ['ws_10min','wg_10min','ws_1d','wg_1d','ri_10min','rr_1h','rr_1d','t2m','tmax','tmin','vis','wawa','n_man','snow_aws','pressure','rh']
+var values = ['ws_10min','wg_10min','ws_1d','wg_1d','ri_10min','rr_1h','rr_1d','t2m','tmax','tmin','vis','wawa','n_man','snow_aws','pressure','rh', 'dewpoint', 't2mtdew']
 
 /* handle other url parameters */
 hash.forEach(function(element) { 

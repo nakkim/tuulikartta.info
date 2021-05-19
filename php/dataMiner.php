@@ -399,7 +399,17 @@ class DataMiner{
             }
 
         }
-        return $outputArray;
+
+        $final = [];
+        foreach($outputArray as $array) {
+          if($array['t2m'] !== null && $array['dewpoint'] !== null)
+          $array['t2mdewpoint'] = $array['t2m'] - $array['dewpoint'];  
+          else
+          $array['t2mdewpoint'] = null;
+          array_push($final, $array);
+        }
+
+        return $final;
     }
 
 

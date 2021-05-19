@@ -514,6 +514,8 @@ var saa = saa || {};
     html = html + '<option value="ri_10min">'+translations[selectedLanguage]["ri_10min"]+'</option>'
     html = html + '<option value="rr_1h">'+translations[selectedLanguage]["rr_1h"]+'</option>'
     html = html + '<option value="t2m">'+translations[selectedLanguage]["t2m"]+'</option>'
+    html = html + '<option value="t2mdewpoint">'+translations[selectedLanguage]["t2mdewpoint"]+'</option>'
+    html = html + '<option value="dewpoint">'+translations[selectedLanguage]["dewpoint"]+'</option>'
     html = html + '<option value="vis">'+translations[selectedLanguage]["vis"]+'</option>'
     html = html + '<option value="wawa">'+translations[selectedLanguage]["wawa"]+'</option>'
     html = html + '<option value="n_man">'+translations[selectedLanguage]["n_man"]+'</option>'
@@ -805,7 +807,7 @@ var saa = saa || {};
     if (rr_1h > 20.0 && rr_1h <= 30.0) return "#fc8d59";
     if (rr_1h > 30.0) return "#d73027";
   }
-0
+
   Tuulikartta.resolveSnowDepth = function (snow) {
     if (snow > 0 && snow <= 10) return "#bfe6ff";
     if (snow > 10 && snow <= 20) return "#8dcdff";
@@ -992,6 +994,21 @@ var saa = saa || {};
     if (temperature >= 28 && temperature < 30) return '#000000'
     if (temperature > 30) return '#000000'
     return '#8aedbb'
+  }
+
+  Tuulikartta.resolveDewpointDiff = function (dewpoint) {
+    dewpoint = parseFloat(dewpoint)
+    if (dewpoint < -4) return '#053061'
+    if (dewpoint >= -4 && dewpoint < -2) return '#2166ac'
+    if (dewpoint >= -2 && dewpoint < -1) return '#4393c3'
+    if (dewpoint >= -1 && dewpoint < -0.5) return '#92c5de'
+    if (dewpoint >= -0.5 && dewpoint < 0) return '#d1e5f0'
+    if (dewpoint >= 0 && dewpoint < 1) return '#f7f7f7'
+    if (dewpoint >= 1 && dewpoint < 2) return '#fddbc7'
+    if (dewpoint >= 2 && dewpoint < 4) return '#f4a582'
+    if (dewpoint >= 4 && dewpoint < 8) return '#d6604d'
+    if (dewpoint > 8) return '#b2182b'
+    return '#f7f7f7'
   }
 
   Tuulikartta.resolveWindDirection = function (winddirection) {
@@ -1192,7 +1209,7 @@ var saa = saa || {};
         }
       }
 
-      if (param === 't2m'|| param === 'tmin' || param === 'tmax') {
+      if (param === 'dewpoint'|| param === 't2m'|| param === 'tmin' || param === 'tmax') {
 
         var fillColor = Tuulikartta.resolveTemperature(saa.Tuulikartta.data[i][param])
         var hex = fillColor.substr(1)
@@ -1278,6 +1295,35 @@ var saa = saa || {};
             marker.addTo(saa.Tuulikartta.markerGroupSynop)
           }
 
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']),{
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
+        }
+      }
+
+      if (param === 't2mdewpoint') {
+        if (saa.Tuulikartta.data[i]['t2mdewpoint'] !== null) {
+          var fillColor = Tuulikartta.resolveDewpointDiff(saa.Tuulikartta.data[i][param])
+          var hex = fillColor.substr(1)
+          hex = 'hex' + hex
+
+          var marker = L.marker(new L.LatLng(saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']),
+            {
+              interactive: true,
+              keyboard: false,
+              icon: Tuulikartta.createLabelIcon(hex, saa.Tuulikartta.data[i][param].toFixed(1))
+            })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i]))
           marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
           saa.Tuulikartta.data[i]['fmisid']),{
             maxWidth: maxWidth
@@ -1596,7 +1642,7 @@ var saa = saa || {};
   function resolveGraphStartposition(value) {
     if(value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1d' || value === 'wg_1d')
     return 1
-    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'tmax' || value === 'tmin' || value === 'wawa')
+    else if(value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'dewpoint' || value === 'tmax' || value === 'tmin' || value === 'wawa')
     return 2
     else if(value === 'vis' || value === 'n_man')
     return 3
