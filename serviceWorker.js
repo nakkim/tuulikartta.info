@@ -1,4 +1,4 @@
-var version = 'v.2021.05.19'
+var version = 'v.2021.05.20'
 var OFFLINE_URL = '/offline.html'
 
 
