@@ -992,7 +992,7 @@ var saa = saa || {};
     if (temperature >= 24 && temperature < 26) return '#db0a07'
     if (temperature >= 26 && temperature < 28) return '#bd0404'
     if (temperature >= 28 && temperature < 30) return '#000000'
-    if (temperature > 30) return '#000000'
+    if (temperature >= 30) return '#000000'
     return '#8aedbb'
   }
 
@@ -1007,7 +1007,7 @@ var saa = saa || {};
     if (dewpoint >= 1 && dewpoint < 2) return '#fddbc7'
     if (dewpoint >= 2 && dewpoint < 4) return '#f4a582'
     if (dewpoint >= 4 && dewpoint < 8) return '#d6604d'
-    if (dewpoint > 8) return '#b2182b'
+    if (dewpoint >= 8) return '#b2182b'
     return '#f7f7f7'
   }
 
