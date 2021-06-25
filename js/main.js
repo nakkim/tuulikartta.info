@@ -572,7 +572,7 @@ var saa = saa || {};
           var code = cell.getValue()
           if(code !== null) {
             var date = moment(code);
-            var dateComponent = date.format('YYYY-MM-DD HH:mm')
+            var dateComponent = date.format('DD.MM.YYYY HH:mm')
             var timeComponent = date.format('HH:mm')
             return dateComponent
           } else {
