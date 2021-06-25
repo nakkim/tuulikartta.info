@@ -217,8 +217,21 @@ var saa = saa || {};
         Tuulikartta.drawData(selectedParameter)
         selectedParameter = $('#select-wind-parameter').val()
         startPosition = resolveGraphStartposition(selectedParameter)
+        Tuulikartta.populateObservationTable()
       }
     })
+  }
+
+  Tuulikartta.hexToRgbA = function (hex, opacity){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+','+opacity+')';
+    }
   }
 
   //
@@ -547,6 +560,208 @@ var saa = saa || {};
     $('#site-info-body').html(html)
   }
 
+  Tuulikartta.populateObservationTable = function() {
+    if(selectedLanguage === 'en')
+    document.getElementById('observation-table-header').innerHTML = 'Weather observations'
+
+    var table = new Tabulator("#observation-table", {
+      layout:"fitDataStretch",
+      columns:  [
+        {title: translations[selectedLanguage]['observationStation'], field: 'station', width:200, widthShrink:1},
+        {title: translations[selectedLanguage]['observationTime'], field: 'time', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          var code = cell.getValue()
+          if(code !== null) {
+            var date = moment(code);
+            var dateComponent = date.format('YYYY-MM-DD HH:mm')
+            var timeComponent = date.format('HH:mm')
+            return dateComponent
+          } else {
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['ws_10min'], field: 'ws_10min', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
+          if(code !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
+            return cell.getValue()
+          } else {
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['wg_10min'], field: 'wg_10min', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
+          if(code !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
+            return cell.getValue()
+          } else {
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['wd_10min'], field: 'wd_10min', hozAlign:"center", formatter:function(cell, formatterParams){
+          var value = cell.getValue();
+           if(value !== null){
+              return `<img src="symbols/wind.svg" width="15" heigh="15" style="transform:rotate(${value}deg)"/> ${value}°`;
+           } else {
+              return value;
+           }
+        }},
+        {title: translations[selectedLanguage]['ws_1d'], field: 'ws_1d', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
+          if(code !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
+            return cell.getValue()
+          } else {
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['wg_1d'], field: 'wg_1d', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
+          if(code !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
+            return cell.getValue()
+          } else {
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['vis'], field: 'vis', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          var code = cell.getValue()
+          if(code !== null) {
+            if(code > 1000 && code <= 2000) {
+              cell.getElement().style.backgroundColor = 'rgba(1,1,1,0.15)';
+            } else if(code < 1000) {
+              cell.getElement().style.backgroundColor = 'rgba(224,7,0,0.4)';
+            }
+            return cell.getValue()
+          } else {
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['wawa'], field: 'wawa', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          var code = Tuulikartta.resolveWawaCode(cell.getValue())
+          if(code !== null) {
+            if(code.short === 'Utu' || code.short === 'Sumu' || code.short === 'Haze' || code.short === 'Fog') {
+              cell.getElement().style.backgroundColor = 'rgba(1,1,1,0.15)';
+              return code.short
+            } else {
+              cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.4);
+              return code.short
+            }
+          } else {
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['t2m'], field: 't2m', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['tmax'], field: 'tmax', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null && Math.abs(cell.getValue()) < 100) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['tmin'], field: 'tmin', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null && Math.abs(cell.getValue()) < 100) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['dewpoint'], field: 'dewpoint', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['t2mdewpoint'], field: 't2mdewpoint', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveDewpointDiff(cell.getValue()),0.4);
+            return (cell.getValue()).toFixed(1)
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['rh'], field: 'rh', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveRelativeHumidity(cell.getValue()),0.4);
+            return (cell.getValue()).toFixed(1)
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['n_man'], field: 'n_man', hozAlign:"center", formatter:function(cell, formatterParams){
+          var value = cell.getValue();
+           if(value !== null){
+              return `<img src="symbols/nn/${value}.svg" width="15" heigh="15";/>`;
+           } else {
+              return value;
+           }
+        }},
+        {title: translations[selectedLanguage]['ri_10min'], field: 'ri_10min', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePrecipitationAmount(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['rr_1h'], field: 'rr_1h', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePrecipitationAmount(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['rr_1d'], field: 'rr_1d', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePrecipitationAmount(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['snow_aws'], field: 'snow_aws', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null && cell.getValue() > -1) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveSnowDepth(cell.getValue()),0.4);
+            return cell.getValue()
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+        {title: translations[selectedLanguage]['pressure'], field: 'pressure', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
+          if(cell.getValue() !== null) {
+            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePressure(cell.getValue()),0.4);
+            return (cell.getValue()).toFixed(1)
+          } else {
+            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+            return null
+          }
+        }},
+      ]
+    });
+    table.setData(saa.Tuulikartta.data)
+  }
+
   // ---------------------------------------------------------
   // initialize Leaflet map and set geolocation
   // ---------------------------------------------------------
@@ -679,6 +894,26 @@ var saa = saa || {};
     })
     map.addControl(new lightningControl());
 
+    /* radar control */
+    var tableDataControl = L.Control.extend({
+      options: {
+        position: 'topright'
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-table'
+        )
+        
+        container.onclick = function(){
+          modal.style.display = "block";
+        }
+
+        container.title = translations[selectedLanguage]['tableTitle']
+        return container
+      }
+    })
+    map.addControl(new tableDataControl());
+
     var infoControl = L.Control.extend({
       options: {
         position: 'topleft'
@@ -778,15 +1013,15 @@ var saa = saa || {};
 
   Tuulikartta.resolveWindSpeed = function (windspeed) {
     windspeed = parseFloat(windspeed)
-    if (windspeed < 1) { return 'calm' } 
-    else if (windspeed >= 1 && windspeed < 2) { return 'light' } 
-    else if (windspeed >= 2 && windspeed < 7) { return 'moderate' } 
-    else if (windspeed >= 7 && windspeed < 14) { return 'brisk' } 
-    else if (windspeed >= 14 && windspeed < 21) { return 'hard' } 
-    else if (windspeed >= 21 && windspeed < 25) { return 'storm' } 
-    else if (windspeed >= 25 && windspeed < 28) { return 'severestorm' } 
-    else if (windspeed >= 28 && windspeed < 32) { return 'extremestorm' } 
-    else if (windspeed >= 32) { return 'hurricane' } 
+    if (windspeed < 1) { return {code: 'calm', hex: '#ffffff' } }
+    else if (windspeed >= 1 && windspeed < 2) { return {code: 'light', hex: '#e6f7ff' } }
+    else if (windspeed >= 2 && windspeed < 7) { return {code: 'moderate', hex: '#ccffcc' }  } 
+    else if (windspeed >= 7 && windspeed < 14) { return {code: 'brisk', hex: '#ffff99' }  } 
+    else if (windspeed >= 14 && windspeed < 21) { return {code: 'hard', hex: '#ffcc00' }  } 
+    else if (windspeed >= 21 && windspeed < 25) { return {code: 'storm', hex: '#ff3300' }  } 
+    else if (windspeed >= 25 && windspeed < 28) { return {code: 'severestorm', hex: '#ff0066' }  } 
+    else if (windspeed >= 28 && windspeed < 32) { return {code: 'extremestorm', hex: '#cc0099' }  } 
+    else if (windspeed >= 32) { return {code: 'hurricane', hex: '#6600cc' } } 
     else { return 'calm' }
   }
 
@@ -852,14 +1087,14 @@ var saa = saa || {};
   Tuulikartta.resolveWawaCode = function (wawa) {
     wawa = parseInt(wawa)
     if(selectedLanguage === 'en') {
-      if (wawa === 0) return {short:'FairWeather',long:'',class:'textLabelclassGrey', hex:'#7e7e7e'}
+      if (wawa === 0) return {short:'FairWeather',long:'',class:'textLabelclassGrey', hex:'#ffffff'}
       if (wawa === 10) return {short:'Haze',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
       if (wawa === 20) return {short:'Fog',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
       if (wawa === 21) return {short:'Rain',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
       if (wawa === 22) return {short:'Drizzle',long:'',class:'textLabelclaenssBlackBackgroundYellow', hex:'#ffffb3'}
       if (wawa === 23) return {short:'Rain',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
       if (wawa === 24) return {short:'Snow',long:'',class:'textLabelclassBlackBackgroundBlue', hex:'#9cc3fc'}
-      if (wawa === 25) return {short:'Freezing rain',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
+      if (wawa === 25) return {short:'FreezingRain',long:'',class:'textLabelclassBlackBackgroundPurple', hex:'#ff80df'}
       if (wawa === 30) return {short:'Fog',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
       if (wawa === 31) return {short:'Fog',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
       if (wawa === 32) return {short:'Fog',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
@@ -903,7 +1138,7 @@ var saa = saa || {};
       if (wawa === 89) return {short:'Hail',long:'',class:'textLabelclassBlackBackgroundYellow', hex:'#ffffb3'}
       else return null
     } else {
-      if (wawa === 0) return {short:'Poutaa',long:'',class:'textLabelclassGrey', hex:'#7e7e7e'}
+      if (wawa === 0) return {short:'Poutaa',long:'',class:'textLabelclassGrey', hex:'#ffffff'}
       if (wawa === 10) return {short:'Utu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
       if (wawa === 20) return {short:'Sumu',long:'',class:'textLabelclassBlackBackgroundWhite', hex:'#ffffff'}
       if (wawa === 21) return {short:'Sade',long:'',class:'textLabelclassBlackBackgroundGreen', hex:'#00b430'}
@@ -991,8 +1226,8 @@ var saa = saa || {};
     if (temperature >= 22 && temperature < 24) return '#f71707'
     if (temperature >= 24 && temperature < 26) return '#db0a07'
     if (temperature >= 26 && temperature < 28) return '#bd0404'
-    if (temperature >= 28 && temperature < 30) return '#000000'
-    if (temperature >= 30) return '#000000'
+    if (temperature >= 28 && temperature < 30) return '#9e0101'
+    if (temperature >= 30) return '#eb0052'
     return '#8aedbb'
   }
 
@@ -1060,7 +1295,7 @@ var saa = saa || {};
           if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
 
           var icon = L.icon({
-            iconUrl: '../symbols/wind/' + saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param]) + '.svg',
+            iconUrl: '../symbols/wind/' + (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).code + '.svg',
             iconSize: [60, 60], // size of the icon
             iconAnchor: iconAnchor, // point of the icon which will correspond to marker's location
             popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
@@ -1109,7 +1344,7 @@ var saa = saa || {};
           if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
 
           var icon = L.icon({
-            iconUrl: '../symbols/wind/' + saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param]) + '.svg',
+            iconUrl: '../symbols/wind/' + (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).code + '.svg',
             iconSize: [60, 60], // size of the icon
             iconAnchor: iconAnchor, // point of the icon which will correspond to marker's location
             popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor

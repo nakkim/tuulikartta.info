@@ -304,14 +304,24 @@
     padding-right: 5px; 
     font-size: 15px;
 }
-.hex000000 {
+.hex9e0101 {
     font-weight: bold;
-    background-color: rgba(189,4,4,0.7);
+    background-color: #9e0101;
     border: 1px solid black;
     color: black;
     padding-left: 5px; 
     padding-right: 5px; 
     font-size: 15px;
+}
+
+.hexeb0052{
+  font-weight: bold;
+  background-color: #eb0052;
+  border: 1px solid black;
+  color: black;
+  padding-left: 5px; 
+  padding-right: 5px; 
+  font-size: 15px;
 }
 
 /* precipitation values */

@@ -32,6 +32,10 @@
         <!-- jQuery -->
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
 
+        <!-- Tabulator -->
+        <link rel="stylesheet" type="text/css" href="node_modules/tabulator-tables/dist/css/tabulator.min.css">
+        <script type="text/javascript" charset="utf8" src="node_modules/tabulator-tables/dist/js/tabulator.min.js"></script>
+
         <!-- bootstrap datepicker -->
         <link rel="stylesheet" href="node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css"/>
         <script src="node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
@@ -132,6 +136,17 @@
 
         <div id="map" styles="z-index:1"></div>
         <div id="settings-sidebar"></div>
+
+        <div id="modal-form" class="modal">
+          <!-- Modal content -->
+          <div class="modal-content">
+              <span class="close">&times;</span>
+              <b></b><p id="observation-table-header">Säähavainnot</p>
+              <div id="observation-table" class="data-table-container" style="height:90%;">
+              </div>
+              
+          </div>
+        </div>
 
     </body >
 

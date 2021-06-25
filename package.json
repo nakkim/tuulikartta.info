@@ -33,6 +33,7 @@
     "leaflet-timedimension": "^1.1.1",
     "leaflet.locatecontrol": "^0.72.0",
     "moment": "^2.27.0",
-    "owl.carousel": "^2.3.4"
+    "owl.carousel": "^2.3.4",
+    "tabulator-tables": "^4.9.3"
   }
 }
