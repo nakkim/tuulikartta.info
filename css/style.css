@@ -150,6 +150,20 @@ td, tr {
     margin-top: 0.45em;
 }
 
+#observation-table-picker {
+    margin-top: 1.45em;
+}
+
+.picker {
+    font-weight: bold;
+    color:#004d85;
+}
+
+.picker-inactive {
+    color:#9fa6aa;
+    font-weight: 400;
+}
+
 #weather-chart {
     width: 100%;
     height: 400px;
@@ -713,7 +727,7 @@ input[type=range] {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1100; /* Sit on top */
-  padding-top: 5%; /* Location of the box */
+  padding-top: 3%; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -731,6 +745,13 @@ input[type=range] {
   border: 1px solid #888;
   width: 80%;
   height: 85%;
+}
+
+@media screen and (max-height: 480px) {
+    
+  .modal-content {
+    height: 80%;
+  }
 }
 
 /* The Close Button */
