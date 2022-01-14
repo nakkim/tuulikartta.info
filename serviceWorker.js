@@ -1,4 +1,4 @@
-var version = 'v.2021.06.27'
+var version = 'v.2022.01.14'
 var OFFLINE_URL = '/offline.html'
 
 
@@ -53,7 +53,7 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  if ( event.request.url.indexOf( '/php/' ) !== -1 ) {
+  if ( event.request.url.indexOf( '/php/' ) !== -1 ||  event.request.url.indexOf( 'list' )) {
     // console.log(event.request.url)
     // console.log(event)
     return false
