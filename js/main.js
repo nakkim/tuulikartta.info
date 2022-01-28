@@ -152,6 +152,7 @@ var saa = saa || {};
                 Tuulikartta.drawData(selectedParameter)
                 selectedParameter = $('#select-wind-parameter').val()
                 startPosition = resolveGraphStartposition(selectedParameter)
+                Tuulikartta.populateObservationTable()
               }
             })
           } else {
@@ -181,6 +182,7 @@ var saa = saa || {};
             saa.Tuulikartta.map.spin(false)
             // store the Map-instance in map variable
             saa.Tuulikartta.data = data
+            Tuulikartta.populateObservationTable()
             Tuulikartta.drawData(selectedParameter)
             selectedParameter = $('#select-wind-parameter').val()
             startPosition = resolveGraphStartposition(selectedParameter)
@@ -757,7 +759,10 @@ var saa = saa || {};
             return null
           }
         }},
-      ]
+      ],
+      rowDblClick:function(e, id, data, row){
+        console.log("Row Double Clicked!");
+      },
     });
     table.setData(saa.Tuulikartta.data)
   }
