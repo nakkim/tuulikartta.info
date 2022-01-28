@@ -598,8 +598,22 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
   pointer-events: auto;
 }
-.leaflet-control-select-radar:hover {
+.leaflet-control-select-radar:hover, .leaflet-control-select-radar.active {
   background-image: url(../symbols/radar_blue.png);
+}
+.leaflet-control-select-cam {
+  background-image: url(../symbols/camera.png);
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center;
+  background-color: white;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.leaflet-control-select-cam:hover, .leaflet-control-select-cam.active {
+  background-image: url(../symbols/camera_blue.png);
 }
 .leaflet-control-select-table {
   background-image: url(../symbols/table.png);
@@ -633,6 +647,11 @@ input[type=range]:focus::-ms-fill-upper {
 .leaflet-control-select-flash:hover, .leaflet-control-select-flash.active {
   background-image: url(../symbols/flash_blue.png);
 }
+.leaflet-div-icon {
+  background: rgba(0,0,0,0);
+  border: 1px solid rgba(0,0,0,0);
+}
+
 /* The Modal (background) */
 
 .modal {
