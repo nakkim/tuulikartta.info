@@ -39,6 +39,7 @@ var saa = saa || {};
   var showRoadObservations = false
   var showOldObservations = false
   var getLightningData = false
+  var getTrafficCamData = false
   saa.Tuulikartta.showCloudStrikes = localStorage.getItem('showCloudStrikes') ? localStorage.getItem('showCloudStrikes') : true
   saa.Tuulikartta.lightningInterval = 5
 
@@ -264,6 +265,10 @@ var saa = saa || {};
             saa.lightning.geoLayer.clearLayers()
             saa.lightning.init(endTime)
           }
+          if(getTrafficCamData) {
+            saa.camera.markers.clearLayers()
+            saa.camera.init()
+          }
 
         }
       })
@@ -352,6 +357,9 @@ var saa = saa || {};
       saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.updateRadarData()
+      getTrafficCamData = false
+      saa.camera.markers.clearLayers()
+      $($("#map").find(".leaflet-control-select-cam")).removeClass('active');
     })
 
     $('#select-content-now').click(function () {
@@ -780,7 +788,7 @@ var saa = saa || {};
     var map = L.map('map', {
       zoom: zoom,
       minZoom: 5,
-      maxZoom: 12,
+      maxZoom: 16,
       scrollWheelZoom: true,
       center: [lat, lon],
       attribution: 'Tuulikartta.info'
@@ -918,6 +926,37 @@ var saa = saa || {};
       }
     })
     map.addControl(new tableDataControl());
+
+    /* traffic cam control */
+    var trafficCamControl = L.Control.extend({
+      options: {
+        position: 'topright'
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-cam'
+        )
+        
+        container.onclick = function(){
+          if(saa.Tuulikartta.timeValue === 'now') {
+            if(saa.Tuulikartta.map.hasLayer(saa.camera.markers)) {
+              saa.Tuulikartta.map.removeLayer(saa.camera.markers)
+              $(this).removeClass('active')
+              getTrafficCamData = false
+              saa.camera.markers.clearLayers()
+            } else {
+              saa.camera.init()
+              $(this).addClass('active')
+              getTrafficCamData = true
+            }
+          }
+        }
+
+        container.title = translations[selectedLanguage]['camTitle']
+        return container
+      }
+    })
+    map.addControl(new trafficCamControl());
 
     var infoControl = L.Control.extend({
       options: {
