@@ -60,26 +60,28 @@ var saa = saa || {};
     // ---------------------------------------------------------
 
     weatherGraph.getObservationGraph = function(fmisid,type,timestamp) {
-        saa.Tuulikartta.debug('Getting data for graph... ');
-        $('#graph-box-loader').html("<span align=center>"+translations[selectedLanguage]['loadObservations']+"... <img src='symbols/default.gif' style='width:20px;'></img></span>");
+        if(fmisid !== undefined) {
+          saa.Tuulikartta.debug('Getting data for graph... ');
+          $('#graph-box-loader').html("<span align=center>"+translations[selectedLanguage]['loadObservations']+"... <img src='symbols/default.gif' style='width:20px;'></img></span>");
 
-        $.ajax({
-            dataType: "json",
-            url: 'php/weather-graph-ts.php',
-            data: {
-                fmisid: fmisid,
-                type: type,
-                timestamp: timestamp
-            },
-            error: function () {
-                saa.Tuulikartta.debug('An error has occurred');
-            },
-            success: function (data) {
-                saa.Tuulikartta.debug('Draw graph')
-                $('#graph-box-loader').html('');
-                weatherGraph.drawGraph(data,fmisid);
-            }
-        });
+          $.ajax({
+              dataType: "json",
+              url: 'php/weather-graph-ts.php',
+              data: {
+                  fmisid: fmisid,
+                  type: type,
+                  timestamp: timestamp
+              },
+              error: function () {
+                  saa.Tuulikartta.debug('An error has occurred');
+              },
+              success: function (data) {
+                  saa.Tuulikartta.debug('Draw graph')
+                  $('#graph-box-loader').html('');
+                  weatherGraph.drawGraph(data,fmisid);
+              }
+          });
+        }
     }
 
 
