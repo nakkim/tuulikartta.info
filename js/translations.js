@@ -67,7 +67,12 @@ var translations = {
     'frequency': 'Jakauma',
     'cookieConsent': 'Sivustolla käytetään evästeitä parhaan käyttökokemuksen varmistamiseksi.',
     'consent': 'Hyväksy',
-    'deny': 'Poista käytöstä'
+    'deny': 'Poista käytöstä',
+    'cameraStationName': 'Aseman nimi',
+    'camTitle': 'Tiesääkamerat',
+    'latestUpdate': 'Viimeisin päivitys',
+    'minutesAgo': 'minuuttia sitten',
+    'cameraName': 'Kamera'
   },
   'en': {
     'geolocation': 'Use geolocation',
@@ -136,6 +141,11 @@ var translations = {
     'frequency': 'Frequency',
     'cookieConsent': 'This website uses cookies to ensure you get the best experience on this website.',
     'consent': 'OK',
-    'deny': 'Disable'
+    'deny': 'Disable',
+    'camTitle': 'Road weather cameras',
+    'cameraStationName': 'Station name',
+    'latestUpdate': 'Latest update',
+    'minutesAgo': 'minutes ago',
+    'cameraName': 'Camera'
   }
 }

@@ -266,6 +266,7 @@ var saa = saa || {};
             saa.lightning.init(endTime)
           }
           if(getTrafficCamData) {
+            saa.camera.markers.clearLayers()
             saa.camera.init()
           }
 
@@ -356,6 +357,9 @@ var saa = saa || {};
       saa.Tuulikartta.radarLayer.setParams({time: saa.Tuulikartta.timeStamp})
       saa.Tuulikartta.namelayer.bringToFront()
       Tuulikartta.updateRadarData()
+      getTrafficCamData = false
+      saa.camera.markers.clearLayers()
+      $($("#map").find(".leaflet-control-select-cam")).removeClass('active');
     })
 
     $('#select-content-now').click(function () {
@@ -934,15 +938,17 @@ var saa = saa || {};
         )
         
         container.onclick = function(){
-          if(saa.Tuulikartta.map.hasLayer(saa.camera.markers)) {
-            saa.Tuulikartta.map.removeLayer(saa.camera.markers)
-            $(this).removeClass('active')
-            getTrafficCamData = false
-            saa.camera.markers.clearLayers()
-          } else {
-            saa.camera.init()
-            $(this).addClass('active')
-            getTrafficCamData = true
+          if(saa.Tuulikartta.timeValue === 'now') {
+            if(saa.Tuulikartta.map.hasLayer(saa.camera.markers)) {
+              saa.Tuulikartta.map.removeLayer(saa.camera.markers)
+              $(this).removeClass('active')
+              getTrafficCamData = false
+              saa.camera.markers.clearLayers()
+            } else {
+              saa.camera.init()
+              $(this).addClass('active')
+              getTrafficCamData = true
+            }
           }
         }
 

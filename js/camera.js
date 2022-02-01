@@ -10,16 +10,18 @@ var saa = saa || {};
 
   var now = moment(new Date()),
       stations = ''
-      
+      imageWidth = 600, // pixels
+      maxWidth = 750
+
   saa.camera.markers = L.markerClusterGroup({
         spiderfyOnMaxZoom: false,
         showCoverageOnHover: false,
-        zoomToBoundsOnClick: false,
+        zoomToBoundsOnClick: true,
         removeOutsideVisibleBounds: true,
         chunkedLoading: true,
         chunkInterval: 1000,
         maxClusterRadius: 100,
-        disableClusteringAtZoom: 13,
+        disableClusteringAtZoom: 10,
         iconCreateFunction: function(cluster) {
           return L.divIcon({ html:
             '<div style="text-align:center; width:40px;font-size:13px;">'+
@@ -32,6 +34,17 @@ var saa = saa || {};
 
   camera.init = function() {
     
+    saa.Tuulikartta.map.spin(true, {
+      lines: 14,
+      length: 25,
+      width: 27,
+      radius: 80,
+      scale: 0.35,
+      corners: 1,
+      speed: 1.4,
+      animation: 'spinner-line-fade-quick',
+      color: '#b1b1b1'
+    })
     var promise = $.get({
       dataType: 'json',
       url: '//tie.digitraffic.fi/api/v3/metadata/camera-stations',
@@ -55,6 +68,7 @@ var saa = saa || {};
               }
             }
           }
+          saa.Tuulikartta.map.spin(false)
           camera.draw(stations)
         }
       })
@@ -63,16 +77,24 @@ var saa = saa || {};
 
   camera.draw = function(data) {
 
+    if (L.Browser.mobile) {
+      maxWidth = 280
+      imageWidth = 280
+      // maxHeight = 320
+    }
+
+    $('#graph-box-loader').html("");
     saa.camera.markers.clearLayers()
 
-    console.log(data)
     for (var i = 0; i < Object.keys(data['features']).length; i++) {
 
-      var diff = (moment.duration(now.diff(moment(data['features'][i]['latestUpdate'])))).asHours()
+      var diff = (moment.duration(now.diff(moment(data['features'][i]['latestUpdate'])))).asMinutes()
+      if(diff < 0) continue
+
       var symbol = ''
-      if (diff <= 0.16) {
+      if (diff >= 0 && diff <= 15) {
         symbol = 'cameragre.svg' 
-      } else if (diff > 0.16 && diff <= 1) {
+      } else if (diff > 15 && diff <= 60) {
         symbol = 'camerayel.svg'
       } else {
         symbol = 'cameragry.svg'
@@ -88,11 +110,37 @@ var saa = saa || {};
       var marker = L.marker([data['features'][i]['geometry']['coordinates'][1], data['features'][i]['geometry']['coordinates'][0]], 
         {
           icon: icon
-        })       
+        })
+      marker.bindPopup(saa.camera.populateInfoWindow(data['features'][i]),{
+        maxWidth: maxWidth
+      })
       saa.camera.markers.addLayer(marker)
     }
     saa.Tuulikartta.map.addLayer(saa.camera.markers)
       
+  }
+
+  camera.populateInfoWindow = function(data) {
+
+    var diff = Math.round((moment.duration(now.diff(moment(data['latestUpdate'])))).asMinutes())
+
+    var output = '<div style="text-align:center;width:'+imageWidth+'px;">'
+    output += '<div>'
+    output += '<span id="station-update-cam-name""><b>'+translations[selectedLanguage]['cameraStationName']+':</b>: '+data['properties']['names']['fi']+'</span></br>'
+    output += '<span id="station-update-cam-update" "><b>'+translations[selectedLanguage]['latestUpdate']+'</b>: '+diff+' '+translations[selectedLanguage]['minutesAgo']+'</span>'
+    output += '</div>'
+
+    output += '<div class="owl-carousel owl-theme">'
+    for (var i = 0; i < Object.keys(data['properties']['presets']).length; i++) {
+      output += '<div>'
+      output += '<span><b>'+translations[selectedLanguage]['cameraName']+': </b>'+data['properties']['presets'][i]['presentationName']+'</span></br>'
+      output += '<img src="'+data['properties']['presets'][i]['imageUrl']+'" style="width:'+imageWidth+'px;">'
+      output += '</div>'
+    }
+    output += '</div>'
+
+
+    return output
   }
 
 }(saa.camera = saa.camera || {}));
