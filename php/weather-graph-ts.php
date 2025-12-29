@@ -2,10 +2,10 @@
 require_once("dataMiner.php");
 header('Content-Type: application/json');
 
-$latlon      = filter_input(INPUT_GET, 'latlon', FILTER_SANITIZE_STRING);
-$fmisid      = filter_input(INPUT_GET, 'fmisid', FILTER_SANITIZE_STRING);
-$type        = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
-$timestamp   = filter_input(INPUT_GET, 'timestamp', FILTER_SANITIZE_STRING);
+$latlon      = filter_input(INPUT_GET, 'latlon', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$fmisid      = filter_input(INPUT_GET, 'fmisid', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$type        = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$timestamp   = filter_input(INPUT_GET, 'timestamp', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 $dataMiner = new DataMiner();
 $data = [];
@@ -139,7 +139,7 @@ function resolveWindDirection($data) {
     for($i=0; $i<16; $i++) {
       $k=0;
       foreach($data['obs'] as $key => $observation) {
-        if($dir[$observation['wd_10min']/22.5] === $dir[$i] && ($observation['ws_10min'] > $speed[$x-1][1] && $observation['ws_10min'] <= $speed[$x][1]) ) {
+        if($dir[(int)round($observation['wd_10min']/22.5)] === $dir[$i] && ($observation['ws_10min'] > $speed[$x-1][1] && $observation['ws_10min'] <= $speed[$x][1]) ) {
           $k++;
         }
       }

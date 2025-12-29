@@ -18,47 +18,6 @@ $('#language-selector-value').html('EN')
 if(selectedLanguage === 'en')
 $('#language-selector-value').html('FI')
 
-if(selectedLanguage === 'fi') {
-  window.cookieconsent.initialise({
-    palette: {
-      popup: {
-        background: "white",
-        text: "black",
-      },
-      button: {
-        background: "#3f8abf",
-        message: "OK"
-      }
-    },
-    theme: "classic",
-    content: {
-      message: translations[selectedLanguage]['cookieConsent'],
-      dismiss: translations[selectedLanguage]['consent'],
-      link: 'Lisätietoja',
-      href: 'https://tuulikartta.info/tietoa-sivustosta/'
-    }
-  });
-} else {
-  window.cookieconsent.initialise({
-    palette: {
-      popup: {
-        background: "white",
-        text: "black",
-      },
-      button: {
-        background: "#3f8abf",
-        message: "OK"
-      }
-    },
-    showLink: false,
-    theme: "classic",
-    content: {
-      message: "This website uses cookies (Google Analytics and local storage) to ensure you get the best experience on this website.",
-      dismiss: translations[selectedLanguage]['consent'],
-    }
-  });
-}
-
 $('#select-content-datasearch').html(translations[selectedLanguage]['dataSearch'])
 $('#select-content-now').html(translations[selectedLanguage]['dataNow'])
 

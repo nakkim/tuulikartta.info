@@ -2,8 +2,8 @@
 header('Content-type: text/javascript');
 // read data from cetcapabilities
 
-$serviceURL = filter_input(INPUT_GET, 'server', FILTER_SANITIZE_STRING);
-$layerName = filter_input(INPUT_GET, 'name'  , FILTER_SANITIZE_STRING);
+$serviceURL = filter_input(INPUT_GET, 'server', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$layerName = filter_input(INPUT_GET, 'name'  , FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 $dataValues = array();
 $url = "https:{$serviceURL}?service=WMS&version=1.3.0&request=GetCapabilities";
