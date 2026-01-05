@@ -1,8 +1,8 @@
-RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule (.*) https://tuulikartta.info [R=301,L]
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule (.*) https://tuulikartta.info [R=301,L]
 
-#Create filter to match files  cache
+# Create filter to match files  cache
 
 # <filesMatch "\.(js|css|html)$">
 #   FileETag None
