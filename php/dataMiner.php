@@ -20,14 +20,14 @@ class DataMiner{
           $start   = $endtime->sub(new DateInterval('PT24H'));
           $start   = $start->format('Y-m-d\TH:i:s\Z');
           
-          $url     = "&starttime=${start}&endtime=${end}";
+          $url     = "&starttime={$start}&endtime={$end}";
         } else {
           $endtime = new DateTime($timestamp);
           $end     = $endtime->format('Y-m-d\TH:i:s\Z');
           $start   = $endtime->sub(new DateInterval('PT24H'));
           $start   = $start->format('Y-m-d\TH:i:s\Z');
 
-          $url     = "&starttime=${start}&endtime=${end}";
+          $url     = "&starttime={$start}&endtime={$end}";
         }
 
       } else {
@@ -36,7 +36,7 @@ class DataMiner{
           $start->setTime(0,0);
           $start->setTimezone(new DateTimeZone('UTC'));
           $start  = $start->format('Y-m-d\TH:i:s\Z');
-          $url    = "&starttime=${start}";
+          $url    = "&starttime={$start}";
         } else {
           $endtime = new DateTime($timestamp, new DateTimeZone('UTC'));
           $end     = $endtime->format('Y-m-d\TH:i:s\Z');
@@ -46,7 +46,7 @@ class DataMiner{
           $starttime->setTimezone(new DateTimeZone('UTC'));
           $start     = $starttime->format('Y-m-d\TH:i:s\Z');
 
-          $url     = "&starttime=${start}&endtime=${end}";
+          $url     = "&starttime={$start}&endtime={$end}";
         }
       }
       return $url;
@@ -68,7 +68,7 @@ class DataMiner{
         $url .= "http://opendata.fmi.fi/wfs?request=getFeature";
 
         foreach($settings as $key => $value) {
-          $url .= "&${key}=${value}";
+          $url .= "&{$key}={$value}";
         }
 
         $url = $url . $this->setTime($timestamp, $graph);
@@ -267,7 +267,7 @@ class DataMiner{
         $result = [];
 
         foreach($parameters as $keyvalue => $parameter) {
-        $url = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/${parameter}/station-set/all/period/latest-hour/data.xml";
+        $url = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/{$parameter}/station-set/all/period/latest-hour/data.xml";
 
         $xmlData = file_get_contents($url);
         $data = simplexml_load_string($xmlData);
@@ -282,19 +282,19 @@ class DataMiner{
 
             if(isset($key->value)) {
             if($keyvalue === "n_man")
-            $tmp["${keyvalue}"] = round(8*((float)$key->value->value / 100));
+            $tmp["{$keyvalue}"] = round(8*((float)$key->value->value / 100));
             else
-            $tmp["${keyvalue}"] = (float)$key->value->value;
+            $tmp["{$keyvalue}"] = (float)$key->value->value;
 
             $tmp["time"] = (string)$key->value->date;
 
             } else {
-            $tmp["${keyvalue}"] = null;
+            $tmp["{$keyvalue}"] = null;
             $tmp["time"] = (string)$key->to;
             }
 
             if(array_key_exists($tmp["key"], $result)) {
-            $result[(string)$key->key][$keyvalue] = $tmp["${keyvalue}"];
+            $result[(string)$key->key][$keyvalue] = $tmp["{$keyvalue}"];
             } else {
             $result[(string)$key->key] = $tmp;
             }
