@@ -139,7 +139,8 @@ function resolveWindDirection($data) {
     for($i=0; $i<16; $i++) {
       $k=0;
       foreach($data['obs'] as $key => $observation) {
-        if($dir[(int)round($observation['wd_10min']/22.5)] === $dir[$i] && ($observation['ws_10min'] > $speed[$x-1][1] && $observation['ws_10min'] <= $speed[$x][1]) ) {
+        $dirIndex = (int)round($observation['wd_10min']/22.5) % 16;
+        if($dir[$dirIndex] === $dir[$i] && ($observation['ws_10min'] > $speed[$x-1][1] && $observation['ws_10min'] <= $speed[$x][1]) ) {
           $k++;
         }
       }
