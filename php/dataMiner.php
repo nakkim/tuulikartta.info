@@ -65,7 +65,7 @@ class DataMiner{
         date_default_timezone_set("UTC");
 
         $url = "";
-        $url .= "http://opendata.fmi.fi/wfs?request=getFeature";
+        $url .= "https://opendata.fmi.fi/wfs?request=getFeature";
 
         foreach($settings as $key => $value) {
           $url .= "&{$key}={$value}";
@@ -237,7 +237,7 @@ class DataMiner{
     */
 
     public function timeseries($timestamp,$settings) {
-      $url =  "http://opendata.fmi.fi/timeseries?";
+      $url =  "https://opendata.fmi.fi/timeseries?";
       $url .= "format=json";
       $url .= "&producer=".$settings['producer'];
       $url .= "&keyword=".$settings['keyword'];

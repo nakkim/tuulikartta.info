@@ -142,7 +142,7 @@ function getLightningData($starttime,$endtime) {
   $settings["bbox"]           = "16.58,58.81,34.8,70.61";
 
   $url = "";
-  $url .= "http://opendata.fmi.fi/wfs?request=getFeature";
+  $url .= "https://opendata.fmi.fi/wfs?request=getFeature";
   $url .= "&storedquery_id={$settings["storedQueryId"]}";
   $url .= "&parameters={$settings["parameter"]}";
   $url .= "&starttime={$starttime}";
