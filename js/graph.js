@@ -633,10 +633,34 @@ var saa = saa || {};
                 type: 'column',
                 name: translations[selectedLanguage]['n_man'],
                 color: '#828282',//'#A8A8A8',
-                data: data.obs.n_man,
+                data: data.obs.n_man.map(function(point) {
+                    if (Array.isArray(point)) {
+                        return point[1] === 9 ? {
+                            x: point[0],
+                            y: point[1],
+                            color: 'lightgrey',
+                            borderColor: 'rgba(0, 0, 0, 0)',
+                            custom: {
+                                tooltipValue: 9
+                            }
+                        } : point;
+                    }
+                    return point === 9 ? {
+                        y: point[1],
+                        color: 'lightgrey',
+                        borderColor: 'rgba(0, 0, 0, 0)',
+                        custom: {
+                            tooltipValue: 9
+                        }
+                    } : point;
+                }),
                 zIndex: 10,
                 tooltip: {
-                    valueSuffix: '/8'
+                    // format value as a string and show 9 as "9/8" to indicate that measurements could not be made
+                    pointFormatter: function() {
+                        var value = this.custom && this.custom.tooltipValue !== undefined ? this.custom.tooltipValue : this.y;
+                        return '<span style="color:' + this.series.color + '">●</span> ' + this.series.name + ': <b>' + value + '/8</b><br/>';
+                    }
                 },
                 yAxis: 1
             },
@@ -644,7 +668,9 @@ var saa = saa || {};
                 type: 'areaspline',
                 name: translations[selectedLanguage]['vis'],
                 zIndex: 11,
-                data: data.obs.vis,
+                data: data.obs.vis.map(function(point) {
+                    return [ point[0], Math.round(point[1] / 1000 * 100) / 100 ]; 
+                }),
                 tooltip: {
                     valueSuffix: ' km'
                 },
