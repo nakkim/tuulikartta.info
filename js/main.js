@@ -571,205 +571,226 @@ var saa = saa || {};
   }
 
   Tuulikartta.populateObservationTable = function() {
-    if(selectedLanguage === 'en')
-    document.getElementById('observation-table-header').innerHTML = 'Weather observations'
+    try {
+      if(selectedLanguage === 'en')
+      document.getElementById('observation-table-header').innerHTML = 'Weather observations'
 
-    var table = new Tabulator("#observation-table", {
-      layout:"fitDataStretch",
-      columns:  [
-        {title: translations[selectedLanguage]['observationStation'], field: 'station', width:200, widthShrink:1},
-        {title: translations[selectedLanguage]['observationTime'], field: 'time', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          var code = cell.getValue()
-          if(code !== null) {
-            var date = moment(code);
-            var dateComponent = date.format('DD.MM.YYYY HH:mm')
-            var timeComponent = date.format('HH:mm')
-            return dateComponent
-          } else {
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['ws_10min'], field: 'ws_10min', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
-          if(code !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
-            return cell.getValue()
-          } else {
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['wg_10min'], field: 'wg_10min', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
-          if(code !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
-            return cell.getValue()
-          } else {
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['wd_10min'], field: 'wd_10min', hozAlign:"center", formatter:function(cell, formatterParams){
-          var value = cell.getValue();
-           if(value !== null){
-              return `<img src="symbols/wind.svg" width="15" heigh="15" style="transform:rotate(${value}deg)"/> ${value}°`;
-           } else {
-              return value;
-           }
-        }},
-        {title: translations[selectedLanguage]['ws_1d'], field: 'ws_1d', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
-          if(code !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
-            return cell.getValue()
-          } else {
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['wg_1d'], field: 'wg_1d', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          var code = Tuulikartta.resolveWindSpeed(cell.getValue())
-          if(code !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.7);
-            return cell.getValue()
-          } else {
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['vis'], field: 'vis', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          var code = cell.getValue()
-          if(code !== null) {
-            if(code > 1000 && code <= 2000) {
-              cell.getElement().style.backgroundColor = 'rgba(1,1,1,0.15)';
-            } else if(code < 1000) {
-              cell.getElement().style.backgroundColor = 'rgba(224,7,0,0.4)';
+      var columnConfigs = [
+        {
+          title: translations[selectedLanguage]['observationStation'],
+          field: 'station',
+          width: 200,
+          widthShrink: 1
+        },
+        {
+          title: translations[selectedLanguage]['observationTime'],
+          field: 'time',
+          hozAlign: "center",
+          formatter: function(cell) {
+            try {
+              var code = cell.getValue()
+              if(code !== null) {
+                var date = moment(code);
+                return date.format('DD.MM.YYYY HH:mm')
+              }
+              return null
+            } catch(e) {
+              console.error('Error formatting observationTime:', e)
+              return null
             }
-            return cell.getValue()
-          } else {
-            return null
           }
-        }},
-        {title: translations[selectedLanguage]['wawa'], field: 'wawa', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          var code = Tuulikartta.resolveWawaCode(cell.getValue())
-          if(code !== null) {
+        },
+        {
+          title: translations[selectedLanguage]['wd_10min'],
+          field: 'wd_10min',
+          hozAlign: "center",
+          formatter: function(cell) {
+            try {
+              var value = cell.getValue();
+              if(value !== null) {
+                return `<img src="symbols/wind.svg" width="15" heigh="15" style="transform:rotate(${value}deg)"/> ${value}°`;
+              }
+              return value;
+            } catch(e) {
+              console.error('Error formatting wd_10min:', e)
+              return null
+            }
+          }
+        },
+        {
+          title: translations[selectedLanguage]['n_man'],
+          field: 'n_man',
+          hozAlign: "center",
+          formatter: function(cell) {
+            try {
+              var value = cell.getValue();
+              if(value !== null) {
+                return `<img src="symbols/nn/${value}.svg" width="15" heigh="15";/>`;
+              }
+              return value;
+            } catch(e) {
+              console.error('Error formatting n_man:', e)
+              return null
+            }
+          }
+        }
+      ];
+
+      var windSpeedFields = ['ws_10min', 'wg_10min', 'ws_1d', 'wg_1d'];
+      var temperatureFields = ['t2m', 'tmax', 'tmin', 'dewpoint'];
+      var precipitationFields = ['ri_10min', 'rr_1h', 'rr_1d'];
+      var otherNumericFields = {
+        'vis': {
+          resolver: null,
+          validator: function(value) { return value !== null; },
+          colorizer: function(value) {
+            if(value > 1000 && value <= 2000) {
+              return 'rgba(1,1,1,0.15)';
+            } else if(value < 1000) {
+              return 'rgba(224,7,0,0.4)';
+            }
+            return 'rgba(1,1,1,0)';
+          },
+          formatter: function(value) { return value; }
+        },
+        'wawa': {
+          resolver: Tuulikartta.resolveWawaCode,
+          validator: function(code) { return code !== null; },
+          colorizer: function(code) {
             if(code.short === 'Utu' || code.short === 'Sumu' || code.short === 'Haze' || code.short === 'Fog') {
-              cell.getElement().style.backgroundColor = 'rgba(1,1,1,0.15)';
-              return code.short
-            } else {
-              cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex,0.4);
-              return code.short
+              return 'rgba(1,1,1,0.15)';
             }
-          } else {
-            return null
+            return Tuulikartta.hexToRgbA(code.hex, 0.4);
+          },
+          formatter: function(code) { return code.short; }
+        },
+        'rh': {
+          resolver: null,
+          validator: function(value) { return value !== null; },
+          colorizer: function(value) { return Tuulikartta.hexToRgbA(Tuulikartta.resolveRelativeHumidity(value), 0.4); },
+          formatter: function(value) { return (value).toFixed(1); }
+        },
+        'snow_aws': {
+          resolver: null,
+          validator: function(value) { return value !== null && value > -1; },
+          colorizer: function(value) { return Tuulikartta.hexToRgbA(Tuulikartta.resolveSnowDepth(value), 0.4); },
+          formatter: function(value) { return value; }
+        },
+        'pressure': {
+          resolver: null,
+          validator: function(value) { return value !== null; },
+          colorizer: function(value) { return Tuulikartta.hexToRgbA(Tuulikartta.resolvePressure(value), 0.4); },
+          formatter: function(value) { return (value).toFixed(1); }
+        }
+      };
+
+      var createWindSpeedColumn = function(field) {
+        return {
+          title: translations[selectedLanguage][field],
+          field: field,
+          hozAlign: "center",
+          formatter: function(cell) {
+            try {
+              var code = Tuulikartta.resolveWindSpeed(cell.getValue())
+              if(code !== null) {
+                cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(code.hex, 0.7);
+                return cell.getValue()
+              }
+              return null
+            } catch(e) {
+              console.error('Error formatting wind speed field ' + field + ':', e)
+              return null
+            }
           }
-        }},
-        {title: translations[selectedLanguage]['t2m'], field: 't2m', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
+        };
+      };
+
+      var createTemperatureColumn = function(field) {
+        return {
+          title: translations[selectedLanguage][field],
+          field: field,
+          hozAlign: "center",
+          formatter: function(cell) {
+            try {
+              var value = cell.getValue()
+              if(value !== null) {
+                if(field !== 't2m' && Math.abs(value) >= 100) {
+                  cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+                  return null
+                }
+                cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(value), 0.4);
+                return value
+              }
+              cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+              return null
+            } catch(e) {
+              console.error('Error formatting temperature field ' + field + ':', e)
+              return null
+            }
           }
-        }},
-        {title: translations[selectedLanguage]['tmax'], field: 'tmax', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null && Math.abs(cell.getValue()) < 100) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
+        };
+      };
+
+      var createPrecipitationColumn = function(field) {
+        return {
+          title: translations[selectedLanguage][field],
+          field: field,
+          hozAlign: "center",
+          formatter: function(cell) {
+            try {
+              if(cell.getValue() !== null) {
+                cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePrecipitationAmount(cell.getValue()), 0.4);
+                return cell.getValue()
+              }
+              cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+              return null
+            } catch(e) {
+              console.error('Error formatting precipitation field ' + field + ':', e)
+              return null
+            }
           }
-        }},
-        {title: translations[selectedLanguage]['tmin'], field: 'tmin', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null && Math.abs(cell.getValue()) < 100) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
+        };
+      };
+
+      var createSpecialColumn = function(field, config) {
+        return {
+          title: translations[selectedLanguage][field],
+          field: field,
+          hozAlign: "center",
+          formatter: function(cell) {
+            try {
+              var value = cell.getValue()
+              var resolvedValue = config.resolver ? config.resolver(value) : value
+              
+              if(config.validator(resolvedValue)) {
+                cell.getElement().style.backgroundColor = config.colorizer(resolvedValue);
+                return config.formatter(resolvedValue)
+              }
+              cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
+              return null
+            } catch(e) {
+              console.error('Error formatting special field ' + field + ':', e)
+              return null
+            }
           }
-        }},
-        {title: translations[selectedLanguage]['dewpoint'], field: 'dewpoint', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveTemperature(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['t2mdewpoint'], field: 't2mdewpoint', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveDewpointDiff(cell.getValue()),0.4);
-            return cell.getValue() ? (cell.getValue()).toFixed(1) : cell;
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['rh'], field: 'rh', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveRelativeHumidity(cell.getValue()),0.4);
-            return (cell.getValue()).toFixed(1)
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['n_man'], field: 'n_man', hozAlign:"center", formatter:function(cell, formatterParams){
-          var value = cell.getValue();
-           if(value !== null){
-              return `<img src="symbols/nn/${value}.svg" width="15" heigh="15";/>`;
-           } else {
-              return value;
-           }
-        }},
-        {title: translations[selectedLanguage]['ri_10min'], field: 'ri_10min', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePrecipitationAmount(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['rr_1h'], field: 'rr_1h', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePrecipitationAmount(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['rr_1d'], field: 'rr_1d', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePrecipitationAmount(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['snow_aws'], field: 'snow_aws', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null && cell.getValue() > -1) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveSnowDepth(cell.getValue()),0.4);
-            return cell.getValue()
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-        {title: translations[selectedLanguage]['pressure'], field: 'pressure', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
-          if(cell.getValue() !== null) {
-            cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolvePressure(cell.getValue()),0.4);
-            return (cell.getValue()).toFixed(1)
-          } else {
-            cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
-            return null
-          }
-        }},
-      ],
-    });
-    table.setData(saa.Tuulikartta.data)
+        };
+      };
+
+      columnConfigs = columnConfigs.concat(windSpeedFields.map(createWindSpeedColumn));
+      columnConfigs = columnConfigs.concat(temperatureFields.map(createTemperatureColumn));
+      columnConfigs = columnConfigs.concat(precipitationFields.map(createPrecipitationColumn));
+      Object.keys(otherNumericFields).forEach(function(field) {
+        columnConfigs.push(createSpecialColumn(field, otherNumericFields[field]));
+      });
+
+      var table = new Tabulator("#observation-table", {
+        layout: "fitDataStretch",
+        columns: columnConfigs
+      });
+      table.setData(saa.Tuulikartta.data)
+    } catch(e) {
+      console.error('Error in populateObservationTable:', e)
+    }
   }
 
   // ---------------------------------------------------------
