@@ -699,7 +699,7 @@ var saa = saa || {};
         {title: translations[selectedLanguage]['t2mdewpoint'], field: 't2mdewpoint', hozAlign:"center", formatter:function(cell, formatterParams, onRendered){
           if(cell.getValue() !== null) {
             cell.getElement().style.backgroundColor = Tuulikartta.hexToRgbA(Tuulikartta.resolveDewpointDiff(cell.getValue()),0.4);
-            return (cell.getValue()).toFixed(1)
+            return cell.getValue() ? (cell.getValue()).toFixed(1) : cell;
           } else {
             cell.getElement().style.backgroundColor = 'rgba(1,1,1,0)'
             return null
