@@ -232,6 +232,20 @@ var saa = saa || {};
     return parameter === 'ws_10min' || parameter === 'wg_10min'
   }
 
+  Tuulikartta.bringVelocityLayerToFront = function () {
+    if (!saa.Tuulikartta.velocityLayer || !saa.Tuulikartta.map) return
+    if (!saa.Tuulikartta.map.hasLayer(saa.Tuulikartta.velocityLayer)) return
+
+    if (typeof saa.Tuulikartta.velocityLayer.bringToFront === 'function') {
+      saa.Tuulikartta.velocityLayer.bringToFront()
+      return
+    }
+
+    // Fallback for layers without bringToFront support.
+    saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.velocityLayer)
+    saa.Tuulikartta.velocityLayer.addTo(saa.Tuulikartta.map)
+  }
+
   Tuulikartta.updateVelocityControlState = function () {
     var isVelocityParameter = Tuulikartta.isVelocityParameter(selectedParameter)
 
@@ -917,6 +931,7 @@ var saa = saa || {};
           } else {
             saa.Tuulikartta.updateRadarData()
             saa.Tuulikartta.map.addLayer(saa.Tuulikartta.radarLayer)
+            Tuulikartta.bringVelocityLayerToFront()
             $(this).addClass('active')
           }
         }
@@ -1264,6 +1279,7 @@ var saa = saa || {};
       })
       saa.Tuulikartta.velocityLayer.addTo(saa.Tuulikartta.map)
     }
+    Tuulikartta.bringVelocityLayerToFront()
     saa.Tuulikartta.namelayer.bringToFront()
   }
 

@@ -39,8 +39,8 @@ td, tr {
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-color: white;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -593,8 +593,8 @@ input[type=range]:focus::-ms-fill-upper {
   background-repeat: no-repeat;
   background-size: 100%;
   background-color: white;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -607,8 +607,8 @@ input[type=range]:focus::-ms-fill-upper {
   background-size: 75%;
   background-position: center;
   background-color: white;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -620,8 +620,8 @@ input[type=range]:focus::-ms-fill-upper {
   background-repeat: no-repeat;
   background-size: 100%;
   background-color: white;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -636,8 +636,8 @@ input[type=range]:focus::-ms-fill-upper {
   background-repeat: no-repeat;
   background-size: 100%;
   background-color: white;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -653,8 +653,8 @@ input[type=range]:focus::-ms-fill-upper {
   background-size: 75%;
   background-position: center;
   background-color: white;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   pointer-events: auto;
 }
