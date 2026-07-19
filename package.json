@@ -31,6 +31,7 @@
     "leaflet-sidebar": "^0.2.0",
     "leaflet-spin": "^1.1.2",
     "leaflet-timedimension": "^1.1.1",
+    "leaflet-velocity": "^2.1.4",
     "leaflet.locatecontrol": "^0.72.0",
     "leaflet.markercluster": "^1.5.3",
     "moment": "^2.30.1",
