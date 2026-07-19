@@ -647,6 +647,29 @@ input[type=range]:focus::-ms-fill-upper {
 .leaflet-control-select-flash:hover, .leaflet-control-select-flash.active {
   background-image: url(../symbols/flash_blue.png);
 }
+.leaflet-control-select-wind-particles {
+  background-image: url(../symbols/wind_particles.svg);
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center;
+  background-color: white;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.leaflet-control-select-wind-particles:hover,
+.leaflet-control-select-wind-particles.active {
+  background-image: url(../symbols/wind_particles_blue.svg);
+}
+.leaflet-control-select-wind-particles.disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+.leaflet-control-select-wind-particles.disabled:hover {
+  background-image: url(../symbols/wind_particles.svg);
+}
 .leaflet-div-icon {
   background: rgba(0,0,0,0);
   border: 1px solid rgba(0,0,0,0);
