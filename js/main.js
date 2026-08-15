@@ -61,11 +61,45 @@ var saa = saa || {};
     }
   }
 
-  Tuulikartta.handleUrlParams = function (lat, lon, zoom, initParam) {
+  Tuulikartta.handleUrlParams = function (lat, lon, zoom, initParam, initTime) {
     latitude = lat
     longtitude = lon
     zoomlevel = zoom
     selectedParameter = initParam
+
+    if (initTime) {
+      saa.Tuulikartta.timeValue = initTime
+      saa.Tuulikartta.timeStamp = initTime
+
+      // input fields are only created once the datepicker plugin's own
+      // ready-handler has run (and defaulted them to "now"), so restore
+      // them in a later-registered ready-handler to win the race
+      $(function () {
+        var localTime = moment.utc(initTime, 'YYYY-MM-DDTHH:mm:ssZ').local()
+        document.getElementById('datepicker-button').value = localTime.format('DD.MM.YYYY')
+        document.getElementById('clockpicker-button').value = localTime.format('HH:mm')
+        $('#select-content-datasearch').removeClass('inactive')
+        $('#select-content-now').addClass('inactive')
+      })
+    }
+  }
+
+  // ---------------------------------------------------------
+  // Reflect current map/time state as a URL fragment
+  // ---------------------------------------------------------
+
+  Tuulikartta.updateUrlHash = function () {
+    var lat = saa.Tuulikartta.map.getCenter().lat
+    var lon = saa.Tuulikartta.map.getCenter().lng
+    var zoom = saa.Tuulikartta.map.getZoom()
+
+    var hash = '?lang=' + selectedLanguage + '#latlon=' + Math.round(lat * 100) / 100 + ',' + Math.round(lon * 100) / 100 + '#zoom=' + zoom + '#parameter=' + selectedParameter
+
+    if (saa.Tuulikartta.timeValue !== 'now') {
+      hash += '#time=' + saa.Tuulikartta.timeValue
+    }
+
+    window.location.replace(hash)
   }
 
   // ---------------------------------------------------------
@@ -341,11 +375,7 @@ var saa = saa || {};
       Tuulikartta.drawData(selectedParameter)
       Tuulikartta.updateVelocityControlState()
 
-      var lat = saa.Tuulikartta.map.getCenter().lat
-      var lon = saa.Tuulikartta.map.getCenter().lng
-      var zoom = saa.Tuulikartta.map.getZoom()
-      window.location.replace('#lang=' + selectedLanguage + '#latlon=' + Math.round(lat * 100) / 100 + ',' + Math.round(lon * 100) / 100 + '#zoom=' + zoom + '#parameter=' + $(this).val())
-
+      Tuulikartta.updateUrlHash()
     })
 
     saa.Tuulikartta.map.on('popupopen', function (e) {
@@ -376,8 +406,7 @@ var saa = saa || {};
       localStorage.setItem('longitude', lon)
       localStorage.setItem('zoomlevel', zoom)
 
-      window.location.replace('#lang=' + selectedLanguage + '#latlon=' + Math.round(lat * 100) / 100 + ',' + Math.round(lon * 100) / 100 + ',' + zoom + '#parameter=' + selectedParameter)
-
+      Tuulikartta.updateUrlHash()
     })
 
     // ---------------------------------------------------------
@@ -404,6 +433,8 @@ var saa = saa || {};
       getTrafficCamData = false
       // saa.camera.markers.clearLayers()
       $($("#map").find(".leaflet-control-select-cam")).removeClass('active');
+
+      Tuulikartta.updateUrlHash()
     })
 
     $('#select-content-now').click(function () {
@@ -416,6 +447,8 @@ var saa = saa || {};
 
       saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
       saa.Tuulikartta.namelayer.bringToFront()
+
+      Tuulikartta.updateUrlHash()
     })
 
     // ---------------------------------------------------------
@@ -451,6 +484,8 @@ var saa = saa || {};
 
       saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
       saa.Tuulikartta.namelayer.bringToFront()
+
+      Tuulikartta.updateUrlHash()
     })
 
     $('#timepicker-regress-time').click(function () {
@@ -481,6 +516,8 @@ var saa = saa || {};
 
       saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
       saa.Tuulikartta.namelayer.bringToFront()
+
+      Tuulikartta.updateUrlHash()
     })
 
     // ---------------------------------------------------------
@@ -497,7 +534,7 @@ var saa = saa || {};
         selectedLanguage = 'fi'
         localStorage.setItem('language', 'fi')
       }
-      window.location.replace('#lang=' + selectedLanguage + '#latlon=' + latitude + ',' + longtitude + '#zoom=' + zoomlevel + '#parameter=' + selectedParameter)
+      Tuulikartta.updateUrlHash()
       window.location.reload()
     })
 

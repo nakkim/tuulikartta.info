@@ -3,7 +3,8 @@ var latitude = localStorage.getItem('latitude') ? localStorage.getItem('latitude
   longitude = localStorage.getItem('longitude') ? localStorage.getItem('longitude') : 25.36,
   zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 5,
   selectedLanguage = localStorage.getItem('language') ? localStorage.getItem('language') : 'fi',
-  selectedParam = 'ws_10min'
+  selectedParam = 'ws_10min',
+  selectedTime = null
 
 if (selectedLanguage === 'fi')
   $('#language-selector-value').html('EN')
@@ -58,6 +59,11 @@ hash.forEach(function (element) {
       document.getElementById('select-wind-parameter').value = selectedParam;
     }
   }
+  if (param[0] === 'time') {
+    if (moment.utc(param[1], 'YYYY-MM-DDTHH:mm:ssZ', true).isValid()) {
+      selectedTime = param[1]
+    }
+  }
 })
 
 var span = document.getElementsByClassName("close")[0]
@@ -75,7 +81,7 @@ window.onclick = function (event) {
   }
 }
 
-saa.Tuulikartta.handleUrlParams(latitude, longitude, zoomlevel, selectedParam)
+saa.Tuulikartta.handleUrlParams(latitude, longitude, zoomlevel, selectedParam, selectedTime)
 
 saa.Tuulikartta.initMap();
 saa.Tuulikartta.updateRadarData();
