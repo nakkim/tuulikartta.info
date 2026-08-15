@@ -5,7 +5,7 @@
 
 var saa = saa || {};
 
-(function(lightning, undefined) {
+(function (lightning, undefined) {
 
   var timePeriod;
   saa.lightning.geoLayer = L.layerGroup()
@@ -37,14 +37,14 @@ var saa = saa || {};
     })
   }
 
-  saa.lightning.drawData = function(data) {
+  saa.lightning.drawData = function (data) {
 
     saa.lightning.geoLayer.clearLayers()
 
     var groundLightningStyle = {
-      radius: 6, 
-      fillColor: 'red', 
-      fillOpacity: 0.7, 
+      radius: 6,
+      fillColor: 'red',
+      fillOpacity: 0.7,
       stroke: true,
       weight: 1,
       opacity: 0.8,
@@ -53,26 +53,26 @@ var saa = saa || {};
     };
 
     var cloudLightningStyle = {
-      radius: 5, 
-      fillColor: 'violet', 
-      fillOpacity: 0.6, 
+      radius: 5,
+      fillColor: 'violet',
+      fillOpacity: 0.6,
       stroke: true,
       weight: 1,
       opacity: 0.5,
       color: 'black',
       interactive: false
     };
-    
+
     var customLayerGround = L.geoJson(data[0], {
       pointToLayer: function (feature, latlng) {
-          return L.circleMarker(latlng, groundLightningStyle);
+        return L.circleMarker(latlng, groundLightningStyle);
       }
     }).addTo(saa.lightning.geoLayer)
 
-    if(saa.Tuulikartta.showCloudStrikes == true) {
+    if (saa.Tuulikartta.showCloudStrikes == true) {
       var customLayerCloud = L.geoJson(data[1], {
         pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, cloudLightningStyle);
+          return L.circleMarker(latlng, cloudLightningStyle);
         }
       }).addTo(saa.lightning.geoLayer)
     }

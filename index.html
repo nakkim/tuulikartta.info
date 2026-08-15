@@ -1,169 +1,171 @@
 <!DOCTYPE html>
 <html lang="fi">
-    <head>
-        <link rel="manifest" href="/manifest.json">
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="IE=edge">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="apple-touch-icon" href="favicon/android-chrome-192x192.png">
-        <meta name="theme-color" content="#397CAC">
-        <title>Tuulikartta</title>
-        <script type="application/ld+json">
+
+<head>
+  <link rel="manifest" href="/manifest.json">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="apple-touch-icon" href="favicon/android-chrome-192x192.png">
+  <meta name="theme-color" content="#397CAC">
+  <title>Tuulikartta</title>
+  <script type="application/ld+json">
           {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             "itemListElement": [{
               "@type": "ListItem",
               "position": 1,
-              "name": "Tietoa palvelusta",
+              "name": "Tietoa sivustosta",
               "item": "https://tuulikartta.info/tietoa-sivustosta/"
             }]
           }
         </script>
-        
-        <link rel="alternate" hreflang="fi" href="https://www.tuulikartta.info/index.html"/>
-        <link rel="alternate" hreflang="en" href="https://www.tuulikartta.info/index.html#lang=en"/>
 
-        <meta name="description" content="Säähavaintoja Ilmatieteen laitoksen avoimen datan avulla."/>
-        <meta name="rating" content="Safe For Kids"/>
-        <meta name="author" content="Ville Ilkka"/>
-        <meta name="robots" content="index,follow"/>
-        <meta name="robots" content="noodp"/>
+  <link rel="alternate" hreflang="fi" href="https://www.tuulikartta.info/index.html" />
+  <link rel="alternate" hreflang="en" href="https://www.tuulikartta.info/index.html#lang=en" />
 
-        <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
+  <meta name="description" content="Säähavaintoja Ilmatieteen laitoksen avoimen datan avulla." />
+  <meta name="rating" content="Safe For Kids" />
+  <meta name="author" content="Ville Ilkka" />
+  <meta name="robots" content="index,follow" />
+  <meta name="robots" content="noodp" />
 
-        <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
 
-        <!-- moment.js -->
-        <script src="node_modules/moment/moment.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
-        <!-- jQuery -->
-        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <!-- moment.js -->
+  <script src="node_modules/moment/moment.js"></script>
 
-        <!-- Tabulator -->
-        <link rel="stylesheet" type="text/css" href="node_modules/tabulator-tables/dist/css/tabulator.min.css">
-        <script type="text/javascript" charset="utf8" src="node_modules/tabulator-tables/dist/js/tabulator.min.js"></script>
+  <!-- jQuery -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
 
-        <!-- bootstrap datepicker -->
-        <link rel="stylesheet" href="node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css"/>
-        <script src="node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-        <script src="node_modules/bootstrap-datepicker/dist/locales/bootstrap-datepicker.fi.min.js"></script>
+  <!-- Tabulator -->
+  <link rel="stylesheet" type="text/css" href="node_modules/tabulator-tables/dist/css/tabulator.min.css">
+  <script type="text/javascript" charset="utf8" src="node_modules/tabulator-tables/dist/js/tabulator.min.js"></script>
 
-        <!-- owl carousel -->
-        <link rel="stylesheet" href="node_modules/owl.carousel/dist/assets/owl.carousel.min.css">
-        <link rel="stylesheet" href="node_modules/owl.carousel/dist/assets/owl.theme.default.min.css">
-        <script src="node_modules/owl.carousel/dist/owl.carousel.min.js"></script>
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css" />
+  <script src="node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+  <script src="node_modules/bootstrap-datepicker/dist/locales/bootstrap-datepicker.fi.min.js"></script>
 
-        <!-- leaflet.js -->
-        <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
-        <script src="node_modules/leaflet/dist/leaflet.js"></script>
-        <script src="node_modules/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
-        <script src="node_modules/leaflet-responsive-popup/leaflet.responsive.popup.js"></script>
-        <link rel="stylesheet" href="node_modules/leaflet-responsive-popup/leaflet.responsive.popup.css" />
-        <link rel="stylesheet" href="css/Leaflet-sidebar.css" />
-        <script src="node_modules/leaflet-sidebar/src/L.Control.Sidebar.js"></script>
-        <script src="node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
-        <script src="node_modules/spin.js/spin.min.js"></script>
-        <script src="node_modules/leaflet-spin/leaflet.spin.min.js"></script>
-        <link rel="stylesheet" href="node_modules/leaflet-velocity/dist/leaflet-velocity.min.css">
-        <script src="node_modules/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
-        <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
-        <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css">
-        <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css">
+  <!-- owl carousel -->
+  <link rel="stylesheet" href="node_modules/owl.carousel/dist/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="node_modules/owl.carousel/dist/assets/owl.theme.default.min.css">
+  <script src="node_modules/owl.carousel/dist/owl.carousel.min.js"></script>
 
-        <!-- highcharts -->
-        <script src="node_modules/highcharts/highcharts.js"></script>
-        <script src="node_modules/highcharts/highcharts-more.js"></script>
-        <script src="node_modules/highcharts/modules/windbarb.js"></script>
+  <!-- leaflet.js -->
+  <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
+  <script src="node_modules/leaflet/dist/leaflet.js"></script>
+  <script src="node_modules/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
+  <script src="node_modules/leaflet-responsive-popup/leaflet.responsive.popup.js"></script>
+  <link rel="stylesheet" href="node_modules/leaflet-responsive-popup/leaflet.responsive.popup.css" />
+  <link rel="stylesheet" href="css/Leaflet-sidebar.css" />
+  <script src="node_modules/leaflet-sidebar/src/L.Control.Sidebar.js"></script>
+  <script src="node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+  <script src="node_modules/spin.js/spin.min.js"></script>
+  <script src="node_modules/leaflet-spin/leaflet.spin.min.js"></script>
+  <link rel="stylesheet" href="node_modules/leaflet-velocity/dist/leaflet-velocity.min.css">
+  <script src="node_modules/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
+  <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css">
 
-        <script src="js/translations.js?v=2"></script>
-        <script src="js/main.js?v=2"></script>
-        <script src="js/graph.js?v=2"></script>
-        <script src="js/lightning.js?v=2"></script>
-        <!-- <script src="js/camera.js?v=2"></script> -->
+  <!-- highcharts -->
+  <script src="node_modules/highcharts/highcharts.js"></script>
+  <script src="node_modules/highcharts/highcharts-more.js"></script>
+  <script src="node_modules/highcharts/modules/windbarb.js"></script>
 
-        <link href="css/style.css" rel="stylesheet">
-        <link href="css/temperature.css" rel="stylesheet">
+  <script src="js/translations.js?v=2"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/graph.js?v=2"></script>
+  <script src="js/lightning.js?v=2"></script>
+  <!-- <script src="js/camera.js?v=2"></script> -->
 
-        <script src="serviceWorker.js"></script>
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/temperature.css" rel="stylesheet">
 
-        <script>
-        $(document).ready(function() {
-            var cal = $('#datepicker-button').datepicker({
-                language: 'fi',
-                format: 'dd.mm.yyyy',
-                endDate: '+0d',
-                autoclose: true,
-                todayBtn: true,
-                defaultDate: new Date()
-            });
-            cal.datepicker("setDate",'now');
-        })
-        </script>
+  <script src="serviceWorker.js"></script>
 
-    </head>
+  <script>
+    $(document).ready(function () {
+      var cal = $('#datepicker-button').datepicker({
+        language: 'fi',
+        format: 'dd.mm.yyyy',
+        endDate: '+0d',
+        autoclose: true,
+        todayBtn: true,
+        defaultDate: new Date()
+      });
+      cal.datepicker("setDate", 'now');
+    })
+  </script>
 
-    <body>
+</head>
 
-        <div id="gui-box" class="data-info" style="display: block">
-            <div class="data-info-wrapper" align=center>
-                <div class="select-box">
+<body>
 
-                    <span class="select-content-wrapper" id="select-content-wrapper-timeselector">
-                        <input id="datepicker-button" class="select-button" style="text-align:center;max-width:105px;">
-                        <input id="clockpicker-button" class="select-button" style="text-align:center; max-width:60px;">      
-                        <span class="ph-float">
-                            <a href='#' id="select-content-datasearch" class='ph-button ph-btn-blue inactive'>Hae</a>
-                        </span>
-                    </span>
+  <div id="gui-box" class="data-info" style="display: block">
+    <div class="data-info-wrapper" align=center>
+      <div class="select-box">
 
-                    <span id="select-content-wrapper-time" class="select-content-wrapper">
-                        <button id="timepicker-regress-time" class="select-button">&laquo; 1h</button>
-                        <span class="ph-float">
-                            <a href='#' id="select-content-now" class='ph-button ph-btn-blue'>Nyt</a>
-                        </span>
-                        <button id="timepicker-progress-time" class="select-button">1h &raquo;</button>  
-                    </span>
-                </div>
-                <span class="language-selector">
-                    <button id="language-selector-value" class="select-button">FI</button>
-                </span>
-            </div>
-        </div>
+        <span class="select-content-wrapper" id="select-content-wrapper-timeselector">
+          <input id="datepicker-button" class="select-button" style="text-align:center;max-width:105px;">
+          <input id="clockpicker-button" class="select-button" style="text-align:center; max-width:60px;">
+          <span class="ph-float">
+            <a href='#' id="select-content-datasearch" class='ph-button ph-btn-blue inactive'>Hae</a>
+          </span>
+        </span>
 
-        <div class="leaflet-top leaflet-left leaflet-control control-center" id="map-param">
-            <div class="settings"></div>
-            <span class="select-content-wrapper" id="main-navbar-param"></span>
-        </div>
+        <span id="select-content-wrapper-time" class="select-content-wrapper">
+          <button id="timepicker-regress-time" class="select-button">&laquo; 1h</button>
+          <span class="ph-float">
+            <a href='#' id="select-content-now" class='ph-button ph-btn-blue'>Nyt</a>
+          </span>
+          <button id="timepicker-progress-time" class="select-button">1h &raquo;</button>
+        </span>
+      </div>
+      <span class="language-selector">
+        <button id="language-selector-value" class="select-button">FI</button>
+      </span>
+    </div>
+  </div>
 
-        <div class="leaflet-bottom leaflet-left leaflet-control-attribution leaflet-control">
-            <div id="data-loader" class="info-container-data"></div>
-            <div id="site-info" class="info-container" style="display:none;">
-                <div id="site-info-body"></div>
-            </div>
-        </div>
+  <div class="leaflet-top leaflet-left leaflet-control control-center" id="map-param">
+    <div class="settings"></div>
+    <span class="select-content-wrapper" id="main-navbar-param"></span>
+  </div>
 
-        <div id="map" styles="z-index:1"></div>
-        <div id="settings-sidebar"></div>
+  <div class="leaflet-bottom leaflet-left leaflet-control-attribution leaflet-control">
+    <div id="data-loader" class="info-container-data"></div>
+    <div id="site-info" class="info-container" style="display:none;">
+      <div id="site-info-body"></div>
+    </div>
+  </div>
 
-        <div id="modal-form" class="modal">
-          <!-- Modal content -->
-          <div class="modal-content">
-              <span class="close">&times;</span>
-              <b></b><p id="observation-table-header">Säähavainnot</p>
-              <div id="observation-table" class="data-table-container" style="height:90%;">
-              </div>
-              
-          </div>
-        </div>
+  <div id="map" styles="z-index:1"></div>
+  <div id="settings-sidebar"></div>
 
-    </body >
+  <div id="modal-form" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <b></b>
+      <p id="observation-table-header">Säähavainnot</p>
+      <div id="observation-table" class="data-table-container" style="height:90%;">
+      </div>
 
-    <!-- Load auxiliary javascript ff -->
-    <script src="js/utils.js"></script>
+    </div>
+  </div>
+
+</body>
+
+<!-- Load auxiliary javascript ff -->
+<script src="js/utils.js"></script>
 
 </html>
