@@ -42,7 +42,7 @@ if ($type == 'synop') {
 
     $settings = array();
     $settings["stationtype"]    = "synop";
-    $settings["parameters"]     = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h,vis";
+    $settings["parameters"]     = "ws_10min,wg_10min,wd_10min,t2m,n_man,r_1h,vis,smartsymbol";
     $settings["storedquery_id"] = "fmi::observations::weather::multipointcoverage";
     $settings["timestep"]       = "10";
     $settings["fmisid"]         = $fmisid;
@@ -180,6 +180,7 @@ function formatHighChart($data, $winddirections) {
       $formattedData[$key]["n_man"] = [];
       $formattedData[$key]["temp"] = [];
       $formattedData[$key]["rr1h_calc"] = [];
+      $formattedData[$key]["smartsymbol"] = [];
     }
 
     foreach($data as $key => $dataArray) {
@@ -265,6 +266,19 @@ function formatHighChart($data, $winddirections) {
           array_push($tmp, $array['epochtime']*1000);
           array_push($tmp, null);
           array_push($formattedData['obs']['temp'], $tmp);
+        }
+
+        // smartsymbol
+        if(!empty($array['smartsymbol'])) {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, $array['smartsymbol']);
+          array_push($formattedData['obs']['smartsymbol'], $tmp);
+        } else {
+          $tmp = [];
+          array_push($tmp, $array['epochtime']*1000);
+          array_push($tmp, null);
+          array_push($formattedData['obs']['smartsymbol'], $tmp);
         }
 
         // rr1h_calc

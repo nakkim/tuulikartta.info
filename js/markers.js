@@ -304,6 +304,35 @@ var saa = saa || {};
         }
       }
 
+      if (param === 'smartsymbol') {
+        if (saa.Tuulikartta.data[i]['smartsymbol'] !== null) {
+          var icon = L.icon({
+            iconUrl: '../symbols/SmartSymbol/light/' + Math.round(saa.Tuulikartta.data[i][param]) + '.svg',
+            iconSize: [50, 50], // size of the icon
+            iconAnchor: [25, 25], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+          })
+
+          var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+            {
+              icon: icon
+            })
+
+          if (saa.Tuulikartta.data[i]['type'] === 'road') {
+            marker.addTo(saa.Tuulikartta.markerGroupRoad)
+          } else {
+            marker.addTo(saa.Tuulikartta.markerGroupSynop)
+          }
+
+          marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+            saa.Tuulikartta.data[i]['fmisid']), {
+            maxWidth: maxWidth
+          })
+          marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+          marker.type = saa.Tuulikartta.data[i]['type']
+        }
+      }
+
       if (param === 't2mdewpoint') {
         if (saa.Tuulikartta.data[i]['t2mdewpoint'] !== null) {
           var fillColor = Tuulikartta.resolveDewpointDiff(saa.Tuulikartta.data[i][param])

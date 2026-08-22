@@ -409,7 +409,7 @@ var saa = saa || {};
   Tuulikartta.resolveGraphStartposition = function (value) {
     if (value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1d' || value === 'wg_1d')
       return 1
-    else if (value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'dewpoint' || value === 'tmax' || value === 'tmin' || value === 'wawa')
+    else if (value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'dewpoint' || value === 'tmax' || value === 'tmin' || value === 'wawa' || value === 'smartsymbol')
       return 2
     else if (value === 'vis' || value === 'n_man')
       return 3

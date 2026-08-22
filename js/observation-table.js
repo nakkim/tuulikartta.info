@@ -24,6 +24,7 @@ var saa = saa || {};
     html = html + '<option value="dewpoint">' + translations[selectedLanguage]["dewpoint"] + '</option>'
     html = html + '<option value="vis">' + translations[selectedLanguage]["vis"] + '</option>'
     html = html + '<option value="wawa">' + translations[selectedLanguage]["wawa"] + '</option>'
+    html = html + '<option value="smartsymbol">' + translations[selectedLanguage]["smartsymbol"] + '</option>'
     html = html + '<option value="n_man">' + translations[selectedLanguage]["n_man"] + '</option>'
     html = html + '<option value="snow_aws">' + translations[selectedLanguage]["snow_aws"] + '</option>'
     html = html + '<option value="pressure">' + translations[selectedLanguage]["pressure"] + '</option>'
