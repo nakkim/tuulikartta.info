@@ -2,7 +2,7 @@
 
 /**
  * DataMiner class
- * @author Ville Ilkka
+ * @author Ville Oravilkka
  */
 
 class DataMiner{

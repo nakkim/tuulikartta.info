@@ -1,6 +1,6 @@
 /*
 * Tuulikartta.info main class
-* Copyright (C) 2017 Ville Ilkka
+* Copyright (C) 2017 Ville Oravilkka
 */
 
 var saa = saa || {};

@@ -1,6 +1,6 @@
 /*
 * Tuulikartta.info map markers
-* Copyright (C) 2017 Ville Ilkka
+* Copyright (C) 2017 Ville Oravilkka
 *
 * Draws observation station markers/labels for the selected parameter
 * and builds the popup content shown when a marker is clicked.

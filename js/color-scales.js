@@ -1,6 +1,6 @@
 /*
 * Tuulikartta.info color scales
-* Copyright (C) 2017 Ville Ilkka
+* Copyright (C) 2017 Ville Oravilkka
 *
 * Resolves observation parameter values (wind speed, temperature,
 * precipitation, etc.) to display colors and, for wawa codes, translated text.

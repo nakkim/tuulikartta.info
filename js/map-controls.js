@@ -1,6 +1,6 @@
 /*
 * Tuulikartta.info map controls
-* Copyright (C) 2017 Ville Ilkka
+* Copyright (C) 2017 Ville Oravilkka
 *
 * Settings sidebar content and the custom Leaflet controls
 * (settings, radar, lightning, wind particles, table, info) added to the map.

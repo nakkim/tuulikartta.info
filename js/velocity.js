@@ -1,6 +1,6 @@
 /*
 * Tuulikartta.info wind particle / velocity layer
-* Copyright (C) 2017 Ville Ilkka
+* Copyright (C) 2017 Ville Oravilkka
 *
 * Builds the interpolated wind velocity grid from station observations
 * and manages the leaflet-velocity animation layer and its toggle control.

@@ -1,6 +1,6 @@
 /*
 * Tuulikartta.info observation table
-* Copyright (C) 2017 Ville Ilkka
+* Copyright (C) 2017 Ville Oravilkka
 *
 * Builds the wind-parameter dropdown menu and the Tabulator table
 * listing all current station observations.

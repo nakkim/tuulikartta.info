@@ -1,6 +1,6 @@
 /*
 * Tuulikartta.info UI events
-* Copyright (C) 2017 Ville Ilkka
+* Copyright (C) 2017 Ville Oravilkka
 *
 * Wires up the toolbar/sidebar controls: wind parameter selection, map
 * move/popup handling, time navigation, language switch, layer toggles,
