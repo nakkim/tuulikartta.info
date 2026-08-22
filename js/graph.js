@@ -394,6 +394,8 @@ var saa = saa || {};
         },
         yAxis: [
           {
+            top: '0%',
+            height: '80%',
             title: {
               align: 'high',
               offset: 0,
@@ -418,6 +420,8 @@ var saa = saa || {};
             }]
           },
           {
+            top: '0%',
+            height: '80%',
             title: {
               align: 'high',
               offset: 0,
@@ -435,6 +439,21 @@ var saa = saa || {};
               }
             },
             min: 0
+          },
+          {
+            top: '84%',
+            height: '16%',
+            min: 0,
+            max: 1,
+            gridLineWidth: 0,
+            lineWidth: 0,
+            tickLength: 0,
+            title: {
+              text: null
+            },
+            labels: {
+              enabled: false
+            }
           }
         ],
         tooltip: {
@@ -497,6 +516,27 @@ var saa = saa || {};
             dataLabels: {
               enabled: false
             }
+          },
+          {
+            type: 'scatter',
+            name: translations[selectedLanguage]['smartsymbol'],
+            yAxis: 2,
+            zIndex: 20,
+            enableMouseTracking: false,
+            showInLegend: false,
+            data: (data.obs.smartsymbol || []).filter(function (point, index) {
+              return point[1] !== null && index % 6 === 0;
+            }).map(function (point) {
+              return {
+                x: point[0],
+                y: 0.5,
+                marker: {
+                  symbol: 'url(symbols/SmartSymbol/light/' + Math.round(point[1]) + '.svg)',
+                  width: 24,
+                  height: 24
+                }
+              };
+            })
           }],
         responsive: {
           rules: [{
