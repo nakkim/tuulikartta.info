@@ -30,16 +30,14 @@ var saa = saa || {};
   var longtitude = localStorage.getItem('longtitude') ? localStorage.getItem('longtitude') : 25
   var zoomlevel = localStorage.getItem('zoomlevel') ? localStorage.getItem('zoomlevel') : 8
   var observationSource = localStorage.getItem('observationSource') ? localStorage.getItem('observationSource') : 'Näytä vain synop-asemat'
-  var selectedParameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
-  var startPosition = 0
+  saa.Tuulikartta.selectedParameter = localStorage.getItem('selectedparameter') ? localStorage.getItem('longtitude') : 'ws_10min'
+  saa.Tuulikartta.startPosition = 0
   var toggleDataSelect = 'close'
   var minRoadZoomLevel = 8
 
   saa.Tuulikartta.showStationObservations = true
-  var showRoadObservations = false
   var showOldObservations = false
   saa.Tuulikartta.getLightningData = false
-  var getTrafficCamData = false
   saa.Tuulikartta.showCloudStrikes = localStorage.getItem('showCloudStrikes') ? localStorage.getItem('showCloudStrikes') : true
   saa.Tuulikartta.lightningInterval = 5
 
@@ -49,7 +47,7 @@ var saa = saa || {};
   saa.Tuulikartta.showWindParticles = false
   saa.Tuulikartta.windParticlesControlElement = null
 
-  var radarLayerOpacity = localStorage.getItem('radarLayerOpacity') ? localStorage.getItem('radarLayerOpacity') : 80
+  saa.Tuulikartta.radarLayerOpacity = localStorage.getItem('radarLayerOpacity') ? localStorage.getItem('radarLayerOpacity') : 80
 
   Tuulikartta.debug = function (par) {
     if (Tuulikartta.debugvalue === true) {
@@ -61,7 +59,7 @@ var saa = saa || {};
     latitude = lat
     longtitude = lon
     zoomlevel = zoom
-    selectedParameter = initParam
+    saa.Tuulikartta.selectedParameter = initParam
 
     if (initTime) {
       saa.Tuulikartta.timeValue = initTime
@@ -89,7 +87,7 @@ var saa = saa || {};
     var lon = saa.Tuulikartta.map.getCenter().lng
     var zoom = saa.Tuulikartta.map.getZoom()
 
-    var hash = '?lang=' + selectedLanguage + '#latlon=' + Math.round(lat * 100) / 100 + ',' + Math.round(lon * 100) / 100 + '#zoom=' + zoom + '#parameter=' + selectedParameter
+    var hash = '?lang=' + selectedLanguage + '#latlon=' + Math.round(lat * 100) / 100 + ',' + Math.round(lon * 100) / 100 + '#zoom=' + zoom + '#parameter=' + saa.Tuulikartta.selectedParameter
 
     if (saa.Tuulikartta.timeValue !== 'now') {
       hash += '#time=' + saa.Tuulikartta.timeValue
@@ -183,9 +181,9 @@ var saa = saa || {};
                 saa.Tuulikartta.map.spin(false)
                 // store the Map-instance in map variable
                 saa.Tuulikartta.data = data
-                selectedParameter = $('#select-wind-parameter').val()
-                startPosition = resolveGraphStartposition(selectedParameter)
-                Tuulikartta.drawData(selectedParameter)
+                saa.Tuulikartta.selectedParameter = $('#select-wind-parameter').val()
+                saa.Tuulikartta.startPosition = Tuulikartta.resolveGraphStartposition(saa.Tuulikartta.selectedParameter)
+                Tuulikartta.drawData(saa.Tuulikartta.selectedParameter)
                 Tuulikartta.populateObservationTable()
               }
             })
@@ -216,9 +214,9 @@ var saa = saa || {};
             saa.Tuulikartta.map.spin(false)
             // store the Map-instance in map variable
             saa.Tuulikartta.data = data
-            selectedParameter = $('#select-wind-parameter').val()
-            startPosition = resolveGraphStartposition(selectedParameter)
-            Tuulikartta.drawData(selectedParameter)
+            saa.Tuulikartta.selectedParameter = $('#select-wind-parameter').val()
+            saa.Tuulikartta.startPosition = Tuulikartta.resolveGraphStartposition(saa.Tuulikartta.selectedParameter)
+            Tuulikartta.drawData(saa.Tuulikartta.selectedParameter)
             Tuulikartta.populateObservationTable()
           }
         })
@@ -250,9 +248,9 @@ var saa = saa || {};
         saa.Tuulikartta.map.spin(false)
         // store the Map-instance in map variable
         saa.Tuulikartta.data = data
-        selectedParameter = $('#select-wind-parameter').val()
-        startPosition = resolveGraphStartposition(selectedParameter)
-        Tuulikartta.drawData(selectedParameter)
+        saa.Tuulikartta.selectedParameter = $('#select-wind-parameter').val()
+        saa.Tuulikartta.startPosition = Tuulikartta.resolveGraphStartposition(saa.Tuulikartta.selectedParameter)
+        Tuulikartta.drawData(saa.Tuulikartta.selectedParameter)
         Tuulikartta.populateObservationTable()
       }
     })
@@ -303,250 +301,6 @@ var saa = saa || {};
     }
 
   }
-
-  // ---------------------------------------------------------
-  //  Trigger buttons
-  // ---------------------------------------------------------
-
-  $(function bunttonFunctionalities() {
-
-    // select wind parameter
-    $('#select-wind-parameter').change(function () {
-      selectedParameter = $(this).val()
-      startPosition = resolveGraphStartposition(selectedParameter)
-      Tuulikartta.clearMarkers()
-      Tuulikartta.drawData(selectedParameter)
-      Tuulikartta.updateVelocityControlState(selectedParameter)
-
-      Tuulikartta.updateUrlHash()
-    })
-
-    saa.Tuulikartta.map.on('popupopen', function (e) {
-      var fmisid = e.popup._source.fmisid
-      var type = e.popup._source.type
-      if (type === 'Synop-asema') type = 'synop'
-      if (type === 'Tiesääasema') type = 'road'
-      saa.weatherGraph.getObservationGraph(fmisid, type, saa.Tuulikartta.timeValue)
-      $(".owl-carousel").owlCarousel({
-        navigation: true, // Show next and prev buttons
-        slideSpeed: 300,
-        paginationSpeed: 400,
-        items: 1,
-        pagination: false,
-        startPosition: startPosition
-      });
-    })
-
-    // ---------------------------------------------------------
-    // Get and save user location to localstorage
-    // ---------------------------------------------------------
-
-    saa.Tuulikartta.map.on('move', function () {
-      var lat = saa.Tuulikartta.map.getCenter().lat
-      var lon = saa.Tuulikartta.map.getCenter().lng
-      var zoom = saa.Tuulikartta.map.getZoom()
-      localStorage.setItem('latitude', lat)
-      localStorage.setItem('longitude', lon)
-      localStorage.setItem('zoomlevel', zoom)
-
-      Tuulikartta.updateUrlHash()
-    })
-
-    // ---------------------------------------------------------
-    // get observatinos with timestamp
-    // ---------------------------------------------------------
-
-    $('#select-content-datasearch').click(function () {
-      $(this).removeClass('inactive')
-      $('#select-content-now').addClass('inactive')
-
-      var date = document.getElementById('datepicker-button').value
-      var time = document.getElementById('clockpicker-button').value
-
-      var timestring = moment(date + ' ' + time, ['DD-MM-YYYY HH:mm'])
-      timestring = timestring.utc().format('YYYY-MM-DDTHH:mm:ss')
-      timestring = timestring + 'Z'
-      saa.Tuulikartta.timeValue = timestring
-      saa.Tuulikartta.timeStamp = timestring
-
-      Tuulikartta.clearMarkers()
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
-      saa.Tuulikartta.namelayer.bringToFront()
-      Tuulikartta.updateRadarData()
-      getTrafficCamData = false
-      // saa.camera.markers.clearLayers()
-      $($("#map").find(".leaflet-control-select-cam")).removeClass('active');
-
-      Tuulikartta.updateUrlHash()
-    })
-
-    $('#select-content-now').click(function () {
-      saa.Tuulikartta.timeValue = 'now'
-      $(this).removeClass('inactive')
-      $('#select-content-datasearch').addClass('inactive')
-
-      Tuulikartta.clearMarkers()
-      Tuulikartta.updateRadarData()
-
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
-      saa.Tuulikartta.namelayer.bringToFront()
-
-      Tuulikartta.updateUrlHash()
-    })
-
-    // ---------------------------------------------------------
-    // progress and regress of time
-    // ---------------------------------------------------------
-
-    $('#timepicker-progress-time').click(function () {
-      $('#select-content-datasearch').removeClass('inactive')
-      $('#select-content-now').addClass('inactive')
-
-      Tuulikartta.clearMarkers()
-
-      var date = document.getElementById('datepicker-button').value
-      var time = document.getElementById('clockpicker-button').value
-
-      var time = moment(date + ' ' + time, ['DD-MM-YYYY HH:mm'])
-      var newTime = moment(time).add(1, 'hours')
-
-      var timestring = newTime.utc().format('YYYY-MM-DDTHH:mm:ss')
-      timestring = timestring + 'Z'
-      saa.Tuulikartta.timeStamp = timestring
-
-      var utcOffSet = moment(timestring).utcOffset()
-      if (utcOffSet < 0) { newTime.subtrack(Math.abs(utcOffSet), 'minutes') }
-      if (utcOffSet > 0) { newTime.add(Math.abs(utcOffSet), 'minutes') }
-
-      document.getElementById('datepicker-button').value = newTime.format('DD.MM.YYYY')
-      document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
-
-      saa.Tuulikartta.timeValue = timestring
-      saa.Tuulikartta.timeStamp = timestring
-      Tuulikartta.updateRadarData()
-
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
-      saa.Tuulikartta.namelayer.bringToFront()
-
-      Tuulikartta.updateUrlHash()
-    })
-
-    $('#timepicker-regress-time').click(function () {
-      $('#select-content-datasearch').removeClass('inactive')
-      $('#select-content-now').addClass('inactive')
-
-      Tuulikartta.clearMarkers()
-
-      var date = document.getElementById('datepicker-button').value
-      var time = document.getElementById('clockpicker-button').value
-
-      var time = moment(date + ' ' + time, ['DD-MM-YYYY HH:mm'])
-      var newTime = moment(time).subtract(1, 'hours')
-
-      var timestring = newTime.utc().format('YYYY-MM-DDTHH:mm:ss')
-      timestring = timestring + 'Z'
-      saa.Tuulikartta.timeStamp = timestring
-
-      var utcOffSet = moment(timestring).utcOffset()
-      if (utcOffSet < 0) { newTime.subtrack(Math.abs(utcOffSet), 'minutes') }
-      if (utcOffSet > 0) { newTime.add(Math.abs(utcOffSet), 'minutes') }
-
-      document.getElementById('datepicker-button').value = newTime.format('DD.MM.YYYY')
-      document.getElementById('clockpicker-button').value = newTime.format('HH:mm')
-
-      saa.Tuulikartta.timeValue = timestring
-      Tuulikartta.updateRadarData()
-
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
-      saa.Tuulikartta.namelayer.bringToFront()
-
-      Tuulikartta.updateUrlHash()
-    })
-
-    // ---------------------------------------------------------
-    // change language
-    // ---------------------------------------------------------
-
-    $('#language-selector-value').click(function () {
-      if (selectedLanguage === 'fi') {
-        $(this).html('FI')
-        selectedLanguage = 'en'
-        localStorage.setItem('language', 'en')
-      } else {
-        $(this).html('EN')
-        selectedLanguage = 'fi'
-        localStorage.setItem('language', 'fi')
-      }
-      Tuulikartta.updateUrlHash()
-      window.location.reload()
-    })
-
-    // ---------------------------------------------------------
-    // show data layers
-    // ---------------------------------------------------------
-
-    $('#show-observations').change(function () {
-      if (this.checked == true) {
-        saa.Tuulikartta.showStationObservations = true
-        saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupSynop)
-        if (showRoadObservations)
-          saa.Tuulikartta.map.addLayer(saa.Tuulikartta.markerGroupRoad)
-      } else {
-        saa.Tuulikartta.showStationObservations = false
-        saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupSynop)
-        if (showRoadObservations)
-          saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
-      }
-    })
-
-    $('#road-observations').change(function () {
-      if (this.checked == true) {
-        if (saa.Tuulikartta.showStationObservations == true) saa.Tuulikartta.markerGroupRoad.addTo(saa.Tuulikartta.map)
-        showRoadObservations = true
-      } else {
-        saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.markerGroupRoad)
-        showRoadObservations = false
-      }
-    })
-
-    // -------------------------------------------------------------
-    // change layer opacity
-    // -------------------------------------------------------------
-
-    var slider = document.getElementById("radar-opacity");
-    // Update the current slider value (each time you drag the slider handle)
-    slider.oninput = function () {
-      var layer = saa.Tuulikartta.radarLayer
-      if (layer) {
-        var opacity = this.value;
-        layer.setOpacity(this.value / 100);
-        radarLayerOpacity = this.value
-        localStorage.setItem('radarLayerOpacity', this.value)
-      }
-    }
-
-    // -------------------------------------------------------------
-    // lightning options
-    // -------------------------------------------------------------
-
-    $('#lightning-source').change(function () {
-      if (this.value == 1) {
-        saa.Tuulikartta.showCloudStrikes = true
-        localStorage.setItem('showCloudStrikes', 'true')
-        saa.lightning.init(saa.Tuulikartta.timeStamp)
-      } else {
-        saa.Tuulikartta.showCloudStrikes = false
-        localStorage.setItem('showCloudStrikes', 'false')
-        saa.lightning.init(saa.Tuulikartta.timeStamp)
-      }
-    })
-
-    $('#lightning-interval').change(function () {
-      saa.Tuulikartta.lightningInterval = this.value
-      saa.lightning.init(saa.Tuulikartta.timeStamp)
-    })
-
-  })
 
   // ---------------------------------------------------------
   // Populate info content element
@@ -623,13 +377,13 @@ var saa = saa || {};
       autoPan: false
     })
     map.addControl(sidebar);
-    sidebar.setContent(Tuulikartta.populateSidebar(radarLayerOpacity))
+    sidebar.setContent(Tuulikartta.populateSidebar(saa.Tuulikartta.radarLayerOpacity))
 
     map.addControl(Tuulikartta.createSettingsControl(sidebar));
     map.addControl(Tuulikartta.createRadarControl());
     map.addControl(Tuulikartta.createLightningControl());
-    map.addControl(Tuulikartta.createWindParticlesControl(function () { return selectedParameter }));
-    Tuulikartta.updateVelocityControlState(selectedParameter)
+    map.addControl(Tuulikartta.createWindParticlesControl(function () { return saa.Tuulikartta.selectedParameter }));
+    Tuulikartta.updateVelocityControlState(saa.Tuulikartta.selectedParameter)
     map.addControl(Tuulikartta.createTableControl());
     map.addControl(Tuulikartta.createInfoControl());
   }
@@ -642,7 +396,7 @@ var saa = saa || {};
       format: 'image/png',
       tileSize: 2048,
       transparent: true,
-      opacity: radarLayerOpacity / 100,
+      opacity: saa.Tuulikartta.radarLayerOpacity / 100,
       time: saa.Tuulikartta.timeStamp,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
@@ -652,7 +406,7 @@ var saa = saa || {};
     // L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map)
   }
 
-  function resolveGraphStartposition(value) {
+  Tuulikartta.resolveGraphStartposition = function (value) {
     if (value === 'ws_10min' || value === 'wg_10min' || value === 'ws_1d' || value === 'wg_1d')
       return 1
     else if (value === 'ri_10min' || value === 'ri_10min' || value === 'rr_1h' || value === 'rr_1d' || value === 't2m' || value === 'dewpoint' || value === 'tmax' || value === 'tmin' || value === 'wawa')
