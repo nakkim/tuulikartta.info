@@ -203,6 +203,7 @@
 
     <footer role="contentinfo">
       <p>Kysymykset ja palaute: <a href="mailto:contact@tuulikartta.info">contact@tuulikartta.info</a></p>
+      <p>Sovelluksen versionumero <span id="app-version"></span></p>
       <div class="media-content" align="center">
         <a href="https://github.com/nakkim">
           <div class="media-button"><img class="media-button-img" src="../symbols/github.png"></img></div>
@@ -219,6 +220,10 @@
     var d = new Date();
     var n = d.getFullYear();
     document.getElementById("footer-year").innerHTML = n;
+
+    fetch("../package.json")
+      .then(function (response) { return response.json(); })
+      .then(function (data) { document.getElementById("app-version").innerHTML = data.version; });
   </script>
 
 </body>
