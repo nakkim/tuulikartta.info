@@ -339,10 +339,8 @@ var saa = saa || {};
       attribution: 'Tuulikartta.info'
     })
 
-    saa.Tuulikartta.baselayer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+    saa.Tuulikartta.baselayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>',
-      ext: 'png'
-
     }).addTo(map)
 
     saa.Tuulikartta.map = map
