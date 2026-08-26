@@ -339,11 +339,10 @@ var saa = saa || {};
       attribution: 'Tuulikartta.info'
     })
 
-    saa.Tuulikartta.baselayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
-    }).addTo(map)
+    saa.Tuulikartta.baselayer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+      attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>',
+      ext: 'png'
 
-    saa.Tuulikartta.namelayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
     }).addTo(map)
 
     saa.Tuulikartta.map = map
