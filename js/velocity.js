@@ -204,7 +204,6 @@ var saa = saa || {};
       saa.Tuulikartta.velocityLayer.addTo(saa.Tuulikartta.map)
     }
     Tuulikartta.bringVelocityLayerToFront()
-    saa.Tuulikartta.namelayer.bringToFront()
   }
 
 }(saa.Tuulikartta = saa.Tuulikartta || {}))

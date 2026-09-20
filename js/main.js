@@ -339,8 +339,12 @@ var saa = saa || {};
       attribution: 'Tuulikartta.info'
     })
 
-    saa.Tuulikartta.baselayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>',
+    var pmtilesProtocol = new pmtiles.Protocol()
+    maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile)
+
+    saa.Tuulikartta.baselayer = L.maplibreGL({
+      style: 'https://tuulikartta-tiles.hel1.your-objectstorage.com/style.json',
+      attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a> | © OpenStreetMap contributors | Protomaps'
     }).addTo(map)
 
     saa.Tuulikartta.map = map
@@ -363,10 +367,6 @@ var saa = saa || {};
         title: translations[selectedLanguage]['geolocation']
       }
     }).addTo(map);
-
-    saa.Tuulikartta.map.on('overlayadd', function (e) {
-      saa.Tuulikartta.namelayer.bringToFront()
-    })
 
     /* settings sidebar */
     var sidebar = L.control.sidebar('settings-sidebar', {
@@ -424,7 +424,6 @@ var saa = saa || {};
       saa.Tuulikartta.map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
           layer.setParams({})
-          saa.Tuulikartta.namelayer.bringToFront()
         }
       })
     }
