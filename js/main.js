@@ -333,7 +333,7 @@ var saa = saa || {};
     var map = L.map('map', {
       zoom: zoom,
       minZoom: 5,
-      maxZoom: 16,
+      maxZoom: 12,
       scrollWheelZoom: true,
       center: [lat, lon],
       attribution: 'Tuulikartta.info'
