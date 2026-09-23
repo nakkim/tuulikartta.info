@@ -49,6 +49,10 @@ var saa = saa || {};
       return
     }
 
+    if (controlElement) {
+      $(controlElement).toggleClass('active', !!saa.Tuulikartta.showWindParticles)
+    }
+
     if (saa.Tuulikartta.showWindParticles) {
       Tuulikartta.updateVelocityLayer(parameter)
     }

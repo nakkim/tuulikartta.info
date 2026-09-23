@@ -148,7 +148,7 @@ var translations = {
     'cloudVisTitle': 'Visibility and cloudiness',
     'dataSearch': 'Find',
     'dataNow': 'Now',
-    'dataInfo': 'Site information (in finnish)',
+    'dataInfo': 'Site information',
     'dataInfoBody1': ' - weather observations in real time',
     'dataInfoBody2': 'Weather observation data from the Finnish Meteorological Institute and from the Finnish Transport Infrastructure Agency.',
     'dataInfoBody3': 'Tuulikartta.info is based on the Finnish Meteorological Institute\'s <a href="https://en.ilmatieteenlaitos.fi/open-data">open data.',

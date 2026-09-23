@@ -65,6 +65,26 @@ hash.forEach(function (element) {
       selectedTime = param[1]
     }
   }
+  if (param[0] === 'table') {
+    saa.Tuulikartta.showObservationTable = param[1] === 'visible'
+    localStorage.setItem('showObservationTable', saa.Tuulikartta.showObservationTable)
+  }
+  if (param[0] === 'velocity') {
+    saa.Tuulikartta.showWindParticles = param[1] === 'visible'
+    localStorage.setItem('showWindParticles', saa.Tuulikartta.showWindParticles)
+  }
+  if (param[0] === 'radar') {
+    saa.Tuulikartta.showRadar = param[1] === 'visible'
+    localStorage.setItem('showRadar', saa.Tuulikartta.showRadar)
+  }
+  if (param[0] === 'lightning') {
+    saa.Tuulikartta.getLightningData = param[1] === 'visible'
+    localStorage.setItem('showLightning', saa.Tuulikartta.getLightningData)
+  }
+  if (param[0] === 'settings') {
+    saa.Tuulikartta.showSettingsSidebar = param[1] === 'visible'
+    localStorage.setItem('showSettingsSidebar', saa.Tuulikartta.showSettingsSidebar)
+  }
 })
 
 var span = document.getElementsByClassName("close")[0]
@@ -72,13 +92,13 @@ var modal = document.getElementById("modal-form")
 
 // When the user clicks on <span> (x), close the modal
 span.onclick = function () {
-  modal.style.display = "none"
+  saa.Tuulikartta.setObservationTableVisible(false)
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
   if (event.target == modal) {
-    modal.style.display = "none"
+    saa.Tuulikartta.setObservationTableVisible(false)
   }
 }
 

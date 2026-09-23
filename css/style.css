@@ -625,7 +625,7 @@ input[type=range]:focus::-ms-fill-upper {
   cursor: pointer;
   pointer-events: auto;
 }
-.leaflet-control-select-table:hover {
+.leaflet-control-select-table:hover, .leaflet-control-select-table.active {
   background-image: url(../symbols/table_blue.png);
 }
 .leaflet-control-select-radar:hover, .leaflet-control-select-radar.active {

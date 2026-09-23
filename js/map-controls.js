@@ -98,17 +98,22 @@ var saa = saa || {};
         var container = L.DomUtil.create(
           'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-radar'
         )
+        saa.Tuulikartta.radarControlElement = container
         container.onclick = function () {
           saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
           if (saa.Tuulikartta.map.hasLayer(saa.Tuulikartta.radarLayer)) {
             saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.radarLayer)
             $(this).removeClass('active')
+            saa.Tuulikartta.showRadar = false
           } else {
             saa.Tuulikartta.updateRadarData()
             saa.Tuulikartta.map.addLayer(saa.Tuulikartta.radarLayer)
             Tuulikartta.bringVelocityLayerToFront()
             $(this).addClass('active')
+            saa.Tuulikartta.showRadar = true
           }
+          localStorage.setItem('showRadar', saa.Tuulikartta.showRadar)
+          Tuulikartta.updateUrlHash()
         }
         container.title = translations[selectedLanguage]['radarTitle']
         return container
@@ -127,6 +132,7 @@ var saa = saa || {};
         var container = L.DomUtil.create(
           'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-flash'
         )
+        saa.Tuulikartta.lightningControlElement = container
         container.onclick = function () {
           if (saa.Tuulikartta.map.hasLayer(saa.lightning.geoLayer)) {
             saa.Tuulikartta.map.removeLayer(saa.lightning.geoLayer)
@@ -139,6 +145,8 @@ var saa = saa || {};
             $(this).addClass('active')
             saa.Tuulikartta.getLightningData = true
           }
+          localStorage.setItem('showLightning', saa.Tuulikartta.getLightningData)
+          Tuulikartta.updateUrlHash()
           saa.Tuulikartta.updateRadarData()
         }
         container.title = translations[selectedLanguage]['lightningTitle']
@@ -175,6 +183,8 @@ var saa = saa || {};
             $(this).addClass('active')
             Tuulikartta.updateVelocityLayer(getSelectedParameter())
           }
+          localStorage.setItem('showWindParticles', saa.Tuulikartta.showWindParticles)
+          Tuulikartta.updateUrlHash()
           Tuulikartta.updateDivergenceControlState()
         }
         container.title = translations[selectedLanguage]['windParticlesTitle']
@@ -194,9 +204,10 @@ var saa = saa || {};
         var container = L.DomUtil.create(
           'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-table'
         )
+        saa.Tuulikartta.tableControlElement = container
 
         container.onclick = function () {
-          modal.style.display = "block";
+          Tuulikartta.setObservationTableVisible(!saa.Tuulikartta.showObservationTable)
         }
 
         container.title = translations[selectedLanguage]['tableTitle']

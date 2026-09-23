@@ -37,18 +37,28 @@ var saa = saa || {};
 
   saa.Tuulikartta.showStationObservations = true
   var showOldObservations = false
-  saa.Tuulikartta.getLightningData = false
+  saa.Tuulikartta.getLightningData = localStorage.getItem('showLightning') === 'true'
   saa.Tuulikartta.showCloudStrikes = localStorage.getItem('showCloudStrikes') ? localStorage.getItem('showCloudStrikes') : true
   saa.Tuulikartta.lightningInterval = 5
+  saa.Tuulikartta.lightningControlElement = null
   saa.Tuulikartta.useWindBarbs = localStorage.getItem('useWindBarbs') === 'true'
 
   saa.Tuulikartta.radarLayer = ''
   saa.Tuulikartta.flashLayer = ''
   saa.Tuulikartta.velocityLayer = null
-  saa.Tuulikartta.showWindParticles = false
+  saa.Tuulikartta.showWindParticles = localStorage.getItem('showWindParticles') === 'true'
   saa.Tuulikartta.windParticlesControlElement = null
   saa.Tuulikartta.divergenceLayer = null
   saa.Tuulikartta.showDivergence = localStorage.getItem('showDivergence') === 'true'
+
+  saa.Tuulikartta.showRadar = localStorage.getItem('showRadar') === 'true'
+  saa.Tuulikartta.radarControlElement = null
+
+  saa.Tuulikartta.showObservationTable = localStorage.getItem('showObservationTable') === 'true'
+  saa.Tuulikartta.tableControlElement = null
+
+  saa.Tuulikartta.showSettingsSidebar = localStorage.getItem('showSettingsSidebar') === 'true'
+  saa.Tuulikartta.sidebarControl = null
 
   saa.Tuulikartta.radarLayerOpacity = localStorage.getItem('radarLayerOpacity') ? localStorage.getItem('radarLayerOpacity') : 80
 
@@ -95,8 +105,43 @@ var saa = saa || {};
     if (saa.Tuulikartta.timeValue !== 'now') {
       hash += '#time=' + saa.Tuulikartta.timeValue
     }
+    if (saa.Tuulikartta.showObservationTable) {
+      hash += '#table=visible'
+    }
+    if (saa.Tuulikartta.showWindParticles) {
+      hash += '#velocity=visible'
+    }
+    if (saa.Tuulikartta.showRadar) {
+      hash += '#radar=visible'
+    }
+    if (saa.Tuulikartta.getLightningData) {
+      hash += '#lightning=visible'
+    }
+    if (saa.Tuulikartta.showSettingsSidebar) {
+      hash += '#settings=visible'
+    }
 
     window.location.replace(hash)
+  }
+
+  // ---------------------------------------------------------
+  // Show/hide the observation table modal and persist the state
+  // ---------------------------------------------------------
+
+  Tuulikartta.setObservationTableVisible = function (visible) {
+    var modal = document.getElementById('modal-form')
+    if (modal) {
+      modal.style.display = visible ? 'block' : 'none'
+    }
+
+    saa.Tuulikartta.showObservationTable = visible
+    localStorage.setItem('showObservationTable', visible)
+
+    if (saa.Tuulikartta.tableControlElement) {
+      $(saa.Tuulikartta.tableControlElement).toggleClass('active', visible)
+    }
+
+    Tuulikartta.updateUrlHash()
   }
 
   // ---------------------------------------------------------
@@ -311,7 +356,8 @@ var saa = saa || {};
 
   Tuulikartta.populateInfoContent = function () {
     $('#site-info-body').html('')
-    var html = '<p style="line-height: 150%"><a href="tietoa-sivustosta/">' + translations[selectedLanguage]["dataInfo"] + '</a></p>'
+    var dataInfoUrl = selectedLanguage === 'en' ? 'tietoa-sivustosta/en/' : 'tietoa-sivustosta/'
+    var html = '<p style="line-height: 150%"><a href="' + dataInfoUrl + '">' + translations[selectedLanguage]["dataInfo"] + '</a></p>'
     html = html + '<p style="line-height: 150%">'
     html = html + '    <span style="color:#343434; font-weight:bold;">Tuulikartta.info</span>' + translations[selectedLanguage]["dataInfoBody1"] + '</br>'
     html = html + '    ' + translations[selectedLanguage]["dataInfoBody2"] + '</br>'
@@ -376,16 +422,49 @@ var saa = saa || {};
       position: 'left',
       autoPan: false
     })
+    saa.Tuulikartta.sidebarControl = sidebar
+    sidebar.on('show', function () {
+      saa.Tuulikartta.showSettingsSidebar = true
+      localStorage.setItem('showSettingsSidebar', 'true')
+      Tuulikartta.updateUrlHash()
+    })
+    sidebar.on('hide', function () {
+      saa.Tuulikartta.showSettingsSidebar = false
+      localStorage.setItem('showSettingsSidebar', 'false')
+      Tuulikartta.updateUrlHash()
+    })
     map.addControl(sidebar);
     sidebar.setContent(Tuulikartta.populateSidebar(saa.Tuulikartta.radarLayerOpacity))
 
     map.addControl(Tuulikartta.createSettingsControl(sidebar));
+    if (saa.Tuulikartta.showSettingsSidebar) {
+      sidebar.show()
+    }
+
     map.addControl(Tuulikartta.createRadarControl());
+    if (saa.Tuulikartta.showRadar) {
+      map.addLayer(saa.Tuulikartta.radarLayer)
+      if (saa.Tuulikartta.radarControlElement) {
+        $(saa.Tuulikartta.radarControlElement).addClass('active')
+      }
+    }
+
     map.addControl(Tuulikartta.createLightningControl());
+    if (saa.Tuulikartta.getLightningData && saa.Tuulikartta.lightningControlElement) {
+      $(saa.Tuulikartta.lightningControlElement).addClass('active')
+    }
+
     map.addControl(Tuulikartta.createWindParticlesControl(function () { return saa.Tuulikartta.selectedParameter }));
     Tuulikartta.updateVelocityControlState(saa.Tuulikartta.selectedParameter)
+
     map.addControl(Tuulikartta.createTableControl());
+    if (saa.Tuulikartta.showObservationTable) {
+      Tuulikartta.setObservationTableVisible(true)
+    }
+
     map.addControl(Tuulikartta.createInfoControl());
+
+    Tuulikartta.updateUrlHash()
   }
 
   Tuulikartta.initWMS = function () {
