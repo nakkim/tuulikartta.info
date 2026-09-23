@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>tuulikartta.info - Site information</title>
+
+  <link rel="icon" type="image/png" href="../../favicon/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="../../favicon/favicon-16x16.png" sizes="16x16">
+
+  <meta name="description" content="tuulikartta.info - site information, privacy and cookies">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <!-- <link href="../../css/normalize.css" rel="stylesheet" media="all"> -->
+  <link href="../../css/info.css" rel="stylesheet" media="all">
+
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script src="../../serviceWorker.js"></script>
+
+</head>
+
+<body>
+
+  <nav role="navigation">
+    <div id="main-navigation-wrapper">
+      <div class="nav">
+        <ul>
+          <li><a href="../../">Tuulikartta</a></li>
+          <li><a class="active" href="#">Site information</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="main-breadcrumb-wrapper">
+      <ul class="breadcrumb">
+        <li><a href="../../">tuulikartta.info</a></li>
+        <li>Site information</li>
+      </ul>
+    </div>
+  </nav>
+
+  <div id="main-content-wrapper">
+
+    <div class="wrap">
+      <header role="banner">
+        <h1>Site information</h1>
+        <p style="margin-top:-10px;"><a href="../">Suomeksi</a></p>
+      </header>
+      <main role="main">
+        <p><span style="font-weight:bold">tuulikartta.info</span> is a personal side project that grew out of a
+          model aircraft hobby, with the idea of offering users (near) real-time wind observations. Since then
+          the site has expanded to cover weather observations more generally.</p>
+        <p>
+          The site displays observations updated every 10 minutes from Finnish Meteorological Institute weather
+          stations and Finnish Transport Infrastructure Agency road weather stations: mean wind speed and
+          maximum gust, temperature, precipitation amount and intensity, visibility, total cloud cover, and the
+          current prevailing weather. In addition, the site calculates the maximum gust and mean wind speed for
+          the hour preceding each observation on the fly.
+        </p>
+        <p>A 10-minute observation typically refers to the average over a 10-minute measurement period, while
+          wind gust refers to the maximum 3-second average measured within that 10-minute period.</p>
+        <h2 style="font-size:18px; font-weight:bold;">Observation parameters</h2>
+        <h3 style="font-size:14px; font-weight:bold;">Wind speed classes</h3>
+        <div id="legend-wrapper" style="overflow:auto; margin-bottom:20px;">
+          <img alt="legend" src="../../symbols/legend.png" style="float:left;"></img>
+          <p>Wind speeds are divided into nine classes, drawn on the map using the colors shown in the table
+            below.</p>
+          <p>
+            Strong winds and storm-force winds typically occur in Finland only occasionally, mainly over sea
+            areas and fells, whereas gusty wind can occasionally reach storm-force values even over land areas.
+          </p>
+          <p>
+            Summer thunderstorm squalls, for example, are therefore not technically storms, but rather severe
+            local weather events (squalls).
+          </p>
+        </div>
+        <p>
+          Winds that cause damage are often very gusty. Brief, short-lived 5-10 second gusts exceed the
+          10-minute mean wind speed by roughly 1.5 times depending on conditions, and by up to about 2 times at
+          most.
+        </p>
+        <p>
+          When wind speed exceeds 16-17 m/s, tree branches start to break; speeds above 20 m/s start to break
+          and fell trees and cause minor damage to roof structures.
+        </p>
+        <p>More information is available on the Finnish Meteorological Institute's
+          <a href="https://ilmatieteenlaitos.fi/tuulet">wind theme pages (in Finnish)</a>.
+        </p>
+
+        <h3 style="font-size:14px; font-weight:bold;">Visibility and current weather</h3>
+        <p>
+          Measurements of current weather and visibility are based on measuring the scattering of light. This
+          type of optical sensor has a near-infrared light transmitter and receiver. The more water droplets,
+          ice crystals or other particles there are in the air (e.g. rain or snow, dust, smoke), the more of the
+          transmitted light scatters back to the receiver. The optical sensor calculates visibility from the
+          scattered light, and also attempts to determine the current weather (e.g. the type and form of
+          precipitation).
+        </p>
+        <p>
+          Meteorological visibility refers to the transparency of the air. Visibility is not affected by
+          darkness or terrain obstacles. Meteorological visibility is reduced by dry haze (haze, dust, smoke) or
+          moist haze (mist, fog, precipitation). When visibility is good, objects can be seen from more than 10
+          kilometres away; with moderate visibility, 4-10 kilometres; and with poor visibility, 1-4 kilometres.
+          Visibility below 1 kilometre is very poor.
+        </p>
+        <h3 style="font-size:14px; font-weight:bold; display:inline-block">Total cloud cover</h3>
+        <div class="legend-row">
+          <div class="legend-column" style="padding-right:30px;">
+            <p>
+              Total cloud cover is often measured in eighths (oktas). The sky can be divided into eight parts,
+              which makes estimating total cloud cover easier.
+            </p>
+            <p>
+              Variable cloudiness usually refers to a situation where, during the forecast period, cloud cover
+              varies between less than 3/8 and more than 6/8. Variable cloudiness is common in summer, but
+              clearly rarer in winter.
+            </p>
+          </div>
+          <div class="legend-column">
+            <table>
+              <tr>
+                <th>Description</th>
+                <th>Value</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/0.svg" style="width:15px;" /></td>
+                <td>0/8</td>
+                <td>Clear</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/1.svg" style="width:15px;" /></td>
+                <td>1/8</td>
+                <td>Almost clear</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/2.svg" style="width:15px;" /></td>
+                <td>2/8</td>
+                <td>Fairly clear</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/3.svg" style="width:15px;" /></td>
+                <td>3/8</td>
+                <td>Partly cloudy</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/4.svg" style="width:15px;" /></td>
+                <td>4/8</td>
+                <td>Fairly cloudy</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/5.svg" style="width:15px;" /></td>
+                <td>5/8</td>
+                <td>Partly cloudy</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/6.svg" style="width:15px;" /></td>
+                <td>6/8</td>
+                <td>Fairly cloudy</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/7.svg" style="width:15px;" /></td>
+                <td>7/8</td>
+                <td>Almost cloudy</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/8.svg" style="width:15px;" /></td>
+                <td>8/8</td>
+                <td>Cloudy</td>
+              </tr>
+              <tr>
+                <td><img src="../../symbols/nn/9.svg" style="width:15px;" /></td>
+                <td>9/8</td>
+                <td>Cloud cover cannot be determined</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 style="font-size:18px; font-weight:bold;">Observation history</h2>
+        <p>
+          Clicking a weather symbol also lets you view station-specific observation history. Not all stations
+          measure the same parameters, however, so there may be gaps in the data. You can view observations for
+          different parameters by dragging the chart sideways or by clicking the grey dots.
+        </p>
+        <img src="../../symbols/site1.png" style="width: 100%; margin: 10px 5px 10px 5px; max-width: 400px"></img>
+        <img src="../../symbols/site2.png" style="width: 100%; margin: 10px 5px 10px 5px; max-width: 400px"></img>
+        <h2 style="font-size:18px; font-weight:bold;">Wind animation</h2>
+        <p>
+          The map can display a wind animation showing mean wind speed or gust as moving particles. The
+          animation is not based on a weather forecast model - it is calculated in the browser from the current
+          wind speed and direction measurements at the observation stations. The areas between stations are
+          filled in using inverse distance weighting to form a regular grid, which is then drawn on the map as
+          moving particles.
+        </p>
+        <p>
+          Because the animation is based on a sparse network of stations rather than a forecast model, it
+          mainly illustrates the general flow and direction of the wind field - it cannot reliably reproduce
+          local phenomena such as individual gusts or small-scale eddies.
+        </p>
+        <h2 style="font-size:18px; font-weight:bold;">Convergence and divergence</h2>
+        <p>
+          When the wind animation is on, you can also enable the convergence and divergence layer from the
+          settings. This layer colors the areas where wind is converging (convergence, blue) or spreading out
+          (divergence, red), calculated from the same grid as the wind animation.
+        </p>
+        <p>
+          Convergence refers to an area where more air flows in than flows out - the air piles up and rises,
+          which can support cloud and precipitation formation. Divergence is the opposite: more air leaves an
+          area than flows into it, and the air generally sinks.
+        </p>
+        <p>
+          The quantity is calculated as the sum of the local rates of change of the east-west and north-south
+          wind components, and its unit is 1/s (per second). Typical values for weather phenomena are on the
+          order of 10⁻⁵-10⁻⁴ 1/s. The map's color scale is not tied to a fixed value, though - it always scales
+          to the strongest value in the current grid, so a fully colored area represents the strongest
+          convergence or divergence at that moment, not a predetermined threshold.
+        </p>
+        <p>
+          Because the layer is based on a grid interpolated from a sparse station network rather than a
+          forecast model, it should be treated as an illustrative approximation of convergence and divergence
+          areas in the wind field, not a precise meteorological analysis.
+        </p>
+        <h2 style="font-size:18px; font-weight:bold;">Data sources</h2>
+        <p>The observation data is open data provided by the Finnish Meteorological Institute.</p>
+        <p>Planned future features include more comprehensive radar products, and possibly weather observations
+          from neighbouring countries (Sweden, Norway, etc.) further down the line.</p>
+        <h2 style="font-size:18px; font-weight:bold;">Privacy</h2>
+        <p>
+          The service currently does not use analytics or tracking cookies. The site stores things like your
+          last viewed map location and language setting in your browser's local storage (localStorage), so that
+          it remembers your choices on your next visit. This data stays only on your own device and is never
+          sent to the server. No personal data is collected about users of the service.
+        </p>
+        <p>Read more in the <a href="../../tietosuoja/">privacy policy (in Finnish)</a>.</p>
+        <h2 style="font-size:18px; font-weight:bold;">Other</h2>
+        <p>The site's source code is available <a href="https://github.com/nakkim/tuulikartta.info">here</a></p>
+      </main>
+    </div>
+
+    <footer role="contentinfo">
+      <p>Questions and feedback: <a href="mailto:tuulikartta@proton.me">tuulikartta@proton.me</a></p>
+      <p>Application version <span id="app-version"></span></p>
+      <div class="media-content" align="center">
+        <a href="https://github.com/nakkim">
+          <div class="media-button"><img class="media-button-img" src="../../symbols/github.png"></img></div>
+        </a>
+        <a href="https://www.linkedin.com/in/ville-oravilkka-1a0622146/">
+          <div class="media-button"> <img class="media-button-img" src="../../symbols/linkedin.png"></img></div>
+        </a>
+      </div>
+      <p>Ville Oravilkka, 2016-<span id="footer-year"></span></p>
+    </footer>
+  </div>
+
+  <script>
+    var d = new Date();
+    var n = d.getFullYear();
+    document.getElementById("footer-year").innerHTML = n;
+
+    fetch("../../package.json")
+      .then(function (response) { return response.json(); })
+      .then(function (data) { document.getElementById("app-version").innerHTML = data.version; });
+  </script>
+
+</body>
+
+</html>
