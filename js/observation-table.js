@@ -29,6 +29,8 @@ var saa = saa || {};
     html = html + '<option value="snow_aws">' + translations[selectedLanguage]["snow_aws"] + '</option>'
     html = html + '<option value="pressure">' + translations[selectedLanguage]["pressure"] + '</option>'
     html = html + '<option value="rh">' + translations[selectedLanguage]["rh"] + '</option>'
+    // 'synopplot' temporarily disabled for users, implementation not yet finalized
+    // html = html + '<option value="synopplot">' + translations[selectedLanguage]["synopplot"] + '</option>'
     html = html + '<optgroup label="' + translations[selectedLanguage]["dailyObs"] + '">'
     html = html + '<option value="ws_1d">' + translations[selectedLanguage]["ws_1d"] + '</option>'
     html = html + '<option value="wg_1d">' + translations[selectedLanguage]["wg_1d"] + '</option>'

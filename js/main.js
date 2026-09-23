@@ -40,6 +40,7 @@ var saa = saa || {};
   saa.Tuulikartta.getLightningData = false
   saa.Tuulikartta.showCloudStrikes = localStorage.getItem('showCloudStrikes') ? localStorage.getItem('showCloudStrikes') : true
   saa.Tuulikartta.lightningInterval = 5
+  saa.Tuulikartta.useWindBarbs = localStorage.getItem('useWindBarbs') === 'true'
 
   saa.Tuulikartta.radarLayer = ''
   saa.Tuulikartta.flashLayer = ''

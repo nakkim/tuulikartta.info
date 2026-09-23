@@ -14,11 +14,11 @@ var saa = saa || {};
   // popup max width
   var maxWidth = 650
 
-  Tuulikartta.createLabelIcon = function (labelClass, labelText) {
+  Tuulikartta.createLabelIcon = function (labelClass, labelText, iconAnchor) {
     return L.divIcon({
       iconSize: null,
       className: labelClass,
-      iconAnchor: [10, 7],
+      iconAnchor: iconAnchor || [10, 7],
       html: labelText
     })
   }
@@ -57,17 +57,28 @@ var saa = saa || {};
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
           if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
 
-          var icon = L.icon({
-            iconUrl: '../symbols/wind/' + (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).code + '.svg',
-            iconSize: [60, 60], // size of the icon
-            iconAnchor: iconAnchor, // point of the icon which will correspond to marker's location
-            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
-          })
+          if (saa.Tuulikartta.useWindBarbs) {
+            var icon = L.icon({
+              iconUrl: Tuulikartta.buildWindBarbIcon(saa.Tuulikartta.data[i][param], (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).hex),
+              iconSize: [60, 60],
+              iconAnchor: iconAnchor,
+              popupAnchor: [0, 0]
+            })
+          } else {
+            var icon = L.icon({
+              iconUrl: '../symbols/wind/' + (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).code + '.svg',
+              iconSize: [60, 60], // size of the icon
+              iconAnchor: iconAnchor, // point of the icon which will correspond to marker's location
+              popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+            })
+          }
 
           var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
             {
               icon: icon,
-              rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wd_10min']),
+              rotationAngle: saa.Tuulikartta.useWindBarbs
+                ? Tuulikartta.resolveWindBarbRotation(saa.Tuulikartta.data[i]['wd_10min'])
+                : Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wd_10min']),
               rotationOrigin: 'center center'
             })
 
@@ -90,7 +101,8 @@ var saa = saa || {};
             {
               interactive: false,
               keyboard: false,
-              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1),
+                saa.Tuulikartta.useWindBarbs ? [10, -6] : undefined)
             })
 
           if (saa.Tuulikartta.data[i]['type'] === 'road') {
@@ -107,25 +119,38 @@ var saa = saa || {};
           if (saa.Tuulikartta.data[i][param] < 10) { var iconAnchor = [30, 28] }
           if (saa.Tuulikartta.data[i][param] >= 10) { var iconAnchor = [25, 28] }
 
-          var icon = L.icon({
-            iconUrl: '../symbols/wind/' + (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).code + '.svg',
-            iconSize: [60, 60], // size of the icon
-            iconAnchor: iconAnchor, // point of the icon which will correspond to marker's location
-            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
-          })
+          if (saa.Tuulikartta.useWindBarbs) {
+            var icon = L.icon({
+              iconUrl: Tuulikartta.buildWindBarbIcon(saa.Tuulikartta.data[i][param], (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).hex),
+              iconSize: [60, 60],
+              iconAnchor: iconAnchor,
+              popupAnchor: [0, 0]
+            })
+          } else {
+            var icon = L.icon({
+              iconUrl: '../symbols/wind/' + (saa.Tuulikartta.resolveWindSpeed(saa.Tuulikartta.data[i][param])).code + '.svg',
+              iconSize: [60, 60], // size of the icon
+              iconAnchor: iconAnchor, // point of the icon which will correspond to marker's location
+              popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+            })
+          }
 
           if (param == 'ws_1d') {
             var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
               {
                 icon: icon,
-                rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['ws_max_dir']),
+                rotationAngle: saa.Tuulikartta.useWindBarbs
+                  ? Tuulikartta.resolveWindBarbRotation(saa.Tuulikartta.data[i]['ws_max_dir'])
+                  : Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['ws_max_dir']),
                 rotationOrigin: 'center center'
               })
           } else {
             var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
               {
                 icon: icon,
-                rotationAngle: Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wg_max_dir']),
+                rotationAngle: saa.Tuulikartta.useWindBarbs
+                  ? Tuulikartta.resolveWindBarbRotation(saa.Tuulikartta.data[i]['wg_max_dir'])
+                  : Tuulikartta.resolveWindDirection(saa.Tuulikartta.data[i]['wg_max_dir']),
                 rotationOrigin: 'center center'
               })
           }
@@ -149,7 +174,8 @@ var saa = saa || {};
             {
               interactive: false,
               keyboard: false,
-              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1))
+              icon: Tuulikartta.createLabelIcon('textLabelclass', parseFloat(saa.Tuulikartta.data[i][param]).toFixed(1),
+                saa.Tuulikartta.useWindBarbs ? [10, -6] : undefined)
             })
 
           if (saa.Tuulikartta.data[i]['type'] === 'road') {
@@ -608,6 +634,34 @@ var saa = saa || {};
           }
         }
 
+      }
+
+      if (param === 'synopplot') {
+        var icon = L.icon({
+          iconUrl: Tuulikartta.buildSynopPlotIcon(saa.Tuulikartta.data[i]),
+          iconSize: Tuulikartta.synopPlotIconSize,
+          iconAnchor: Tuulikartta.synopPlotIconAnchor,
+          popupAnchor: [0, 0]
+        })
+
+        var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+          {
+            icon: icon
+          })
+
+        if (saa.Tuulikartta.data[i]['type'] === 'road') {
+          marker.addTo(saa.Tuulikartta.markerGroupRoad)
+        } else {
+          saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i])
+          marker.addTo(saa.Tuulikartta.markerGroupSynop)
+        }
+
+        marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']), {
+          maxWidth: maxWidth
+        })
+        marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+        marker.type = saa.Tuulikartta.data[i]['type']
       }
     }
 

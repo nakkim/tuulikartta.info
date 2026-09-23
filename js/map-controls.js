@@ -20,6 +20,11 @@ var saa = saa || {};
     html += '<input id="road-observations" type="checkbox" disabled> ' + translations[selectedLanguage]['roadObs']
     html += '<br/>'
     html += '<br/>'
+    html += '<span><b>' + translations[selectedLanguage]['renderSettings'] + '</b></span>'
+    html += '<br/>'
+    html += '<input id="use-wind-barbs" type="checkbox"' + (saa.Tuulikartta.useWindBarbs ? ' checked' : '') + '> ' + translations[selectedLanguage]['useWindBarbs']
+    html += '<br/>'
+    html += '<br/>'
     html += '<span><b>' + translations[selectedLanguage]['layerOpacity'] + '</b></span>'
     html += '<table>'
     html += '<tr>'

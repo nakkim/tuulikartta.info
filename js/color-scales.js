@@ -295,4 +295,10 @@ var saa = saa || {};
     return (winddir + 180) % 360
   }
 
+  // wind barbs are drawn with the shaft pointing towards the direction the
+  // wind blows FROM, so no 180 degree flip is needed as with the arrow icons
+  Tuulikartta.resolveWindBarbRotation = function (winddirection) {
+    return parseFloat(winddirection) % 360
+  }
+
 }(saa.Tuulikartta = saa.Tuulikartta || {}))
