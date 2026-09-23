@@ -47,6 +47,8 @@ var saa = saa || {};
   saa.Tuulikartta.velocityLayer = null
   saa.Tuulikartta.showWindParticles = false
   saa.Tuulikartta.windParticlesControlElement = null
+  saa.Tuulikartta.divergenceLayer = null
+  saa.Tuulikartta.showDivergence = localStorage.getItem('showDivergence') === 'true'
 
   saa.Tuulikartta.radarLayerOpacity = localStorage.getItem('radarLayerOpacity') ? localStorage.getItem('radarLayerOpacity') : 80
 

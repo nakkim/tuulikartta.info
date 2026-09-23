@@ -678,6 +678,7 @@ var saa = saa || {};
     }
 
     Tuulikartta.updateVelocityLayer(param)
+    Tuulikartta.updateDivergenceLayer(param)
   }
 
   // ---------------------------------------------------------

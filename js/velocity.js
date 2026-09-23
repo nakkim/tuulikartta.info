@@ -45,12 +45,14 @@ var saa = saa || {};
       if (saa.Tuulikartta.velocityLayer && saa.Tuulikartta.map && saa.Tuulikartta.map.hasLayer(saa.Tuulikartta.velocityLayer)) {
         saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.velocityLayer)
       }
+      Tuulikartta.updateDivergenceControlState()
       return
     }
 
     if (saa.Tuulikartta.showWindParticles) {
       Tuulikartta.updateVelocityLayer(parameter)
     }
+    Tuulikartta.updateDivergenceControlState()
   }
 
   // ---------------------------------------------------------

@@ -184,6 +184,43 @@
         </p>
         <img src="../symbols/site1.png" style="width: 100%; margin: 10px 5px 10px 5px; max-width: 400px"></img>
         <img src="../symbols/site2.png" style="width: 100%; margin: 10px 5px 10px 5px; max-width: 400px"></img>
+        <h2 style="font-size:18px; font-weight:bold;">Tuulianimaatio</h2>
+        <p>
+          Karttaan voi kytkeä päälle tuulianimaation, joka näyttää keskituulen tai puuskan liikkuvina
+          hiukkasina. Animaatio ei perustu sääennustemalliin, vaan se lasketaan selaimessa havaintoasemien
+          senhetkisistä tuulen nopeuden ja suunnan mittauksista. Asemien väliin jäävät alueet täytetään
+          käänteisen etäisyyspainotuksen avulla säännölliseksi hilaksi, joka piirretään kartalle liikkuvina
+          hiukkasina.
+        </p>
+        <p>
+          Koska animaatio perustuu harvaan asemaverkkoon eikä sääennustemalliin, se kuvaa lähinnä tuulikentän
+          yleistä virtausta ja suuntaa - paikallisia ilmiöitä, kuten yksittäisiä puuskia tai pieniä pyörteitä,
+          se ei pysty toistamaan luotettavasti.
+        </p>
+        <h2 style="font-size:18px; font-weight:bold;">Konvergenssi ja divergenssi</h2>
+        <p>
+          Tuulianimaation ollessa päällä asetuksista voi kytkeä päälle myös konvergenssi- ja
+          divergenssikerroksen. Kerros näyttää värillisenä alueet, joissa tuuli suppenee (konvergenssi,
+          sininen) tai leviää (divergenssi, punainen), laskettuna samasta hilasta kuin tuulianimaatiokin.
+        </p>
+        <p>
+          Konvergenssi tarkoittaa aluetta, jonne ilmaa virtaa enemmän kuin sieltä poistuu - ilma pakkautuu ja
+          nousee, mikä voi tukea pilvisyyden ja sateen muodostumista. Divergenssi on tämän vastakohta: ilmaa
+          poistuu alueelta enemmän kuin sinne virtaa, jolloin ilma yleensä laskee.
+        </p>
+        <p>
+          Suure lasketaan tuulen itä-länsi- ja pohjois-eteläkomponenttien paikallisten muutosnopeuksien
+          summana, ja sen yksikkö on 1/s (kertaa sekunnissa). Tyypillisiä arvoja sääilmiöissä ovat luokkaa
+          10⁻⁵-10⁻⁴ 1/s. Kartan väriasteikko ei kuitenkaan ole sidottu kiinteään lukuarvoon, vaan se
+          skaalautuu aina senhetkisen hilan voimakkaimman arvon mukaan - täysin väritetty alue tarkoittaa siis
+          kyseisen hetken voimakkainta konvergenssia tai divergenssiä, ei mitään ennalta määrättyä
+          kynnysarvoa.
+        </p>
+        <p>
+          Koska kerros perustuu harvan asemaverkon interpoloituun hilaan eikä sääennustemalliin, sitä
+          kannattaa pitää suuntaa-antavana havainnollistuksena tuulikentän konvergenssi- ja
+          divergenssialueista, ei tarkkana meteorologisena analyysinä.
+        </p>
         <h2 style="font-size:18px; font-weight:bold;">Käytetty aineisto</h2>
         <p>Havaintoaineisto on Ilmatieteen laitoksen tarjoamaa avointa dataa.</p>
         <p>Tulevia ominaisuuksia ovat mm. kattavammat tutkatuotteet, sekä jatkossa mahdollisesti myös lähialueiden

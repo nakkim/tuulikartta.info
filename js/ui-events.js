@@ -219,6 +219,12 @@ var saa = saa || {};
       Tuulikartta.drawData(saa.Tuulikartta.selectedParameter)
     })
 
+    $('#show-divergence').change(function () {
+      saa.Tuulikartta.showDivergence = this.checked
+      localStorage.setItem('showDivergence', this.checked)
+      Tuulikartta.updateDivergenceLayer(saa.Tuulikartta.selectedParameter)
+    })
+
     // -------------------------------------------------------------
     // change layer opacity
     // -------------------------------------------------------------

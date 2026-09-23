@@ -24,6 +24,8 @@ var saa = saa || {};
     html += '<br/>'
     html += '<input id="use-wind-barbs" type="checkbox"' + (saa.Tuulikartta.useWindBarbs ? ' checked' : '') + '> ' + translations[selectedLanguage]['useWindBarbs']
     html += '<br/>'
+    html += '<input id="show-divergence" type="checkbox" disabled' + (saa.Tuulikartta.showDivergence ? ' checked' : '') + '> ' + translations[selectedLanguage]['showDivergence']
+    html += '<br/>'
     html += '<br/>'
     html += '<span><b>' + translations[selectedLanguage]['layerOpacity'] + '</b></span>'
     html += '<table>'
@@ -173,6 +175,7 @@ var saa = saa || {};
             $(this).addClass('active')
             Tuulikartta.updateVelocityLayer(getSelectedParameter())
           }
+          Tuulikartta.updateDivergenceControlState()
         }
         container.title = translations[selectedLanguage]['windParticlesTitle']
         return container
