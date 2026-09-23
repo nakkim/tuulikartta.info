@@ -212,6 +212,13 @@ var saa = saa || {};
       }
     })
 
+    $('#use-wind-barbs').change(function () {
+      saa.Tuulikartta.useWindBarbs = this.checked
+      localStorage.setItem('useWindBarbs', this.checked)
+      Tuulikartta.clearMarkers()
+      Tuulikartta.drawData(saa.Tuulikartta.selectedParameter)
+    })
+
     // -------------------------------------------------------------
     // change layer opacity
     // -------------------------------------------------------------
