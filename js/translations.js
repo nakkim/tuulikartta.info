@@ -89,7 +89,7 @@ var translations = {
     'info': 'Show information',
     'showObservations': 'Show station observations',
     'radarTitle': 'Show radar image',
-    'tableTitle': 'Dsiplay observations in a table',
+    'tableTitle': 'Display observations in a table',
     'lightningTitle': 'Show lightning observations',
     'windParticlesTitle': 'Show wind animation',
     'windDirectionLabel': 'direction',
