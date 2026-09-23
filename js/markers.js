@@ -635,6 +635,34 @@ var saa = saa || {};
         }
 
       }
+
+      if (param === 'synopplot') {
+        var icon = L.icon({
+          iconUrl: Tuulikartta.buildSynopPlotIcon(saa.Tuulikartta.data[i]),
+          iconSize: Tuulikartta.synopPlotIconSize,
+          iconAnchor: Tuulikartta.synopPlotIconAnchor,
+          popupAnchor: [0, 0]
+        })
+
+        var marker = L.marker([saa.Tuulikartta.data[i]['lat'], saa.Tuulikartta.data[i]['lon']],
+          {
+            icon: icon
+          })
+
+        if (saa.Tuulikartta.data[i]['type'] === 'road') {
+          marker.addTo(saa.Tuulikartta.markerGroupRoad)
+        } else {
+          saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i])
+          marker.addTo(saa.Tuulikartta.markerGroupSynop)
+        }
+
+        marker.bindPopup(saa.Tuulikartta.populateInfoWindow(saa.Tuulikartta.data[i],
+          saa.Tuulikartta.data[i]['fmisid']), {
+          maxWidth: maxWidth
+        })
+        marker.fmisid = saa.Tuulikartta.data[i]['fmisid']
+        marker.type = saa.Tuulikartta.data[i]['type']
+      }
     }
 
     if (saa.Tuulikartta.timeValue === 'now') {

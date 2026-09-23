@@ -33,6 +33,7 @@ hash.forEach(function (element) {
 
 saa.Tuulikartta.buildObservationMenu()
 saa.Tuulikartta.populateInfoContent()
+// 'synopplot' intentionally left out here to disable it, since it's temporarily disabled for users
 var values = ['ws_10min', 'wg_10min', 'ws_1d', 'wg_1d', 'ri_10min', 'rr_1h', 'rr_1d', 't2m', 'tmax', 'tmin', 'vis', 'wawa', 'n_man', 'smartsymbol', 'snow_aws', 'pressure', 'rh', 'dewpoint', 't2mdewpoint']
 
 /* handle other url parameters */
