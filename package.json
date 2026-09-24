@@ -1,6 +1,6 @@
 {
   "name": "tuulikartta.info",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Weather observation visualization tool",
   "main": "js/main.js",
   "scripts": {
