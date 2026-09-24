@@ -106,3 +106,4 @@ saa.Tuulikartta.handleUrlParams(latitude, longitude, zoomlevel, selectedParam, s
 
 saa.Tuulikartta.initMap();
 saa.Tuulikartta.updateRadarData();
+saa.Tuulikartta.checkNotifications();
