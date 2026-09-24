@@ -1,0 +1,58 @@
+// Prisma is only used here as a schema/migration tool. The application
+// itself reads this table from PHP (php/dataMiner.php) via PDO - there is
+// no Node/Prisma client at runtime.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum NotificationType {
+  notification
+  alert
+}
+
+model Notification {
+  id          Int              @id @default(autoincrement())
+
+  // message text, one column per language
+  textFi      String           @map("text_fi")
+  textEn      String           @map("text_en")
+
+  type        NotificationType @default(notification)
+
+  // manual kill switch - lets a message be hidden without deleting
+  // it or waiting for it to expire
+  active      Boolean          @default(true)
+
+  // optional "read more" URL, rendered as a link/button alongside the
+  // message text rather than embedded in it
+  link        String?
+
+  // explicit ordering: higher priority is shown first, ahead of the
+  // default alert-before-notification/newest-first ordering. 0 (default)
+  // falls back to that default ordering
+  priority    Int              @default(0)
+
+  // null starts_at means "show immediately"; null expires_at means
+  // "does not expire on its own" (still subject to `active`)
+  //
+  // stored as timestamptz (not the Postgres default "timestamp without
+  // time zone") so comparisons against NOW() in dataMiner.php are not at
+  // the mercy of the connecting session's timezone setting
+  startsAt    DateTime?        @map("starts_at") @db.Timestamptz
+  expiresAt   DateTime?        @map("expires_at") @db.Timestamptz
+
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  // @default(now()) here too (as well as @updatedAt) since rows are
+  // expected to be managed with plain SQL, not through Prisma Client -
+  // see the trigger added in the init migration that keeps this current
+  // on UPDATE as well
+  updatedAt   DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("notifications")
+}

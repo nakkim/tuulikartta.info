@@ -1,8 +1,10 @@
 FROM php:8.2-apache
 
-# Install Node.js and npm
+# Install Node.js and npm, and the PostgreSQL client library needed to
+# build the pdo_pgsql extension (used by php/dataMiner.php for notifications)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
+    apt-get install -y nodejs libpq-dev && \
+    docker-php-ext-install pdo_pgsql pgsql && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

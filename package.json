@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docker:build": "docker build --platform linux/amd64 -t nakkim/tuulikartta-server:v$npm_package_version .",
-    "docker:push": "docker push nakkim/tuulikartta-server:v$npm_package_version"
+    "docker:push": "docker push nakkim/tuulikartta-server:v$npm_package_version",
+    "db:migrate": "prisma migrate dev --skip-generate",
+    "db:studio": "prisma studio",
+    "db:seed": "prisma db seed"
   },
   "repository": {
     "type": "git",
@@ -42,5 +45,11 @@
     "owl.carousel": "^2.3.4",
     "pmtiles": "^4.5.0",
     "tabulator-tables": "^4.9.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.19.1"
+  },
+  "prisma": {
+    "seed": "sh prisma/seed.sh"
   }
 }

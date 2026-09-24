@@ -11,6 +11,103 @@ class DataMiner{
 
     }
 
+    /**
+    *
+    * Connect to the notifications PostgreSQL database.
+    * Reads a single DATABASE_URL (postgres://user:pass@host:port/dbname),
+    * shared with the Prisma schema in prisma/schema.prisma, so connection
+    * settings only need to be defined in one place.
+    *
+    * @return   PDO|null null if the database could not be reached, so
+    *           callers can fail gracefully instead of throwing
+    *
+    */
+
+    private function connectToDatabase() {
+        $databaseUrl = getenv('DATABASE_URL');
+        if ($databaseUrl === false) {
+            $databaseUrl = 'postgresql://tuulikartta:tuulikartta@localhost:5432/tuulikartta';
+        }
+
+        $parts = parse_url($databaseUrl);
+        if ($parts === false || !isset($parts['host']) || !isset($parts['path'])) {
+            error_log('Tuulikartta: DATABASE_URL is missing or malformed');
+            return null;
+        }
+
+        $host   = $parts['host'];
+        $port   = isset($parts['port']) ? $parts['port'] : 5432;
+        $dbname = ltrim($parts['path'], '/');
+        $user   = isset($parts['user']) ? $parts['user'] : '';
+        $pass   = isset($parts['pass']) ? $parts['pass'] : '';
+
+        try {
+            $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+            return new PDO($dsn, $user, $pass, [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_TIMEOUT            => 3,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        } catch (PDOException $e) {
+            error_log('Tuulikartta: could not connect to notifications database: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+    *
+    * Get the message to display: active, already started (or with no
+    * scheduled start) and not yet expired (or with no expiration). An
+    * active alert always wins over a plain notification, no matter which
+    * is more recent; within either type, the most recently created one
+    * is picked.
+    *
+    * @return   array|null null if the database could not be reached; an
+    *           empty array if it could, but nothing is currently active
+    *
+    */
+
+    public function getActiveNotifications() {
+        $pdo = $this->connectToDatabase();
+        if ($pdo === null) {
+            return null;
+        }
+
+        try {
+            $sql = 'SELECT id, text_fi, text_en, type, link, priority,
+                           to_char(starts_at  AT TIME ZONE \'UTC\', \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') AS starts_at,
+                           to_char(expires_at AT TIME ZONE \'UTC\', \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') AS expires_at
+                    FROM notifications
+                    WHERE active = true
+                      AND (starts_at IS NULL OR starts_at <= NOW())
+                      AND (expires_at IS NULL OR expires_at > NOW())
+                    ORDER BY (type = \'alert\') DESC, created_at DESC, id DESC
+                    LIMIT 1';
+
+            $statement = $pdo->query($sql);
+            $rows = $statement->fetchAll();
+
+            $notifications = [];
+            foreach ($rows as $row) {
+                $notifications[] = [
+                    'id'        => (int)$row['id'],
+                    'textFi'    => $row['text_fi'],
+                    'textEn'    => $row['text_en'],
+                    'type'      => $row['type'],
+                    'link'      => $row['link'],
+                    'priority'  => (int)$row['priority'],
+                    'startsAt'  => $row['starts_at'],
+                    'expiresAt' => $row['expires_at'],
+                ];
+            }
+
+            return $notifications;
+        } catch (PDOException $e) {
+            error_log('Tuulikartta: notifications query failed: ' . $e->getMessage());
+            return null;
+        }
+    }
+
     private function setTime($timestamp, $graph) {
       $url = "";
       if($graph) {

@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tuulikartta
+      POSTGRES_PASSWORD: tuulikartta
+      POSTGRES_DB: tuulikartta
+    # published on the host so `npx prisma migrate dev` (run from the host,
+    # using the DATABASE_URL in .env) can reach it
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      # containers talk to each other by service name, over the internal
+      # compose network - not through the published host port above
+      DATABASE_URL: postgresql://tuulikartta:tuulikartta@postgres:5432/tuulikartta
+    ports:
+      - "8080:80"
+
+volumes:
+  postgres-data:
