@@ -40,7 +40,7 @@
     "leaflet-velocity": "^2.1.4",
     "leaflet.locatecontrol": "^0.72.0",
     "leaflet.markercluster": "^1.5.3",
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.11.1",
     "moment": "^2.30.1",
     "owl.carousel": "^2.3.4",
     "pmtiles": "^4.5.0",
