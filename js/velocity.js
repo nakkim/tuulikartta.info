@@ -11,6 +11,34 @@ var saa = saa || {};
 (function (Tuulikartta, undefined) {
   'use strict'
 
+  // ---------------------------------------------------------
+  // Patch a leaflet-velocity bug (not fixed in node_modules, so this
+  // survives npm installs): L.CanvasLayer schedules async callbacks - a
+  // setTimeout(0) in onAdd, and requestAnimationFrame via needRedraw -
+  // that dereference this._map without checking it's still set. If the
+  // layer is removed before one of those fires (which our own
+  // bringVelocityLayerToFront's remove+re-add fallback does routinely,
+  // since L.VelocityLayer has no bringToFront of its own), it throws
+  // "Cannot read properties of null (reading 'containerPointToLayerPoint')".
+  // ---------------------------------------------------------
+
+  if (typeof L !== 'undefined' && L.CanvasLayer && !L.CanvasLayer.prototype._tuulikarttaMapGuarded) {
+    var originalOnLayerDidMove = L.CanvasLayer.prototype._onLayerDidMove
+    var originalDrawLayer = L.CanvasLayer.prototype.drawLayer
+
+    L.CanvasLayer.prototype._onLayerDidMove = function () {
+      if (!this._map) return
+      return originalOnLayerDidMove.apply(this, arguments)
+    }
+
+    L.CanvasLayer.prototype.drawLayer = function () {
+      if (!this._map) return
+      return originalDrawLayer.apply(this, arguments)
+    }
+
+    L.CanvasLayer.prototype._tuulikarttaMapGuarded = true
+  }
+
   Tuulikartta.isVelocityParameter = function (parameter) {
     return parameter === 'ws_10min' || parameter === 'wg_10min'
   }
