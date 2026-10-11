@@ -25,11 +25,7 @@ class DataMiner{
 
     private function connectToDatabase() {
         $databaseUrl = getenv('DATABASE_URL');
-        if ($databaseUrl === false) {
-            $databaseUrl = 'postgresql://tuulikartta:tuulikartta@localhost:5432/tuulikartta';
-        }
-
-        $parts = parse_url($databaseUrl);
+        $parts = $databaseUrl === false ? false : parse_url($databaseUrl);
         if ($parts === false || !isset($parts['host']) || !isset($parts['path'])) {
             error_log('Tuulikartta: DATABASE_URL is missing or malformed');
             return null;

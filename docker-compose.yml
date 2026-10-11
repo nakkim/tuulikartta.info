@@ -3,9 +3,9 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: tuulikartta
-      POSTGRES_PASSWORD: tuulikartta
-      POSTGRES_DB: tuulikartta
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
     # published on the host so `npx prisma migrate dev` (run from the host,
     # using the DATABASE_URL in .env) can reach it
     ports:
@@ -20,8 +20,9 @@ services:
       - postgres
     environment:
       # containers talk to each other by service name, over the internal
-      # compose network - not through the published host port above
-      DATABASE_URL: postgresql://tuulikartta:tuulikartta@postgres:5432/tuulikartta
+      # compose network - not through the published host port above.
+      # Credentials come from .env (read automatically by docker compose)
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     ports:
       - "8080:80"
 
