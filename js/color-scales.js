@@ -128,112 +128,88 @@ var saa = saa || {};
     if (p > 1030) return "#5e4fa2";
   }
 
+  // Present weather (wawa) codes, WMO code table 4680. Long descriptions follow
+  // the SYNOP column of Vaisala "SYNOP, METAR, and NWS codes for present weather":
+  // https://docs.vaisala.com/r/M212222EN-J/en-US/GUID-A55D1079-C391-4865-B7A6-6E82F631EDFB
+  var WAWA_STYLES = {
+    clear: { class: 'textLabelclassGrey', hex: '#ffffff' },
+    obscuration: { class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' },
+    precipitation: { class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' },
+    rain: { class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' },
+    drizzle: { class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' },
+    freezing: { class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' },
+    sleet: { class: 'textLabelclassBlackBackgroundOrange', hex: '#ffbf80' },
+    snow: { class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' },
+    rainShowers: { class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' },
+    snowShowers: { class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' },
+    hail: { class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
+  }
+
+  var WAWA_CODES = {
+    0: { style: 'clear', en: ['FairWeather', 'Clear'], fi: ['Poutaa', 'Selkeää'] },
+    4: { style: 'obscuration', en: ['Haze', 'Haze or smoke, or dust in suspension in the air, visibility ≥ 1 km'], fi: ['Auer', 'Auerta, savua tai pölyä ilmassa, näkyvyys ≥ 1 km'] },
+    5: { style: 'obscuration', en: ['Haze', 'Haze or smoke, or dust in suspension in the air, visibility < 1 km'], fi: ['Auer', 'Auerta, savua tai pölyä ilmassa, näkyvyys < 1 km'] },
+    10: { style: 'obscuration', en: ['Mist', 'Mist'], fi: ['Utu', 'Utua'] },
+    20: { style: 'obscuration', en: ['Fog', 'Fog'], fi: ['Sumu', 'Sumua'] },
+    21: { style: 'rain', en: ['Rain', 'Precipitation, rain or snow during preceding hour'], fi: ['Sade', 'Sadetta (vettä tai lunta) edellisen tunnin aikana'] },
+    22: { style: 'drizzle', en: ['Drizzle', 'Drizzle (not freezing) or snow grains'], fi: ['Tihku', 'Tihkua (ei jäätävää) tai lumijyväsiä'] },
+    23: { style: 'rain', en: ['Rain', 'Rain (not freezing)'], fi: ['Vesisade', 'Vesisadetta (ei jäätävää)'] },
+    24: { style: 'snow', en: ['Snow', 'Snow'], fi: ['Lumisade', 'Lumisadetta'] },
+    25: { style: 'freezing', en: ['FreezingRain', 'Freezing rain or freezing drizzle'], fi: ['Jäätsade', 'Jäätävää sadetta tai jäätävää tihkua'] },
+    30: { style: 'obscuration', en: ['Fog', 'Fog or ice fog'], fi: ['Sumu', 'Sumua tai jääsumua'] },
+    31: { style: 'obscuration', en: ['Fog', 'Fog or ice fog, in patches'], fi: ['Sumu', 'Sumua tai jääsumua, paikoin'] },
+    32: { style: 'obscuration', en: ['Fog', 'Fog or ice fog, has become thinner during past hour'], fi: ['Sumu', 'Sumua tai jääsumua, ohentunut edellisen tunnin aikana'] },
+    33: { style: 'obscuration', en: ['Fog', 'Fog or ice fog, no appreciable change during past hour'], fi: ['Sumu', 'Sumua tai jääsumua, ei merkittävää muutosta edellisen tunnin aikana'] },
+    34: { style: 'obscuration', en: ['Fog', 'Fog or ice fog, has begun or become thicker during past hour'], fi: ['Sumu', 'Sumua tai jääsumua, alkanut tai sakeutunut edellisen tunnin aikana'] },
+    35: { style: 'obscuration', en: ['Fog', 'Fog, depositing rime (freezing fog)'], fi: ['Sumu', 'Kuuraa muodostavaa sumua (jäätävä sumu)'] },
+    40: { style: 'precipitation', en: ['Precipitation', 'Precipitation'], fi: ['Sade', 'Sadetta'] },
+    41: { style: 'precipitation', en: ['Precipitation', 'Precipitation, slight or moderate'], fi: ['Sade', 'Heikkoa tai kohtalaista sadetta'] },
+    42: { style: 'precipitation', en: ['Precipitation', 'Precipitation, heavy'], fi: ['Sade', 'Voimakasta sadetta'] },
+    50: { style: 'drizzle', en: ['Drizzle', 'Drizzle'], fi: ['Tihku', 'Tihkua'] },
+    51: { style: 'drizzle', en: ['Drizzle', 'Drizzle, not freezing, slight'], fi: ['Tihku', 'Heikkoa tihkua, ei jäätävää'] },
+    52: { style: 'drizzle', en: ['Drizzle', 'Drizzle, not freezing, moderate'], fi: ['Tihku', 'Kohtalaista tihkua, ei jäätävää'] },
+    53: { style: 'drizzle', en: ['Drizzle', 'Drizzle, not freezing, heavy'], fi: ['Tihku', 'Voimakasta tihkua, ei jäätävää'] },
+    54: { style: 'freezing', en: ['FreezingDrizzle', 'Drizzle, freezing, slight'], fi: ['Jäättihku', 'Heikkoa jäätävää tihkua'] },
+    55: { style: 'freezing', en: ['FreezingDrizzle', 'Drizzle, freezing, moderate'], fi: ['Jäättihku', 'Kohtalaista jäätävää tihkua'] },
+    56: { style: 'freezing', en: ['FreezingDrizzle', 'Drizzle, freezing, heavy'], fi: ['Jäättihku', 'Voimakasta jäätävää tihkua'] },
+    57: { style: 'rain', en: ['Rain', 'Drizzle and rain, slight'], fi: ['Vesisade', 'Heikkoa tihkua ja vesisadetta'] },
+    58: { style: 'rain', en: ['Rain', 'Drizzle and rain, moderate or heavy'], fi: ['Vesisade', 'Kohtalaista tai voimakasta tihkua ja vesisadetta'] },
+    60: { style: 'rain', en: ['Rain', 'Rain'], fi: ['Vesisade', 'Vesisadetta'] },
+    61: { style: 'rain', en: ['Rain', 'Rain, slight'], fi: ['Vesisade', 'Heikkoa vesisadetta'] },
+    62: { style: 'rain', en: ['Rain', 'Rain, moderate'], fi: ['Vesisade', 'Kohtalaista vesisadetta'] },
+    63: { style: 'rain', en: ['Rain', 'Rain, heavy'], fi: ['Vesisade', 'Voimakasta vesisadetta'] },
+    64: { style: 'freezing', en: ['FreezingRain', 'Rain, freezing, slight'], fi: ['Jäätsade', 'Heikkoa jäätävää vesisadetta'] },
+    65: { style: 'freezing', en: ['FreezingRain', 'Rain, freezing, moderate'], fi: ['Jäätsade', 'Kohtalaista jäätävää vesisadetta'] },
+    66: { style: 'freezing', en: ['FreezingRain', 'Rain, freezing, heavy'], fi: ['Jäätsade', 'Voimakasta jäätävää vesisadetta'] },
+    67: { style: 'sleet', en: ['Sleet', 'Rain (or drizzle) and snow, slight'], fi: ['Räntä', 'Heikkoa räntää (vettä tai tihkua ja lunta)'] },
+    68: { style: 'sleet', en: ['Sleet', 'Rain (or drizzle) and snow, moderate or heavy'], fi: ['Räntä', 'Kohtalaista tai voimakasta räntää (vettä tai tihkua ja lunta)'] },
+    70: { style: 'snow', en: ['Snow', 'Snow'], fi: ['Lumisade', 'Lumisadetta'] },
+    71: { style: 'snow', en: ['Snow', 'Snow, slight'], fi: ['Lumisade', 'Heikkoa lumisadetta'] },
+    72: { style: 'snow', en: ['Snow', 'Snow, moderate'], fi: ['Lumisade', 'Kohtalaista lumisadetta'] },
+    73: { style: 'snow', en: ['Snow', 'Snow, heavy'], fi: ['Lumisade', 'Voimakasta lumisadetta'] },
+    74: { style: 'snow', en: ['IcePellets', 'Ice pellets, slight'], fi: ['Jääjyväset', 'Heikkoa jääjyvässadetta'] },
+    75: { style: 'snow', en: ['IcePellets', 'Ice pellets, moderate'], fi: ['Jääjyväset', 'Kohtalaista jääjyvässadetta'] },
+    76: { style: 'snow', en: ['IcePellets', 'Ice pellets, heavy'], fi: ['Jääjyväset', 'Voimakasta jääjyvässadetta'] },
+    77: { style: 'snow', en: ['SnowGrains', 'Snow grains'], fi: ['Lumijyväset', 'Lumijyväsiä'] },
+    78: { style: 'snow', en: ['IceCrystals', 'Ice crystals'], fi: ['Jääkiteet', 'Jääkiteitä'] },
+    80: { style: 'rainShowers', en: ['Showers', 'Intermittent precipitation'], fi: ['Sadekuuroja', 'Ajoittaista sadetta'] },
+    81: { style: 'rainShowers', en: ['RainShowers', 'Intermittent rain, slight'], fi: ['Vesikuuroja', 'Ajoittaista heikkoa vesisadetta'] },
+    82: { style: 'rainShowers', en: ['RainShowers', 'Intermittent rain, moderate'], fi: ['Vesikuuroja', 'Ajoittaista kohtalaista vesisadetta'] },
+    83: { style: 'rainShowers', en: ['RainShowers', 'Intermittent rain, heavy'], fi: ['Vesikuuroja', 'Ajoittaista voimakasta vesisadetta'] },
+    84: { style: 'snowShowers', en: ['SnowShowers', 'Intermittent snow, slight'], fi: ['Lumikuuroja', 'Ajoittaista heikkoa lumisadetta'] },
+    85: { style: 'snowShowers', en: ['SnowShowers', 'Intermittent snow, moderate'], fi: ['Lumikuuroja', 'Ajoittaista kohtalaista lumisadetta'] },
+    86: { style: 'snowShowers', en: ['SnowShowers', 'Intermittent snow, heavy'], fi: ['Lumikuuroja', 'Ajoittaista voimakasta lumisadetta'] },
+    87: { style: 'snowShowers', en: ['SnowShowers', 'Intermittent snow'], fi: ['Lumikuuroja', 'Ajoittaista lumisadetta'] },
+    88: { style: 'snowShowers', en: ['SnowPellets', 'Snow pellets'], fi: ['Lumirakeet', 'Lumirakeita'] },
+    89: { style: 'hail', en: ['Hail', 'Hail'], fi: ['Raesadetta', 'Raesadetta'] }
+  }
+
   Tuulikartta.resolveWawaCode = function (wawa) {
-    wawa = parseInt(wawa)
-    if (selectedLanguage === 'en') {
-      if (wawa === 0) return { short: 'FairWeather', long: '', class: 'textLabelclassGrey', hex: '#ffffff' }
-      if (wawa === 10) return { short: 'Haze', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 20) return { short: 'Fog', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 21) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 22) return { short: 'Drizzle', long: '', class: 'textLabelclaenssBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 23) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 24) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 25) return { short: 'FreezingRain', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 30) return { short: 'Fog', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 31) return { short: 'Fog', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 32) return { short: 'Fog', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 33) return { short: 'Fog', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 40) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' }
-      if (wawa === 41) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' }
-      if (wawa === 42) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' }
-      if (wawa === 50) return { short: 'Drizzle', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 51) return { short: 'Drizzle', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 52) return { short: 'Drizzle', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 53) return { short: 'Drizzle', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 54) return { short: 'FreezingDrizzle', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 55) return { short: 'FreezingDrizzle', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 56) return { short: 'FreezingDrizzle', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 60) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 61) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 62) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 63) return { short: 'Rain', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 64) return { short: 'FreezingRain', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 65) return { short: 'FreezingRain', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 66) return { short: 'FreezingRain', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 67) return { short: 'FreezingRain', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 68) return { short: 'Sleet', long: '', class: 'textLabelclassBlackBackgroundOrange', hex: '#ffbf80' }
-      if (wawa === 70) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 71) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 72) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 73) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 74) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 75) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 76) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 77) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 78) return { short: 'Snow', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 80) return { short: 'RainShovers', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 81) return { short: 'RainShovers', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 82) return { short: 'RainShovers', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 83) return { short: 'RainShovers', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 84) return { short: 'RainShovers', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 85) return { short: 'SnowShovers', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' }
-      if (wawa === 86) return { short: 'SnowShovers', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' }
-      if (wawa === 87) return { short: 'SnowShovers', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' }
-      if (wawa === 89) return { short: 'Hail', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      else return null
-    } else {
-      if (wawa === 0) return { short: 'Poutaa', long: '', class: 'textLabelclassGrey', hex: '#ffffff' }
-      if (wawa === 10) return { short: 'Utu', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 20) return { short: 'Sumu', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 21) return { short: 'Sade', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 22) return { short: 'Tihku', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 23) return { short: 'Vesisade', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 24) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 25) return { short: 'Jäätsade', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 30) return { short: 'Sumu', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 31) return { short: 'Sumu', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 32) return { short: 'Sumu', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 33) return { short: 'Sumu', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 34) return { short: 'Sumu', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' }
-      if (wawa === 40) return { short: 'Sade', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' }
-      if (wawa === 41) return { short: 'Sade', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' }
-      if (wawa === 42) return { short: 'Sade', long: '', class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' }
-      if (wawa === 50) return { short: 'Tihku', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 51) return { short: 'Tihku', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 52) return { short: 'Tihku', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 53) return { short: 'Tihku', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      if (wawa === 54) return { short: 'Jäättihku', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 55) return { short: 'Jäättihku', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 56) return { short: 'Jäättihku', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 60) return { short: 'Vesisade', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 61) return { short: 'Vesisade', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 62) return { short: 'Vesisade', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 63) return { short: 'Vesisade', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' }
-      if (wawa === 64) return { short: 'Jäätsade', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 65) return { short: 'Jäätsade', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 66) return { short: 'Jäätsade', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 67) return { short: 'Jäätsade', long: '', class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' }
-      if (wawa === 68) return { short: 'Räntä', long: '', class: 'textLabelclassBlackBackgroundOrange', hex: '#ffbf80' }
-      if (wawa === 70) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 71) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 72) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 73) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 74) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 75) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 76) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 77) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 78) return { short: 'Lumisade', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' }
-      if (wawa === 80) return { short: 'Sadekuuroja', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 81) return { short: 'Vesikuuroja', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 82) return { short: 'Vesikuuroja', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 83) return { short: 'Vesikuuroja', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 84) return { short: 'Vesikuuroja', long: '', class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' }
-      if (wawa === 85) return { short: 'Lumikuuroja', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' }
-      if (wawa === 86) return { short: 'Lumikuuroja', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' }
-      if (wawa === 87) return { short: 'Lumikuuroja', long: '', class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' }
-      if (wawa === 89) return { short: 'Raesadetta', long: '', class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
-      else return null
-    }
+    var entry = WAWA_CODES[parseInt(wawa)]
+    if (!entry) return null
+    var text = selectedLanguage === 'en' ? entry.en : entry.fi
+    var style = WAWA_STYLES[entry.style]
+    return { short: text[0], long: text[1], class: style.class, hex: style.hex }
   }
 
   Tuulikartta.resolveTemperature = function (temperature) {

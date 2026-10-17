@@ -129,7 +129,7 @@ var saa = saa || {};
           resolver: Tuulikartta.resolveWawaCode,
           validator: function (code) { return code !== null; },
           colorizer: function (code) {
-            if (code.short === 'Utu' || code.short === 'Sumu' || code.short === 'Haze' || code.short === 'Fog') {
+            if (['Utu', 'Auer', 'Sumu', 'Mist', 'Haze', 'Fog'].indexOf(code.short) !== -1) {
               return 'rgba(1,1,1,0.15)';
             }
             return Tuulikartta.hexToRgbA(code.hex, 0.4);
