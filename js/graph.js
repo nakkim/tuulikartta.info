@@ -58,10 +58,15 @@ var saa = saa || {};
   // Get data for wind graph
   // ---------------------------------------------------------
 
-  weatherGraph.getObservationGraph = function (fmisid, type, timestamp) {
+  // target is optional: { prefix: id prefix of the chart containers,
+  // loader: selector of the loading message element }. Defaults to the
+  // containers inside the station popup.
+  weatherGraph.getObservationGraph = function (fmisid, type, timestamp, target) {
     if (fmisid !== undefined) {
+      var prefix = target && target.prefix ? target.prefix : `weather-chart-${fmisid}`
+      var loader = target && target.loader ? target.loader : '#graph-box-loader'
       saa.Tuulikartta.debug('Getting data for graph... ');
-      $('#graph-box-loader').html("<span align=center>" + translations[selectedLanguage]['loadObservations'] + "... <img src='symbols/default.gif' style='width:20px;'></img></span>");
+      $(loader).html("<span align=center>" + translations[selectedLanguage]['loadObservations'] + "... <img src='symbols/default.gif' style='width:20px;'></img></span>");
 
       $.ajax({
         dataType: "json",
@@ -76,8 +81,8 @@ var saa = saa || {};
         },
         success: function (data) {
           saa.Tuulikartta.debug('Draw graph')
-          $('#graph-box-loader').html('');
-          weatherGraph.drawGraph(data, fmisid);
+          $(loader).html('');
+          weatherGraph.drawGraph(data, prefix);
         }
       });
     }
@@ -131,13 +136,18 @@ var saa = saa || {};
   // Draw graph
   // ---------------------------------------------------------
 
-  weatherGraph.drawGraph = function (data, fmisid) {
+  // Draws the charts into containers `${prefix}`, `${prefix}_alt` and
+  // `${prefix}_alt2`. The windrose is drawn only when a `${prefix}_windrose`
+  // container exists. Nothing is drawn when the containers are gone, e.g.
+  // when the popup or dialog was closed before the data arrived.
+  weatherGraph.drawGraph = function (data, prefix) {
 
-    if (fmisid !== undefined) {
+    if (document.getElementById(prefix)) {
 
       var categories = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
       var colors = ["#ffffff", "#e6f7ff", "#ccffcc", "#ffff99", "#ffcc00", "#ff3300", "#ff0066", "#cc0099", "#6600cc"]
-      var chart01 = Highcharts.chart(`weather-chart-${fmisid}_windrose`, {
+      if (document.getElementById(`${prefix}_windrose`)) {
+      var chart01 = Highcharts.chart(`${prefix}_windrose`, {
         chart: {
           polar: true,
           type: 'column',
@@ -200,8 +210,9 @@ var saa = saa || {};
         },
         series: data.obs.windrose
       });
+      }
 
-      var chart1 = Highcharts.chart(`weather-chart-${fmisid}`, {
+      var chart1 = Highcharts.chart(`${prefix}`, {
 
         chart: {
           spacingTop: 0,
@@ -337,7 +348,7 @@ var saa = saa || {};
 
       });
 
-      var chart2 = Highcharts.chart(`weather-chart-${fmisid}_alt`, {
+      var chart2 = Highcharts.chart(`${prefix}_alt`, {
 
         chart: {
           spacingTop: 0,
@@ -553,7 +564,7 @@ var saa = saa || {};
 
       });
 
-      var chart3 = Highcharts.chart(`weather-chart-${fmisid}_alt2`, {
+      var chart3 = Highcharts.chart(`${prefix}_alt2`, {
 
         chart: {
           spacingTop: 0,

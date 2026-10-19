@@ -34,6 +34,14 @@ var saa = saa || {};
       var type = e.popup._source.type
       if (type === 'Synop-asema') type = 'synop'
       if (type === 'Tiesääasema') type = 'road'
+
+      // on mobile screens show the station in the meteogram dialog instead
+      if (fmisid !== undefined && Tuulikartta.isMobileScreen()) {
+        saa.Tuulikartta.map.closePopup(e.popup)
+        Tuulikartta.openMeteogramDialog(fmisid, type)
+        return
+      }
+
       saa.weatherGraph.getObservationGraph(fmisid, type, saa.Tuulikartta.timeValue)
       $(".owl-carousel").owlCarousel({
         navigation: true, // Show next and prev buttons
@@ -43,6 +51,31 @@ var saa = saa || {};
         pagination: false,
         startPosition: saa.Tuulikartta.startPosition
       });
+    })
+
+    // ---------------------------------------------------------
+    // Meteogram dialog
+    // ---------------------------------------------------------
+
+    $(document).on('click', '.open-meteogram', function (e) {
+      e.preventDefault()
+      var fmisid = $(this).data('fmisid')
+      var type = $(this).data('type')
+      saa.Tuulikartta.map.closePopup()
+      Tuulikartta.openMeteogramDialog(fmisid, type)
+    })
+
+    $('#meteogram-dialog-close').click(function () {
+      Tuulikartta.closeMeteogramDialog()
+    })
+
+    // close when clicking the dark background around the dialog
+    $('#meteogram-dialog').click(function (e) {
+      if (e.target === this) Tuulikartta.closeMeteogramDialog()
+    })
+
+    $(document).keydown(function (e) {
+      if (e.key === 'Escape') Tuulikartta.closeMeteogramDialog()
     })
 
     // ---------------------------------------------------------

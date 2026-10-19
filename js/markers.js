@@ -685,15 +685,10 @@ var saa = saa || {};
   // populate infowindow with observations
   // ---------------------------------------------------------
 
-  Tuulikartta.populateInfoWindow = function (data, fmisid) {
-    var location = { lat: parseFloat(data['lat']), lng: parseFloat(data['lon']) }
+  // Station name, type and observation time. Shared by the popup and the
+  // meteogram dialog.
+  Tuulikartta.buildStationInfoHtml = function (data) {
     var time = Tuulikartta.timeTotime(data['epochtime'])
-    var latlon = data['lat'] + ',' + data['lon']
-
-    if (L.Browser.mobile) {
-      maxWidth = 250
-      // maxHeight = 320
-    }
 
     if (data['type'] === 'synop') {
       var stationType = '<b>' + translations[selectedLanguage]['stationType'] + ':</b> <span id="station-type">' + translations[selectedLanguage]['synop'] + '</span> <br>'
@@ -701,8 +696,7 @@ var saa = saa || {};
       var stationType = '<b>' + translations[selectedLanguage]['stationType'] + ':</b> <span id="station-type">' + translations[selectedLanguage]['road'] + '</span> <br>'
     }
 
-    var output = '<div style="text-align:center;">'
-    output += '<b>' + translations[selectedLanguage]['observationStation'] + ': </b>' + data['station'] + '<br>'
+    var output = '<b>' + translations[selectedLanguage]['observationStation'] + ': </b>' + data['station'] + '<br>'
     output += stationType
 
     if (saa.Tuulikartta.timeValue === 'now') {
@@ -710,6 +704,18 @@ var saa = saa || {};
     } else {
       output += '<b>' + translations[selectedLanguage]['observationTime'] + ': </b>' + time + '<br>'
     }
+    return output
+  }
+
+  Tuulikartta.populateInfoWindow = function (data, fmisid) {
+    if (L.Browser.mobile) {
+      maxWidth = 250
+      // maxHeight = 320
+    }
+
+    var output = '<div style="text-align:center;">'
+    output += Tuulikartta.buildStationInfoHtml(data)
+    output += '<a href="#" class="open-meteogram" data-fmisid="' + data['fmisid'] + '" data-type="' + data['type'] + '">' + translations[selectedLanguage]['openMeteogram'] + '</a>'
     output += '</div>'
 
     output += `<div id="graph-box-loader" style="text-align: center;"></div>`;

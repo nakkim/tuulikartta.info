@@ -128,6 +128,54 @@ var saa = saa || {};
   }
 
   // ---------------------------------------------------------
+  // Meteogram dialog. Used instead of the popup on mobile screens and
+  // opened from the link in the popup. The windrose is left out.
+  // ---------------------------------------------------------
+
+  Tuulikartta.isMobileScreen = function () {
+    return L.Browser.mobile || window.matchMedia('(max-width: 768px)').matches
+  }
+
+  Tuulikartta.findStation = function (fmisid, type) {
+    var data = saa.Tuulikartta.data || {}
+    for (var key in data) {
+      if (String(data[key]['fmisid']) === String(fmisid) && (!type || data[key]['type'] === type)) {
+        return data[key]
+      }
+    }
+    return null
+  }
+
+  Tuulikartta.openMeteogramDialog = function (fmisid, type) {
+    var dialog = document.getElementById('meteogram-dialog')
+    var station = Tuulikartta.findStation(fmisid, type)
+    if (!dialog || !station) return
+
+    var prefix = 'meteogram-chart-' + fmisid
+    $('#meteogram-station-info').html(Tuulikartta.buildStationInfoHtml(station))
+    $('#meteogram-charts').html(
+      '<div id="' + prefix + '"></div>' +
+      '<div id="' + prefix + '_alt"></div>' +
+      '<div id="' + prefix + '_alt2"></div>'
+    )
+
+    // show the dialog before drawing, so the charts get the dialog width
+    dialog.style.display = 'block'
+    saa.weatherGraph.getObservationGraph(fmisid, type, saa.Tuulikartta.timeValue, {
+      prefix: prefix,
+      loader: '#meteogram-loader'
+    })
+  }
+
+  Tuulikartta.closeMeteogramDialog = function () {
+    var dialog = document.getElementById('meteogram-dialog')
+    if (!dialog) return
+    dialog.style.display = 'none'
+    $('#meteogram-charts').html('')
+    $('#meteogram-loader').html('')
+  }
+
+  // ---------------------------------------------------------
   // Show/hide the observation table modal and persist the state
   // ---------------------------------------------------------
 
@@ -402,6 +450,12 @@ var saa = saa || {};
   // ---------------------------------------------------------
 
   Tuulikartta.initMap = function () {
+
+    // station popups are replaced by the meteogram dialog on mobile screens,
+    // so don't let them pan the map for the moment they are open
+    if (Tuulikartta.isMobileScreen()) {
+      L.Popup.prototype.options.autoPan = false
+    }
 
     var lat = parseFloat(latitude)
     var lon = parseFloat(longtitude)
