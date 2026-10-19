@@ -24,6 +24,7 @@ var saa = saa || {};
       Tuulikartta.clearMarkers()
       Tuulikartta.drawData(saa.Tuulikartta.selectedParameter)
       Tuulikartta.updateVelocityControlState(saa.Tuulikartta.selectedParameter)
+      Tuulikartta.updateLegend()
 
       Tuulikartta.updateUrlHash()
     })

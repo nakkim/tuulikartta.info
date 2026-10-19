@@ -132,17 +132,17 @@ var saa = saa || {};
   // the SYNOP column of Vaisala "SYNOP, METAR, and NWS codes for present weather":
   // https://docs.vaisala.com/r/M212222EN-J/en-US/GUID-A55D1079-C391-4865-B7A6-6E82F631EDFB
   var WAWA_STYLES = {
-    clear: { class: 'textLabelclassGrey', hex: '#ffffff' },
-    obscuration: { class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff' },
-    precipitation: { class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430' },
-    rain: { class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430' },
-    drizzle: { class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' },
-    freezing: { class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df' },
-    sleet: { class: 'textLabelclassBlackBackgroundOrange', hex: '#ffbf80' },
-    snow: { class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc' },
-    rainShowers: { class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94' },
-    snowShowers: { class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff' },
-    hail: { class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3' }
+    clear: { class: 'textLabelclassGrey', hex: '#ffffff', fi: 'Poutaa', en: 'Fair weather' },
+    obscuration: { class: 'textLabelclassBlackBackgroundWhite', hex: '#ffffff', fi: 'Utu, auer tai sumu', en: 'Mist, haze or fog' },
+    precipitation: { class: 'textLabelclassBlackBackgroundWhite', hex: '#00b430', fi: 'Sade', en: 'Precipitation' },
+    rain: { class: 'textLabelclassBlackBackgroundGreen', hex: '#00b430', fi: 'Vesisade', en: 'Rain' },
+    drizzle: { class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3', fi: 'Tihku', en: 'Drizzle' },
+    freezing: { class: 'textLabelclassBlackBackgroundPurple', hex: '#ff80df', fi: 'Jäätävä sade', en: 'Freezing rain' },
+    sleet: { class: 'textLabelclassBlackBackgroundOrange', hex: '#ffbf80', fi: 'Räntä', en: 'Sleet' },
+    snow: { class: 'textLabelclassBlackBackgroundBlue', hex: '#9cc3fc', fi: 'Lumisade', en: 'Snow' },
+    rainShowers: { class: 'textLabelclassBlackBackgroundGreen', hex: '#6dff94', fi: 'Vesikuuroja', en: 'Rain showers' },
+    snowShowers: { class: 'textLabelclassBlackBackgroundBlue', hex: '#3d8bff', fi: 'Lumikuuroja', en: 'Snow showers' },
+    hail: { class: 'textLabelclassBlackBackgroundYellow', hex: '#ffffb3', fi: 'Raesade', en: 'Hail' }
   }
 
   var WAWA_CODES = {
@@ -264,6 +264,100 @@ var saa = saa || {};
     if (dewpoint >= 4 && dewpoint < 8) return '#d6604d'
     if (dewpoint >= 8) return '#b2182b'
     return '#f7f7f7'
+  }
+
+  // ---------------------------------------------------------
+  // Color scale legends
+  // ---------------------------------------------------------
+
+  // Legend entries are built by sampling the resolver functions above
+  // between the break values, so the legend always matches the map colors.
+  // Intervals the resolver gives no color for are left out.
+  var LEGEND_SCALES = {
+    windSpeed: {
+      resolver: function (v) { return Tuulikartta.resolveWindSpeed(v).hex },
+      breaks: [1, 2, 7, 14, 21, 25, 28, 32]
+    },
+    precipitation: {
+      resolver: function (v) { return Tuulikartta.resolvePrecipitationAmount(v) },
+      breaks: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 3, 4, 5, 10, 20, 30]
+    },
+    temperature: {
+      resolver: function (v) { return Tuulikartta.resolveTemperature(v) },
+      breaks: [-30, -28, -26, -24, -22, -20, -18, -16, -14, -12, -10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
+    },
+    dewpointDiff: {
+      resolver: function (v) { return Tuulikartta.resolveDewpointDiff(v) },
+      breaks: [-4, -2, -1, -0.5, 0, 1, 2, 4, 8]
+    },
+    pressure: {
+      resolver: function (v) { return Tuulikartta.resolvePressure(v) },
+      breaks: [980, 985, 990, 995, 1000, 1005, 1010, 1015, 1020, 1025, 1030]
+    },
+    snowDepth: {
+      resolver: function (v) { return Tuulikartta.resolveSnowDepth(v) },
+      breaks: [0, 10, 20, 40, 60, 80, 100, 125, 150, 175, 200]
+    },
+    relativeHumidity: {
+      resolver: function (v) { return Tuulikartta.resolveRelativeHumidity(v) },
+      breaks: [50, 60, 65, 70, 75, 80, 85, 90]
+    }
+  }
+
+  var LEGEND_PARAMETERS = {
+    ws_10min: { scale: 'windSpeed', unit: 'm/s' },
+    wg_10min: { scale: 'windSpeed', unit: 'm/s' },
+    ws_1d: { scale: 'windSpeed', unit: 'm/s' },
+    wg_1d: { scale: 'windSpeed', unit: 'm/s' },
+    ri_10min: { scale: 'precipitation', unit: 'mm/h' },
+    rr_1h: { scale: 'precipitation', unit: 'mm' },
+    rr_1d: { scale: 'precipitation', unit: 'mm' },
+    t2m: { scale: 'temperature', unit: '°C' },
+    dewpoint: { scale: 'temperature', unit: '°C' },
+    tmax: { scale: 'temperature', unit: '°C' },
+    tmin: { scale: 'temperature', unit: '°C' },
+    t2mdewpoint: { scale: 'dewpointDiff', unit: '°C' },
+    pressure: { scale: 'pressure', unit: 'hPa' },
+    snow_aws: { scale: 'snowDepth', unit: 'cm' },
+    rh: { scale: 'relativeHumidity', unit: '%' },
+    wawa: { scale: 'wawa', unit: '' }
+  }
+
+  function formatLegendNumber(value) {
+    var text = String(value)
+    return selectedLanguage === 'fi' ? text.replace('.', ',') : text
+  }
+
+  // Returns { unit, items: [{ color, label }] } for the given parameter,
+  // highest values first, or null when the parameter has no color scale.
+  Tuulikartta.getColorScaleLegend = function (param) {
+    var definition = LEGEND_PARAMETERS[param]
+    if (!definition) return null
+
+    var items = []
+
+    if (definition.scale === 'wawa') {
+      for (var key in WAWA_STYLES) {
+        items.push({ color: WAWA_STYLES[key].hex, label: WAWA_STYLES[key][selectedLanguage === 'en' ? 'en' : 'fi'] })
+      }
+      return { unit: definition.unit, items: items }
+    }
+
+    var scale = LEGEND_SCALES[definition.scale]
+    var breaks = scale.breaks
+    var last = breaks.length - 1
+
+    items.push({ color: scale.resolver(breaks[0] - 1), label: '< ' + formatLegendNumber(breaks[0]) })
+    for (var i = 0; i < last; i++) {
+      items.push({
+        color: scale.resolver((breaks[i] + breaks[i + 1]) / 2),
+        label: formatLegendNumber(breaks[i]) + ' – ' + formatLegendNumber(breaks[i + 1])
+      })
+    }
+    items.push({ color: scale.resolver(breaks[last] + 1), label: '> ' + formatLegendNumber(breaks[last]) })
+
+    items = items.filter(function (item) { return item.color })
+    return { unit: definition.unit, items: items.reverse() }
   }
 
   Tuulikartta.resolveWindDirection = function (winddirection) {

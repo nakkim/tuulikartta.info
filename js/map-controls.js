@@ -217,6 +217,68 @@ var saa = saa || {};
     return new tableDataControl()
   }
 
+  /* color scale legend control */
+  Tuulikartta.createLegendControl = function () {
+    var legendControl = L.Control.extend({
+      options: {
+        position: 'topright'
+      },
+      onAdd: function (map) {
+        var container = L.DomUtil.create(
+          'div', 'leaflet-bar leaflet-control leaflet-control-custom leaflet-control-select-legend'
+        )
+        var panel = L.DomUtil.create('div', 'legend-panel', container)
+        saa.Tuulikartta.legendControlElement = container
+        saa.Tuulikartta.legendPanelElement = panel
+
+        // clicks and scrolling inside the legend box must not toggle the
+        // legend or move the map
+        L.DomEvent.disableClickPropagation(panel)
+        L.DomEvent.disableScrollPropagation(panel)
+
+        container.onclick = function (e) {
+          if (panel.contains(e.target)) return
+          Tuulikartta.setLegendVisible(!saa.Tuulikartta.showLegend)
+        }
+        container.title = translations[selectedLanguage]['legendTitle']
+        return container
+      }
+    })
+    return new legendControl()
+  }
+
+  Tuulikartta.setLegendVisible = function (visible) {
+    saa.Tuulikartta.showLegend = visible
+    localStorage.setItem('showLegend', visible)
+    $(saa.Tuulikartta.legendControlElement).toggleClass('active', visible)
+    Tuulikartta.updateLegend()
+  }
+
+  Tuulikartta.updateLegend = function () {
+    var panel = saa.Tuulikartta.legendPanelElement
+    if (!panel) return
+    if (!saa.Tuulikartta.showLegend) {
+      panel.style.display = 'none'
+      return
+    }
+
+    var param = saa.Tuulikartta.selectedParameter || $('#select-wind-parameter').val()
+    var legend = Tuulikartta.getColorScaleLegend(param)
+    var title = translations[selectedLanguage][param] || ''
+    var html = '<div class="legend-title">' + title + (legend && legend.unit ? ' [' + legend.unit + ']' : '') + '</div>'
+
+    if (legend) {
+      legend.items.forEach(function (item) {
+        html += '<div class="legend-item"><span class="legend-swatch" style="background-color:' + item.color + '"></span>' + item.label + '</div>'
+      })
+    } else {
+      html += '<div class="legend-empty">' + translations[selectedLanguage]['legendNoScale'] + '</div>'
+    }
+
+    panel.innerHTML = html
+    panel.style.display = 'block'
+  }
+
   /* traffic cam control */
   // var trafficCamControl = L.Control.extend({
   //   options: {

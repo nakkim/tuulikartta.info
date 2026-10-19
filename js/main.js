@@ -53,6 +53,9 @@ var saa = saa || {};
 
   saa.Tuulikartta.showRadar = localStorage.getItem('showRadar') === 'true'
   saa.Tuulikartta.radarControlElement = null
+  saa.Tuulikartta.showLegend = localStorage.getItem('showLegend') === 'true'
+  saa.Tuulikartta.legendControlElement = null
+  saa.Tuulikartta.legendPanelElement = null
 
   saa.Tuulikartta.showObservationTable = localStorage.getItem('showObservationTable') === 'true'
   saa.Tuulikartta.tableControlElement = null
@@ -486,6 +489,9 @@ var saa = saa || {};
     if (saa.Tuulikartta.showObservationTable) {
       Tuulikartta.setObservationTableVisible(true)
     }
+
+    map.addControl(Tuulikartta.createLegendControl());
+    Tuulikartta.setLegendVisible(saa.Tuulikartta.showLegend)
 
     map.addControl(Tuulikartta.createInfoControl());
 

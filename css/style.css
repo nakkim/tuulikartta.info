@@ -713,6 +713,68 @@ input[type=range]:focus::-ms-fill-upper {
   pointer-events: auto;
 }
 
+.leaflet-control-select-legend {
+  /* static, so the legend box is positioned against the whole top right
+     control column instead of the legend button */
+  position: static;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='%23444'><rect x='3' y='3.5' width='5' height='5' rx='1'/><rect x='3' y='9.5' width='5' height='5' rx='1' opacity='.6'/><rect x='3' y='15.5' width='5' height='5' rx='1' opacity='.3'/></g><path d='M11 6h10M11 12h10M11 18h10' stroke='%23444' stroke-width='1.8' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center;
+  background-color: white;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.leaflet-control-select-legend:hover,
+.leaflet-control-select-legend.active {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='%23367ebd'><rect x='3' y='3.5' width='5' height='5' rx='1'/><rect x='3' y='9.5' width='5' height='5' rx='1' opacity='.6'/><rect x='3' y='15.5' width='5' height='5' rx='1' opacity='.3'/></g><path d='M11 6h10M11 12h10M11 18h10' stroke='%23367ebd' stroke-width='1.8' stroke-linecap='round'/></svg>");
+}
+
+/* vertical legend box, opens to the left of the button column, aligned
+   with the top of the first button (settings) */
+.legend-panel {
+  display: none;
+  position: absolute;
+  z-index: 800;
+  top: 10px;
+  right: calc(100% + 10px);
+  min-width: 120px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  padding: 6px 8px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #333;
+  white-space: nowrap;
+  cursor: default;
+}
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-swatch {
+  flex-shrink: 0;
+  width: 18px;
+  height: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+.legend-empty {
+  white-space: normal;
+  max-width: 160px;
+  color: #666;
+}
+
 .leaflet-control-select-radar:hover,
 .leaflet-control-select-radar.active {
   background-image: url(../symbols/radar_blue.png);
