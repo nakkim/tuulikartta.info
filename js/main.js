@@ -163,16 +163,38 @@ var saa = saa || {};
     return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + hours + ':' + minutes
   }
 
-  Tuulikartta.dataLoader = function (param) {
-    var dataLoader = document.getElementById('data-loader')
-    dataLoader.innerHTML = translations[selectedLanguage]['loadObservations']
-    if (param) {
-      dataLoader.style.display = 'block'
-      document.body.style.cursor = 'wait'
-    } else {
-      dataLoader.style.display = 'none'
-      document.body.style.cursor = 'default'
+  // Loading indicator in the bottom left corner. Sources (observation data,
+  // radar images, lightning) that start while others are still loading
+  // form one batch, shown as a single "(loaded/total)" progress line.
+  var activeLoads = {}
+  var loadsStarted = 0
+  var loadsDone = 0
+
+  Tuulikartta.setLoading = function (source, isLoading) {
+    if (isLoading && !activeLoads[source]) {
+      activeLoads[source] = true
+      loadsStarted++
+    } else if (!isLoading && activeLoads[source]) {
+      delete activeLoads[source]
+      loadsDone++
     }
+
+    var dataLoader = document.getElementById('data-loader')
+    if (loadsDone >= loadsStarted) {
+      loadsStarted = 0
+      loadsDone = 0
+      dataLoader.innerHTML = ''
+      dataLoader.style.display = 'none'
+      return
+    }
+    dataLoader.innerHTML = '<div class="loading-item"><span class="loading-spinner"></span>' +
+      translations[selectedLanguage]['loadDatasets'] + ' (' + loadsDone + '/' + loadsStarted + ')</div>'
+    dataLoader.style.display = 'block'
+  }
+
+  Tuulikartta.dataLoader = function (param) {
+    Tuulikartta.setLoading('data', param)
+    document.body.style.cursor = param ? 'wait' : 'default'
   }
 
   Tuulikartta.checkValidity = function (timestamp) {
@@ -222,7 +244,8 @@ var saa = saa || {};
               url: a[a.length - 1],
               data: {},
               error: function () {
-                document.body.style.cursor = 'default'
+                saa.Tuulikartta.dataLoader(false)
+                saa.Tuulikartta.map.spin(false)
               },
               success: function (data) {
                 saa.Tuulikartta.dataLoader(false)
@@ -255,7 +278,8 @@ var saa = saa || {};
           url: requestedTime,
           data: {},
           error: function () {
-            document.body.style.cursor = 'default'
+            saa.Tuulikartta.dataLoader(false)
+            saa.Tuulikartta.map.spin(false)
           },
           success: function (data) {
             saa.Tuulikartta.dataLoader(false)
@@ -289,7 +313,8 @@ var saa = saa || {};
         time: saa.Tuulikartta.timeValue
       },
       error: function () {
-        document.body.style.cursor = 'default'
+        saa.Tuulikartta.dataLoader(false)
+        saa.Tuulikartta.map.spin(false)
       },
       success: function (data) {
         saa.Tuulikartta.dataLoader(false)
@@ -480,6 +505,13 @@ var saa = saa || {};
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
+    })
+
+    saa.Tuulikartta.radarLayer.on('loading', function () {
+      Tuulikartta.setLoading('radar', true)
+    })
+    saa.Tuulikartta.radarLayer.on('load remove', function () {
+      Tuulikartta.setLoading('radar', false)
     })
 
     // L.control.layers(false, overlayMaps).addTo(saa.Tuulikartta.map)

@@ -15,7 +15,7 @@ var saa = saa || {};
     var timeArray = timeString.split('/')
     var time = moment.utc(timeString).toISOString()
 
-    saa.Tuulikartta.dataLoader(true)
+    saa.Tuulikartta.setLoading('lightning', true)
     $.ajax({
       dataType: 'json',
       data: {
@@ -30,7 +30,7 @@ var saa = saa || {};
         // console.log(data)
       },
       complete: function (data) {
-        saa.Tuulikartta.dataLoader(false)
+        saa.Tuulikartta.setLoading('lightning', false)
         var data = data.responseJSON
         saa.lightning.drawData(data)
       }
