@@ -754,6 +754,14 @@ input[type=range]:focus::-ms-fill-upper {
   white-space: nowrap;
   cursor: default;
 }
+/* on small screens the parameter selector reaches under the legend box,
+   so open the box below the selector instead */
+@media screen and (max-width: 768px) {
+  .legend-panel {
+    top: 50px;
+    max-height: calc(100vh - 120px);
+  }
+}
 .legend-title {
   font-weight: bold;
   margin-bottom: 4px;
