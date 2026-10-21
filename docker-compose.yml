@@ -25,6 +25,10 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     ports:
       - "8080:80"
+    # PHP runs with memory_limit=-1 as a CVE-2026-109618 mitigation (see
+    # Dockerfile), so the container limit is what bounds memory use
+    mem_limit: 1g
+    memswap_limit: 1g
 
 volumes:
   postgres-data:

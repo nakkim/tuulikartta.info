@@ -22,6 +22,30 @@ RUN printf '%s\n' \
   'error_log = /dev/stderr' \
   > /usr/local/etc/php/conf.d/zz-errors.ini
 
+# Interim mitigations for CVE-2026-109618 and CVE-2026-109619 until a
+# php:8.2-apache image with PHP 8.2.35 is available. php_admin_* values
+# cannot be overridden by .htaccess or ini_set(). See
+# https://www.php.net/archive/2026.php#2026-10-21-5
+# - memory_limit=-1 avoids the OOM corruption path; the container memory
+#   limit in docker-compose.yml is the availability boundary instead
+# - the app accepts no uploads, so request bodies are kept small
+# - upload progress tracking is disabled (stale global state RCE)
+RUN printf '%s\n' \
+  '<IfModule php_module>' \
+  '  php_admin_value memory_limit -1' \
+  '  php_admin_value post_max_size 8M' \
+  '  php_admin_flag file_uploads Off' \
+  '  php_admin_value upload_max_filesize 2M' \
+  '  php_admin_flag session.upload_progress.enabled Off' \
+  '</IfModule>' \
+  > /etc/apache2/conf-available/php-cve-mitigations.conf && \
+  a2enconf php-cve-mitigations && \
+  printf '%s\n' \
+  'session.upload_progress.enabled = Off' \
+  'post_max_size = 8M' \
+  'upload_max_filesize = 2M' \
+  > /usr/local/etc/php/conf.d/zz-cve-mitigations.ini
+
 # Copy package files first for better caching
 COPY package*.json ./
 
