@@ -20,3 +20,17 @@
 
 AddCharset UTF-8 .php
 AddDefaultCharset utf-8
+
+# Never display PHP warnings or errors to clients
+<IfModule mod_php.c>
+  php_flag display_errors Off
+  php_flag display_startup_errors Off
+  php_flag html_errors Off
+  php_flag log_errors On
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag display_errors Off
+  php_flag display_startup_errors Off
+  php_flag html_errors Off
+  php_flag log_errors On
+</IfModule>
