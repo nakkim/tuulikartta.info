@@ -167,7 +167,8 @@ class DataMiner{
         $url = $url . $this->setTime($timestamp, $graph);
         $ctx = stream_context_create(array('http'=>
             array(
-                'timeout' => 240,  //1200 Seconds is 20 Minutes
+                // a slow upstream would otherwise hold an Apache worker per request
+                'timeout' => 15,
             )
         ));
         $xmlData = file_get_contents($url, false, $ctx);
@@ -341,7 +342,8 @@ class DataMiner{
       // $url .= "&timestep=10";
       $url .= "&param=".$settings['parameters'];
       $url .= $this->setTime($timestamp);
-      $data = file_get_contents($url);
+      $ctx = stream_context_create(array('http' => array('timeout' => 15)));
+      $data = file_get_contents($url, false, $ctx);
       return json_decode($data, true);
     }
 
@@ -362,7 +364,8 @@ class DataMiner{
         foreach($parameters as $keyvalue => $parameter) {
         $url = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/{$parameter}/station-set/all/period/latest-hour/data.xml";
 
-        $xmlData = file_get_contents($url);
+        $ctx = stream_context_create(array('http' => array('timeout' => 15)));
+        $xmlData = file_get_contents($url, false, $ctx);
         $data = simplexml_load_string($xmlData);
 
         foreach ($data->station as $key) {

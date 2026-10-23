@@ -46,6 +46,19 @@ RUN printf '%s\n' \
   'upload_max_filesize = 2M' \
   > /usr/local/etc/php/conf.d/zz-cve-mitigations.ini
 
+# COPY . ./ puts repo files into the web root. prisma/ and package*.json are
+# needed by the migrate container, so block them in Apache instead of
+# leaving them out of the image
+RUN printf '%s\n' \
+  '<DirectoryMatch "^/var/www/html/prisma">' \
+  '  Require all denied' \
+  '</DirectoryMatch>' \
+  '<FilesMatch "^(docker-compose\.yml|package(-lock)?\.json)$">' \
+  '  Require all denied' \
+  '</FilesMatch>' \
+  > /etc/apache2/conf-available/deny-repo-files.conf && \
+  a2enconf deny-repo-files
+
 # Copy package files first for better caching
 COPY package*.json ./
 

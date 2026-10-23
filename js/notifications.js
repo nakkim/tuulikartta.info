@@ -49,6 +49,14 @@ var saa = saa || {};
     }
   }
 
+  function isHttpsUrl(value) {
+    try {
+      return new URL(value).protocol === 'https:'
+    } catch (e) {
+      return false
+    }
+  }
+
   function renderNotification(notification) {
     var banner = document.getElementById('notification-banner')
     var icon = document.getElementById('notification-banner-icon')
@@ -62,12 +70,12 @@ var saa = saa || {};
     $(banner).toggleClass('alert', isAlert)
     icon.textContent = isAlert ? '!' : 'i'
 
-    // notification text comes from the site's own database, not user
-    // input, so it's trusted the same way translations.js content is
-    // (e.g. dataInfoBody3 already embeds a raw <a> tag)
-    text.innerHTML = selectedLanguage === 'en' ? notification.textEn : notification.textFi
+    // plain text only: the text comes from the database, so HTML in it
+    // must not run in visitors' browsers
+    text.textContent = selectedLanguage === 'en' ? notification.textEn : notification.textFi
 
-    if (notification.link) {
+    // only https links, so a javascript: or data: URL can never be used
+    if (notification.link && isHttpsUrl(notification.link)) {
       link.href = notification.link
       link.textContent = translations[selectedLanguage]['notificationReadMore']
       link.hidden = false

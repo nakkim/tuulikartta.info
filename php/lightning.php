@@ -1,12 +1,19 @@
 <?php
 // error_reporting(0);
 require_once("dataMiner.php");
+require_once("input.php");
 date_default_timezone_set('Europe/Helsinki');
 
 header('Content-Type: application/json');
 
-$timestamp = $_GET["time"];
-$timestep  = $_GET["interval"];
+$timestamp = filter_input(INPUT_GET, 'time', FILTER_UNSAFE_RAW);
+$timestep  = filter_input(INPUT_GET, 'interval', FILTER_UNSAFE_RAW);
+if (!isValidTimestamp($timestamp)) {
+  badRequest('Invalid time');
+}
+if (!in_array($timestep, array('5', '15', '30', '60'), true)) {
+  badRequest('Invalid interval');
+}
 
 $endtime = new DateTime($timestamp);
 $starttime = new DateTime($timestamp);
@@ -149,7 +156,8 @@ function getLightningData($starttime,$endtime) {
   $url .= "&endtime={$endtime}";
   $url .= "&bbox={$settings["bbox"]},epsg::4326&";
 
-  $xmlData = file_get_contents($url);
+  $ctx = stream_context_create(array('http' => array('timeout' => 15)));
+  $xmlData = file_get_contents($url, false, $ctx);
   if($xmlData == false) {
     return [];
   }

@@ -1,11 +1,23 @@
 <?php
 require_once("dataMiner.php");
+require_once("input.php");
 header('Content-Type: application/json');
 
 $latlon      = filter_input(INPUT_GET, 'latlon', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $fmisid      = filter_input(INPUT_GET, 'fmisid', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $type        = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $timestamp   = filter_input(INPUT_GET, 'timestamp', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+// fmisid goes into the opendata query, so allow one numeric station id only
+if (!is_string($fmisid) || !ctype_digit($fmisid)) {
+    badRequest('Invalid fmisid');
+}
+if ($type !== 'road' && $type !== 'synop') {
+    badRequest('Invalid type');
+}
+if (!isValidTimestamp($timestamp)) {
+    badRequest('Invalid timestamp');
+}
 
 $dataMiner = new DataMiner();
 $data = [];

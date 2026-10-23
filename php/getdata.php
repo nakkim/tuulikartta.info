@@ -1,10 +1,14 @@
 <?php
 require_once("dataMiner.php");
+require_once("input.php");
 date_default_timezone_set('Europe/Helsinki');
 
 header('Content-Type: application/json');
 
-$timestamp = $_GET["time"];
+$timestamp = filter_input(INPUT_GET, 'time', FILTER_UNSAFE_RAW);
+if (!isValidTimestamp($timestamp)) {
+  badRequest('Invalid time');
+}
 
 $dataMiner = new DataMiner();
 
