@@ -42,7 +42,7 @@
     "leaflet.locatecontrol": "^0.72.0",
     "leaflet.markercluster": "^1.5.3",
     "maplibre-gl": "^5.24.0",
-    "moment": "^2.30.1",
+    "moment": "^2.31.0",
     "owl.carousel": "^2.3.4",
     "pmtiles": "^4.5.0",
     "prisma": "^5.19.1",
