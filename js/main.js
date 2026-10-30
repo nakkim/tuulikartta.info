@@ -401,7 +401,8 @@ var saa = saa || {};
           var timeArray = timeString.split('/')
           var endTime = moment.utc(timeArray[1]).toISOString()
           saa.Tuulikartta.timeStamp = endTime
-          saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
+          Tuulikartta.setRadarTime(saa.Tuulikartta.timeStamp)
+          Tuulikartta.addRadarLayerIfReady()
           Tuulikartta.callData()
 
           if (saa.Tuulikartta.getLightningData) {
@@ -417,13 +418,36 @@ var saa = saa || {};
       })
     } else {
       Tuulikartta.callData()
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
+      Tuulikartta.setRadarTime(saa.Tuulikartta.timeStamp)
+      Tuulikartta.addRadarLayerIfReady()
       if (saa.Tuulikartta.getLightningData) {
         saa.lightning.geoLayer.clearLayers()
         saa.lightning.init(saa.Tuulikartta.timeStamp)
       }
     }
 
+  }
+
+  // Set the radar layer time in one canonical form, rounded down to the
+  // 5 minute radar interval, so the same image always has the same URL
+  // and can be served from the browser cache
+  Tuulikartta.setRadarTime = function (time) {
+    if (!time) return
+    var m = moment.utc(time)
+    m.minutes(Math.floor(m.minutes() / 5) * 5)
+    var radarTime = m.format('YYYY-MM-DDTHH:mm:00[Z]')
+    if (saa.Tuulikartta.radarLayer.wmsParams.time === radarTime) return
+    saa.Tuulikartta.radarLayer.setParams({ time: radarTime })
+  }
+
+  // Add the radar layer only once it has a time: GeoServer sends a one day
+  // max-age, so a request without TIME would be cached as a stale "latest"
+  Tuulikartta.addRadarLayerIfReady = function () {
+    var layer = saa.Tuulikartta.radarLayer
+    if (!saa.Tuulikartta.showRadar || !layer.wmsParams.time) return
+    if (saa.Tuulikartta.map.hasLayer(layer)) return
+    saa.Tuulikartta.map.addLayer(layer)
+    Tuulikartta.bringVelocityLayerToFront()
   }
 
   // ---------------------------------------------------------
@@ -525,7 +549,7 @@ var saa = saa || {};
 
     map.addControl(Tuulikartta.createRadarControl());
     if (saa.Tuulikartta.showRadar) {
-      map.addLayer(saa.Tuulikartta.radarLayer)
+      Tuulikartta.addRadarLayerIfReady()
       if (saa.Tuulikartta.radarControlElement) {
         $(saa.Tuulikartta.radarControlElement).addClass('active')
       }
@@ -561,11 +585,11 @@ var saa = saa || {};
       tileSize: 2048,
       transparent: true,
       opacity: saa.Tuulikartta.radarLayerOpacity / 100,
-      time: saa.Tuulikartta.timeStamp,
       version: '1.3.0',
       crs: L.CRS.EPSG3857,
       attribution: '<a href="https://www.tuulikartta.info">Tuulikartta.info</a>'
     })
+    Tuulikartta.setRadarTime(saa.Tuulikartta.timeStamp)
 
     saa.Tuulikartta.radarLayer.on('loading', function () {
       Tuulikartta.setLoading('radar', true)
@@ -595,11 +619,6 @@ var saa = saa || {};
   setInterval(function () {
     if (saa.Tuulikartta.timeValue === 'now') {
       Tuulikartta.updateRadarData()
-      saa.Tuulikartta.map.eachLayer(function (layer) {
-        if (layer instanceof L.TileLayer && 'wmsParams' in layer) {
-          layer.setParams({})
-        }
-      })
     }
   }, interval)
 }(saa.Tuulikartta = saa.Tuulikartta || {}))

@@ -111,7 +111,6 @@ var saa = saa || {};
       saa.Tuulikartta.timeStamp = timestring
 
       Tuulikartta.clearMarkers()
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
       Tuulikartta.updateRadarData()
       getTrafficCamData = false
       // saa.camera.markers.clearLayers()
@@ -127,8 +126,6 @@ var saa = saa || {};
 
       Tuulikartta.clearMarkers()
       Tuulikartta.updateRadarData()
-
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
 
       Tuulikartta.updateUrlHash()
     })
@@ -164,8 +161,6 @@ var saa = saa || {};
       saa.Tuulikartta.timeStamp = timestring
       Tuulikartta.updateRadarData()
 
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
-
       Tuulikartta.updateUrlHash()
     })
 
@@ -194,8 +189,6 @@ var saa = saa || {};
 
       saa.Tuulikartta.timeValue = timestring
       Tuulikartta.updateRadarData()
-
-      saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
 
       Tuulikartta.updateUrlHash()
     })

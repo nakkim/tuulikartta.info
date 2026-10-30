@@ -100,17 +100,17 @@ var saa = saa || {};
         )
         saa.Tuulikartta.radarControlElement = container
         container.onclick = function () {
-          saa.Tuulikartta.radarLayer.setParams({ time: saa.Tuulikartta.timeStamp })
-          if (saa.Tuulikartta.map.hasLayer(saa.Tuulikartta.radarLayer)) {
+          if (saa.Tuulikartta.showRadar) {
             saa.Tuulikartta.map.removeLayer(saa.Tuulikartta.radarLayer)
             $(this).removeClass('active')
             saa.Tuulikartta.showRadar = false
           } else {
-            saa.Tuulikartta.updateRadarData()
-            saa.Tuulikartta.map.addLayer(saa.Tuulikartta.radarLayer)
-            Tuulikartta.bringVelocityLayerToFront()
             $(this).addClass('active')
             saa.Tuulikartta.showRadar = true
+            // show with the current time right away, updateRadarData
+            // refreshes it (and adds the layer if it had no time yet)
+            Tuulikartta.addRadarLayerIfReady()
+            saa.Tuulikartta.updateRadarData()
           }
           localStorage.setItem('showRadar', saa.Tuulikartta.showRadar)
           Tuulikartta.updateUrlHash()
