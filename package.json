@@ -1,6 +1,6 @@
 {
   "name": "tuulikartta.info",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Weather observation visualization tool",
   "main": "js/main.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "db:migrate": "prisma migrate dev --skip-generate",
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "tag": "npm version patch --no-git-tag-version"
   },
   "repository": {
     "type": "git",
