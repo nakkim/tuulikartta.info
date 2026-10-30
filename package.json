@@ -31,7 +31,7 @@
   "dependencies": {
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",
     "bootstrap-datepicker": "^1.9.0",
-    "highcharts": "^9.0.0",
+    "highcharts": "^11.4.9",
     "jquery": "^3.5.1",
     "leaflet": "^1.6.0",
     "leaflet-responsive-popup": "^0.6.4",
