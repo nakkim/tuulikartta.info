@@ -85,6 +85,10 @@ hash.forEach(function (element) {
     saa.Tuulikartta.showSettingsSidebar = param[1] === 'visible'
     localStorage.setItem('showSettingsSidebar', saa.Tuulikartta.showSettingsSidebar)
   }
+  if (param[0] === 'windbarbs') {
+    saa.Tuulikartta.useWindBarbs = param[1] === 'true'
+    localStorage.setItem('useWindBarbs', saa.Tuulikartta.useWindBarbs)
+  }
 })
 
 var span = document.getElementsByClassName("close")[0]

@@ -123,6 +123,9 @@ var saa = saa || {};
     if (saa.Tuulikartta.showSettingsSidebar) {
       hash += '#settings=visible'
     }
+    if (saa.Tuulikartta.useWindBarbs) {
+      hash += '#windbarbs=true'
+    }
 
     window.location.replace(hash)
   }
